@@ -32,13 +32,13 @@ public class PacketActivateBlock extends TilePacket
         super.processData(entityPlayer, bbis);
         ItemStack itemStack = entityPlayer.getHeldItemMainhand();
         _facing = EnumFacing.getFront(bbis.readInt());
-        IBlockState blockState = entityPlayer.worldObj.getBlockState(_blockPos);
-        boolean result = blockState.getBlock().onBlockActivated(entityPlayer.worldObj, _blockPos, blockState, entityPlayer, EnumHand.MAIN_HAND, entityPlayer.getHeldItemMainhand(), _facing, 1.0F, 1.0F, 1.0F);
+        IBlockState blockState = entityPlayer.world.getBlockState(_blockPos);
+        boolean result = blockState.getBlock().onBlockActivated(entityPlayer.world, _blockPos, blockState, entityPlayer, EnumHand.MAIN_HAND, _facing, 1.0F, 1.0F, 1.0F);
         if (!result) 
         {
             if (itemStack != null && itemStack.getItem() instanceof ItemBlock) 
             {
-                itemStack.onItemUse(entityPlayer, entityPlayer.worldObj, _blockPos, EnumHand.MAIN_HAND, _facing, 1.0F, 1.0F, 1.0F);
+                itemStack.onItemUse(entityPlayer, entityPlayer.world, _blockPos, EnumHand.MAIN_HAND, _facing, 1.0F, 1.0F, 1.0F);
                 EntityLivingUtil.decrementCurrentSlot(entityPlayer);
             }
         }

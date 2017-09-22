@@ -15,7 +15,7 @@ public class PlayerPermissions
      */
     public static boolean isOp(EntityPlayer entityPlayer)
     {
-        if (!entityPlayer.worldObj.isRemote)
+        if (!entityPlayer.world.isRemote)
         {
             return ((EntityPlayerMP)entityPlayer).mcServer.getPlayerList().getOppedPlayers().getEntry(entityPlayer.getGameProfile()) != null;
         } 
@@ -35,11 +35,11 @@ public class PlayerPermissions
      */
     public static boolean hasElevatedPermission(IProtected object, EntityPlayer entityPlayer, boolean enforceOwnership)
     {
-        if (entityPlayer.worldObj.isRemote && Minecraft.getMinecraft().isSingleplayer())
+        if (entityPlayer.world.isRemote && Minecraft.getMinecraft().isSingleplayer())
         { // Check if client is playing singleplayer
             return true;
         } 
-        else if (!entityPlayer.worldObj.isRemote && entityPlayer.worldObj.getMinecraftServer().isSinglePlayer()) 
+        else if (!entityPlayer.world.isRemote && entityPlayer.world.getMinecraftServer().isSinglePlayer())
         { // Check if server is integrated (singleplayer)
             return true;
         } 

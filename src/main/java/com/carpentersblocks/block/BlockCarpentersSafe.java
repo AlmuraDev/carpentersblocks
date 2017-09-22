@@ -93,7 +93,7 @@ public class BlockCarpentersSafe extends BlockCoverable
 	}
 	
 	@Override
-	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
+	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
 			int meta, EntityLivingBase placer) 
 	{ 
 		facing = placer.getHorizontalFacing();

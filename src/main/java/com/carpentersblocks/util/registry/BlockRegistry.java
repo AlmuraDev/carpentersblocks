@@ -35,6 +35,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -76,8 +77,8 @@ public class BlockRegistry
         	.setRegistryName(REGISTRY_NAME_BLOCK)
         	.setHardness(0.2F)
             .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-        GameRegistry.register(blockCarpentersBlock);
-        GameRegistry.register(new ItemBlock(blockCarpentersBlock), blockCarpentersBlock.getRegistryName());
+        ForgeRegistries.BLOCKS.register(blockCarpentersBlock);
+        ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersBlock).setRegistryName(blockCarpentersBlock.getRegistryName()));
         Blocks.FIRE.setFireInfo(blockCarpentersBlock, 5, 20);
 
          if(enableBarrier)
@@ -87,8 +88,8 @@ public class BlockRegistry
                  .setRegistryName(REGISTRY_NAME_BARRIER)
                  .setHardness(0.2F)
                  .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-             GameRegistry.register(blockCarpentersBarrier);
-             GameRegistry.register(new ItemBlock(blockCarpentersBarrier), blockCarpentersBarrier.getRegistryName());
+             ForgeRegistries.BLOCKS.register(blockCarpentersBarrier);
+             ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersBarrier).setRegistryName(blockCarpentersBarrier.getRegistryName()));
              Blocks.FIRE.setFireInfo(blockCarpentersBarrier, 5, 20);
          }
         
@@ -98,9 +99,9 @@ public class BlockRegistry
                 .setUnlocalizedName("blockCarpentersBed")
                 .setRegistryName(REGISTRY_NAME_BED)
                 .setHardness(0.4F)
-                .setCreativeTab(CarpentersBlocks.CREATIVE_TAB); 
-            GameRegistry.register(blockCarpentersBed);
-            GameRegistry.register(new ItemBlock(blockCarpentersBed), blockCarpentersBed.getRegistryName());
+                .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
+            ForgeRegistries.BLOCKS.register(blockCarpentersBed);
+            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersBed).setRegistryName(blockCarpentersBed.getRegistryName()));
             Blocks.FIRE.setFireInfo(blockCarpentersBed, 5, 20);
         }
         
@@ -111,8 +112,8 @@ public class BlockRegistry
                 .setRegistryName(REGISTRY_NAME_BUTTON)
                 .setHardness(0.2F)
                 .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-            GameRegistry.register(blockCarpentersButton);
-            GameRegistry.register(new ItemBlock(blockCarpentersButton), blockCarpentersButton.getRegistryName());
+            ForgeRegistries.BLOCKS.register(blockCarpentersButton);
+            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersButton).setRegistryName(blockCarpentersButton.getRegistryName()));
             Blocks.FIRE.setFireInfo(blockCarpentersButton, 5, 20);
         }
 
@@ -123,8 +124,9 @@ public class BlockRegistry
                 .setRegistryName(REGISTRY_NAME_COLLAPSIBLE)
                 .setHardness(0.2F)
                 .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-            GameRegistry.register(blockCarpentersCollapsibleBlock);
-            GameRegistry.register(new ItemBlock(blockCarpentersCollapsibleBlock), blockCarpentersCollapsibleBlock.getRegistryName());
+            ForgeRegistries.BLOCKS.register(blockCarpentersCollapsibleBlock);
+            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersCollapsibleBlock).setRegistryName(blockCarpentersCollapsibleBlock
+                    .getRegistryName()));
             Blocks.FIRE.setFireInfo(blockCarpentersCollapsibleBlock, 5, 20);
         } 
         
@@ -135,8 +137,9 @@ public class BlockRegistry
                 .setRegistryName(REGISTRY_NAME_DAYLIGHT_SENSOR)
                 .setHardness(0.2F)
                 .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-            GameRegistry.register(blockCarpentersDaylightSensor);
-            GameRegistry.register(new ItemBlock(blockCarpentersDaylightSensor), blockCarpentersDaylightSensor.getRegistryName());
+            ForgeRegistries.BLOCKS.register(blockCarpentersDaylightSensor);
+            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersDaylightSensor).setRegistryName(blockCarpentersDaylightSensor
+                    .getRegistryName()));
             Blocks.FIRE.setFireInfo(blockCarpentersDaylightSensor, 5, 20);
         }
 
@@ -147,8 +150,8 @@ public class BlockRegistry
                 .setRegistryName(REGISTRY_NAME_DOOR)
                 .setHardness(0.2F)
                 .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-            GameRegistry.register(blockCarpentersDoor);
-            GameRegistry.register(new ItemBlock(blockCarpentersDoor), blockCarpentersDoor.getRegistryName());
+            ForgeRegistries.BLOCKS.register(blockCarpentersDoor);
+            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersDoor).setRegistryName(blockCarpentersDoor.getRegistryName()));
             Blocks.FIRE.setFireInfo(blockCarpentersDoor, 5, 20);
         }
 
@@ -159,8 +162,8 @@ public class BlockRegistry
                 .setRegistryName(REGISTRY_NAME_FLOWER_POT)
                 .setHardness(0.5F)
                 .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-            GameRegistry.register(blockCarpentersFlowerPot);
-            GameRegistry.register(new ItemBlock(blockCarpentersFlowerPot), blockCarpentersFlowerPot.getRegistryName());
+            ForgeRegistries.BLOCKS.register(blockCarpentersFlowerPot);
+            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersFlowerPot).setRegistryName(blockCarpentersFlowerPot.getRegistryName()));
             Blocks.FIRE.setFireInfo(blockCarpentersFlowerPot, 5, 20);
         }
 
@@ -171,8 +174,8 @@ public class BlockRegistry
                 .setRegistryName(REGISTRY_NAME_GARAGE_DOOR)
                 .setHardness(0.2F)
                 .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-            GameRegistry.register(blockCarpentersGarageDoor);
-            GameRegistry.register(new ItemBlock(blockCarpentersGarageDoor), blockCarpentersGarageDoor.getRegistryName());
+            ForgeRegistries.BLOCKS.register(blockCarpentersGarageDoor);
+            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersGarageDoor).setRegistryName(blockCarpentersGarageDoor.getRegistryName()));
             Blocks.FIRE.setFireInfo(blockCarpentersGarageDoor, 5, 20);
         }
 
@@ -183,8 +186,8 @@ public class BlockRegistry
                 .setRegistryName(REGISTRY_NAME_GATE)
                 .setHardness(0.2F)
                 .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-            GameRegistry.register(blockCarpentersGate);
-            GameRegistry.register(new ItemBlock(blockCarpentersGate), blockCarpentersGate.getRegistryName());
+            ForgeRegistries.BLOCKS.register(blockCarpentersGate);
+            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersGate).setRegistryName(blockCarpentersGate.getRegistryName()));
             Blocks.FIRE.setFireInfo(blockCarpentersGate, 5, 20);
         }
 
@@ -195,8 +198,8 @@ public class BlockRegistry
                 .setRegistryName(REGISTRY_NAME_HATCH)
                 .setHardness(0.2F)
                 .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-            GameRegistry.register(blockCarpentersHatch);
-            GameRegistry.register(new ItemBlock(blockCarpentersHatch), blockCarpentersHatch.getRegistryName());
+            ForgeRegistries.BLOCKS.register(blockCarpentersHatch);
+            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersHatch).setRegistryName(blockCarpentersHatch.getRegistryName()));
             Blocks.FIRE.setFireInfo(blockCarpentersHatch, 5, 20);
         }
 
@@ -207,8 +210,8 @@ public class BlockRegistry
                 .setRegistryName(REGISTRY_NAME_LADDER)
                 .setHardness(0.2F)
                 .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-            GameRegistry.register(blockCarpentersLadder);
-            GameRegistry.register(new ItemBlock(blockCarpentersLadder), blockCarpentersLadder.getRegistryName());
+            ForgeRegistries.BLOCKS.register(blockCarpentersLadder);
+            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersLadder).setRegistryName(blockCarpentersLadder.getRegistryName()));
             Blocks.FIRE.setFireInfo(blockCarpentersLadder, 5, 20);
         }
 
@@ -219,8 +222,8 @@ public class BlockRegistry
                 .setRegistryName(REGISTRY_NAME_LEVER)
                 .setHardness(0.2F)
                 .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-            GameRegistry.register(blockCarpentersLever);
-            GameRegistry.register(new ItemBlock(blockCarpentersLever), blockCarpentersLever.getRegistryName());
+            ForgeRegistries.BLOCKS.register(blockCarpentersLever);
+            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersLever).setRegistryName(blockCarpentersLever.getRegistryName()));
             Blocks.FIRE.setFireInfo(blockCarpentersLever, 5, 20);
         }
 
@@ -231,8 +234,9 @@ public class BlockRegistry
                 .setRegistryName(REGISTRY_NAME_PRESSURE_PLATE)
                 .setHardness(0.2F)
                 .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-            GameRegistry.register(blockCarpentersPressurePlate);
-            GameRegistry.register(new ItemBlock(blockCarpentersPressurePlate), blockCarpentersPressurePlate.getRegistryName());
+            ForgeRegistries.BLOCKS.register(blockCarpentersPressurePlate);
+            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersPressurePlate).setRegistryName(blockCarpentersPressurePlate.getRegistryName
+                    ()));
             Blocks.FIRE.setFireInfo(blockCarpentersPressurePlate, 5, 20);
         }
 
@@ -243,8 +247,8 @@ public class BlockRegistry
                 .setRegistryName(REGISTRY_NAME_SAFE)
                 .setHardness(2.5F)
                 .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-            GameRegistry.register(blockCarpentersSafe);
-            GameRegistry.register(new ItemBlock(blockCarpentersSafe), blockCarpentersSafe.getRegistryName());
+            ForgeRegistries.BLOCKS.register(blockCarpentersSafe);
+            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersSafe).setRegistryName(blockCarpentersSafe.getRegistryName()));
             Blocks.FIRE.setFireInfo(blockCarpentersSafe, 5, 20);
         }
         
@@ -254,8 +258,8 @@ public class BlockRegistry
                         .setRegistryName(REGISTRY_NAME_SLOPE) 
                         .setHardness(0.2F)
                         .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-                   GameRegistry.register(blockCarpentersSlope);
-                   GameRegistry.register(new ItemBlock(blockCarpentersSlope), blockCarpentersSlope.getRegistryName()); 
+            ForgeRegistries.BLOCKS.register(blockCarpentersSlope);
+            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersSlope).setRegistryName(blockCarpentersSlope.getRegistryName()));
         	
         }
 
@@ -266,14 +270,14 @@ public class BlockRegistry
                 .setRegistryName(REGISTRY_NAME_STAIRS)
                 .setHardness(0.2F)
                 .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-            GameRegistry.register(blockCarpentersStairs);
-            GameRegistry.register(new ItemBlock(blockCarpentersStairs), blockCarpentersStairs.getRegistryName());
+            ForgeRegistries.BLOCKS.register(blockCarpentersStairs);
+            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersStairs).setRegistryName(blockCarpentersStairs.getRegistryName()));
             Blocks.FIRE.setFireInfo(blockCarpentersStairs, 5, 20);
         }
 
         if(enableTorch) 
         {
-            blockCarpentersTorch = new BlockCarpentersTorch()
+            blockCarpentersTorch = new BlockCarpentersTorch(blockCarpentersTorch.getDefaultState())
                 .setUnlocalizedName("blockCarpentersTorch")
                 .setRegistryName(REGISTRY_NAME_TORCH)
                 .setHardness(0.2F)
@@ -284,9 +288,9 @@ public class BlockRegistry
             {
             	blockCarpentersTorch.setTickRandomly(true);
             }
-            
-            GameRegistry.register(blockCarpentersTorch);
-            GameRegistry.register(new ItemBlock(blockCarpentersTorch), blockCarpentersTorch.getRegistryName());
+
+            ForgeRegistries.BLOCKS.register(blockCarpentersTorch);
+            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersTorch).setRegistryName(blockCarpentersTorch.getRegistryName()));
             Blocks.FIRE.setFireInfo(blockCarpentersTorch, 5, 20);
         }
     }

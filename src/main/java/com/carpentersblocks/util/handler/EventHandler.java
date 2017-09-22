@@ -79,9 +79,9 @@ public class EventHandler
 
     private Vec3d getNormalizedHitVec(Vec3d vec, BlockPos pos) 
     {
-    	double x = Math.abs(vec.xCoord - pos.getX());
-    	double y = Math.abs(vec.yCoord - pos.getY());
-    	double z = Math.abs(vec.zCoord - pos.getZ());
+    	double x = Math.abs(vec.x - pos.getX());
+    	double y = Math.abs(vec.y - pos.getY());
+    	double z = Math.abs(vec.z - pos.getZ());
     	return new Vec3d(x, y, z);
     }
     
@@ -136,7 +136,9 @@ public class EventHandler
                 if (!(itemStack != null && itemStack.getItem() instanceof ItemBlock && !BlockUtil.isOverlay(itemStack)))
                 {
                 	IBlockState blockState = event.getWorld().getBlockState(event.getPos());
-                	blockState.getBlock().onBlockActivated(event.getEntityPlayer().worldObj, event.getPos(), blockState, event.getEntityPlayer(), EnumHand.MAIN_HAND, event.getEntityPlayer().getHeldItemMainhand(), event.getFace(), 1.0F, 1.0F, 1.0F);
+                	//Update this may be incorrect.
+                	blockState.getBlock().onBlockActivated(event.getEntityPlayer().world, event.getPos(), blockState, event.getEntityPlayer(),EnumHand
+                            .MAIN_HAND, event.getFace(), 1.0F, 1.0F, 1.0F);
                 }
             }
     	}
@@ -152,7 +154,7 @@ public class EventHandler
         // We only want to process wheel events
         if (event.getButton() < 0) 
         {
-            EntityPlayer entityPlayer = Minecraft.getMinecraft().thePlayer;
+            EntityPlayer entityPlayer = Minecraft.getMinecraft().player;
             if (entityPlayer != null && entityPlayer.isSneaking())
             {
                 ItemStack itemStack = entityPlayer.getHeldItemMainhand();
@@ -172,7 +174,7 @@ public class EventHandler
     public void onLivingUpdateEvent(LivingUpdateEvent event)
     {
         EntityLivingBase entityLivingBase = event.getEntityLiving();
-        World world = entityLivingBase.worldObj;
+        World world = entityLivingBase.world;
 
         	// BlockState may negate the need for all this
 /*
@@ -317,11 +319,11 @@ public class EventHandler
      */
     private CbTileEntity getTileEntityAtFeet(Entity entity)
     {
-        int x = MathHelper.floor_double(entity.posX);
-        int y = MathHelper.floor_double(entity.posY - 0.20000000298023224D - entity.getYOffset());
-        int z = MathHelper.floor_double(entity.posZ);
+        int x = MathHelper.floor(entity.posX);
+        int y = MathHelper.floor(entity.posY - 0.20000000298023224D - entity.getYOffset());
+        int z = MathHelper.floor(entity.posZ);
 
-        TileEntity tileEntity = entity.worldObj.getTileEntity(new BlockPos(x, y, z));
+        TileEntity tileEntity = entity.world.getTileEntity(new BlockPos(x, y, z));
         if (tileEntity != null && tileEntity instanceof CbTileEntity) 
         {
             return (CbTileEntity) tileEntity;

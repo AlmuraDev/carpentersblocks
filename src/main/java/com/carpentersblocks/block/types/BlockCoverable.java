@@ -102,12 +102,6 @@ public abstract class BlockCoverable extends Block
         super(material);
     }
 
-    /**
-     * For South-sided blocks, rotates and sets the block bounds using
-     * the provided ForgeDirection.
-     *
-     * @param  dir the rotated {@link ForgeDirection}
-     */
     protected void setBlockBounds(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, EnumFacing facing)
     {
 /*        switch (dir) {
@@ -356,7 +350,7 @@ public abstract class BlockCoverable extends Block
      * return <code>true</code> if block property changed
      */
     @Override
-    public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer entityPlayer, EnumHand hand, @Nullable ItemStack itemStack, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer entityPlayer, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         //if (world.isRemote) {
         //    return true;
@@ -379,7 +373,7 @@ public abstract class BlockCoverable extends Block
         // Allow block to change cbTileEntity if needed before altering attributes
         cbTileEntity = getTileEntityForBlockActivation(cbTileEntity);
         ActionResult actionResult = new ActionResult();
-
+        ItemStack itemStack = entityPlayer.getActiveItemStack();
         preOnBlockActivated(cbTileEntity, entityPlayer, facing, hitX, hitY, hitZ, actionResult);
 
         // If no prior event occurred, try regular activation
@@ -1403,6 +1397,7 @@ public abstract class BlockCoverable extends Block
         return new ExtendedBlockState(this, Property.listedProperties, Property.unlistedProperties.toArray(new IUnlistedProperty[Property.unlistedProperties.size()]));
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public IBlockState getExtendedState(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos)
     {

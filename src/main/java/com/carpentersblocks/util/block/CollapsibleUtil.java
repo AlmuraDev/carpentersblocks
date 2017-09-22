@@ -36,9 +36,9 @@ public class CollapsibleUtil extends DataUtil implements IDataFacing
     {
     	if (EventHandler.eventHitVector != null)
     	{
-	    	if (Math.round(EventHandler.eventHitVector.xCoord) == 0)
+	    	if (Math.round(EventHandler.eventHitVector.x) == 0)
 	    	{
-	    		if (Math.round(EventHandler.eventHitVector.zCoord) == 0)
+	    		if (Math.round(EventHandler.eventHitVector.z) == 0)
 	    		{
 	    			return QUAD_XZNN;
 	    		} else 
@@ -48,7 +48,7 @@ public class CollapsibleUtil extends DataUtil implements IDataFacing
 	    	}
 	    	else
 	    	{
-	    		if (Math.round(EventHandler.eventHitVector.zCoord) == 0)
+	    		if (Math.round(EventHandler.eventHitVector.z) == 0)
 	    		{
 	    			return QUAD_XZPN;
 	    		} 

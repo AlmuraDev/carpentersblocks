@@ -43,7 +43,8 @@ public abstract class BlockFacing extends BlockCoverable {
     /**
      * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
      */
-    public IBlockState onBlockPlaced(World world, BlockPos blockPos, EnumFacing facing, float hitX, float hitY, float hitZ, int metadata, EntityLivingBase entityLivingBase) {
+    public IBlockState getStateForPlacement(World world, BlockPos blockPos, EnumFacing facing, float hitX, float hitY, float hitZ, int metadata,
+            EntityLivingBase entityLivingBase) {
         return getDefaultState().withProperty(BlockDirectional.FACING, facing);
     }
     
@@ -61,18 +62,9 @@ public abstract class BlockFacing extends BlockCoverable {
                 setFacing(cbTileEntity, facing);
             }
         }
-        world.notifyNeighborsOfStateChange(blockPos, this);
+        world.notifyNeighborsOfStateChange(blockPos, this, true);
     }
 
-    /**
-     * Gets placement direction when first placed in world.
-     *
-     * @param world the {@link World}
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param z the z coordinate
-     * @return the {@link ForgeDirection}
-     */
     protected EnumFacing getPlacementDirection(IBlockState blockState) {
         return blockState.getValue(BlockDirectional.FACING);
     }
@@ -108,18 +100,9 @@ public abstract class BlockFacing extends BlockCoverable {
         }
     }
 
-    /**
-     * Notifies relevant blocks of a change in power output.
-     *
-     * @param  world
-     * @param  x
-     * @param  y
-     * @param  z
-     * @return nothing
-     */
-    public void notifyBlocksOfPowerChange(World world, IBlockState blockState, BlockPos blockPos) {
+   public void notifyBlocksOfPowerChange(World world, IBlockState blockState, BlockPos blockPos) {
     	// Strong power change
-        world.notifyBlockOfStateChange(blockPos, this);
+        world.notifyNeighborsOfStateChange(blockPos, this, true);
 
         // Weak power change
         if (canProvidePower(blockState)) {
@@ -180,12 +163,6 @@ public abstract class BlockFacing extends BlockCoverable {
     	return 0;
     }
 
-    /**
-     * Whether block can be attached to specified side of another block.
-     *
-     * @param  side the side
-     * @return whether side is supported
-     */
     public boolean canAttachToFacing(EnumFacing facing) {
         return true;
     }

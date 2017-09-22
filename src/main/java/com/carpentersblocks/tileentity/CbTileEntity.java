@@ -173,8 +173,8 @@ import net.minecraft.world.World;
 	        }
 	        if (model instanceof ItemStack) 
 	        {
-		        ItemStack reducedStack = ItemStack.copyItemStack((ItemStack)model);
-		        reducedStack.stackSize = 1;
+		        ItemStack reducedStack = ((ItemStack)model).copy();
+		        reducedStack.setCount(1);
 		        _cbAttrMap.put(AbstractAttribute.generateKey(location, type), new AttributeItemStack(location, type, reducedStack));
 		        World world = getWorld();
 		        switch (type) {

@@ -359,14 +359,14 @@ public abstract class BlockFlowerpot extends BlockFlowerPot
      * return <code>true</code> if block property changed
      */
     @Override
-    public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer entityPlayer, EnumHand hand, @Nullable ItemStack itemStack, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer entityPlayer, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         //if (world.isRemote) {
         //    return true;
         //}
 
         CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
-
+        ItemStack itemStack = entityPlayer.getActiveItemStack();
         if (cbTileEntity == null) 
         {
             return false;

@@ -12,6 +12,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class QuadContainer
 { 
@@ -71,7 +73,8 @@ public class QuadContainer
 	    return quadContainer;
 	}
 	
-	public List<BakedQuad> getBakedQuads(EnumFacing facing, TextureAtlasSprite sprite, int rgb) 
+	@SideOnly(Side.CLIENT)
+	public List<BakedQuad> getBakedQuads(EnumFacing facing, TextureAtlasSprite sprite, int rgb)
 	{
 		List<BakedQuad> list = new ArrayList<BakedQuad>();
 		for (Quad quad : _quads) {
@@ -83,17 +86,18 @@ public class QuadContainer
 		        boolean floatY = sprite.getIconName().equals(GRASS_SIDE_OVERLAY) || sprite.getIconName().contains("overlay/overlay_") && sprite.getIconName().endsWith("_side");
 		        UV[] uv = VecUtil.getUV(quad, floatY, _location);
 		        Vec3d[] vecs = quad.getVecs();
-		        putVertex(builder, normal, vecs[0].xCoord, vecs[0].yCoord, vecs[0].zCoord, uv[0].getU(), uv[0].getV(), sprite, rgb); // 0xff0000 Testing
-		        putVertex(builder, normal, vecs[1].xCoord, vecs[1].yCoord, vecs[1].zCoord, uv[1].getU(), uv[1].getV(), sprite, rgb); // 0x00ff00 Testing
-		        putVertex(builder, normal, vecs[2].xCoord, vecs[2].yCoord, vecs[2].zCoord, uv[2].getU(), uv[2].getV(), sprite, rgb); // 0x0000ff Testing
-		        putVertex(builder, normal, vecs[3].xCoord, vecs[3].yCoord, vecs[3].zCoord, uv[3].getU(), uv[3].getV(), sprite, rgb); // 0xffff00 Testing
+		        putVertex(builder, normal, vecs[0].x, vecs[0].y, vecs[0].z, uv[0].getU(), uv[0].getV(), sprite, rgb); // 0xff0000 Testing
+		        putVertex(builder, normal, vecs[1].x, vecs[1].y, vecs[1].z, uv[1].getU(), uv[1].getV(), sprite, rgb); // 0x00ff00 Testing
+		        putVertex(builder, normal, vecs[2].x, vecs[2].y, vecs[2].z, uv[2].getU(), uv[2].getV(), sprite, rgb); // 0x0000ff Testing
+		        putVertex(builder, normal, vecs[3].x, vecs[3].y, vecs[3].z, uv[3].getU(), uv[3].getV(), sprite, rgb); // 0xffff00 Testing
 		        list.add(builder.build());
 			}
 		}
 		return list;
 	}
 	
-    private void putVertex(UnpackedBakedQuad.Builder builder, Vec3d normal, double x, double y, double z, float u, float v, TextureAtlasSprite sprite, int rgb) 
+    @SideOnly(Side.CLIENT)
+	private void putVertex(UnpackedBakedQuad.Builder builder, Vec3d normal, double x, double y, double z, float u, float v, TextureAtlasSprite sprite, int rgb)
     {
     	for (int idx = 0; idx < _format.getElementCount(); idx++) 
     	{
@@ -114,7 +118,7 @@ public class QuadContainer
                     break;
                     
                 case NORMAL:
-                    builder.put(idx, (float) normal.xCoord, (float) normal.yCoord, (float) normal.zCoord, 0f);
+                    builder.put(idx, (float) normal.x, (float) normal.y, (float) normal.z, 0f);
                     break;
                     
                 default:

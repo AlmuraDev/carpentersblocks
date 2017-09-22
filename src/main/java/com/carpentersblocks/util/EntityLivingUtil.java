@@ -16,7 +16,8 @@ public class EntityLivingUtil
         ItemStack itemStack = entityPlayer.getHeldItemMainhand();
         if (itemStack != null) 
         {
-            if (!entityPlayer.capabilities.isCreativeMode && --itemStack.stackSize <= 0) 
+            itemStack.shrink(1);
+            if (!entityPlayer.capabilities.isCreativeMode && itemStack.getCount() <= 0)
             {
                 entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, null);
             }

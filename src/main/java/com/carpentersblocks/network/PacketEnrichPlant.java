@@ -38,7 +38,7 @@ public class PacketEnrichPlant extends TilePacket
     public void processData(EntityPlayer entityPlayer, ByteBufInputStream bbis) throws IOException 
     {
         super.processData(entityPlayer, bbis);
-        World world = entityPlayer.worldObj;
+        World world = entityPlayer.world;
         hexColor = bbis.readInt();
 
         TileEntity tileEntity = world.getTileEntity(_blockPos);

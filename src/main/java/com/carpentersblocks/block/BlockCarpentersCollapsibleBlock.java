@@ -203,7 +203,8 @@ public class BlockCarpentersCollapsibleBlock extends BlockFacing
         if (cbTileEntity != null) 
         {
         	CollapsibleUtil util = new CollapsibleUtil(cbTileEntity);
-	        if (isBlockSolid(blockAccess, blockPos, facing)) 
+	        // Update: did previously have facing in it.
+        	if (isBlockSolid(blockAccess, blockPos))
 	        {
 	            return util.isSideSolid(facing);
 	        }
@@ -273,7 +274,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockFacing
     /**
      * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
      */
-    public IBlockState onBlockPlaced(World world, BlockPos blockPos, EnumFacing facing, float hitX, float hitY, float hitZ, int metadata, EntityLivingBase entityLivingBase)
+    public IBlockState getStateForPlacement(World world, BlockPos blockPos, EnumFacing facing, float hitX, float hitY, float hitZ, int metadata, EntityLivingBase entityLivingBase)
     {
         // If side not supported, select best side based on y hit coordinates
         if (!canAttachToFacing(facing))
@@ -281,7 +282,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockFacing
         	EnumFacing verticalFacing = hitY > 0.5F ? EnumFacing.DOWN : EnumFacing.UP;
         	return getDefaultState().withProperty(BlockDirectional.FACING, verticalFacing);
         }
-        return super.onBlockPlaced(world, blockPos, facing, hitX, hitY, hitZ, metadata, entityLivingBase);
+        return super.getStateForPlacement(world, blockPos, facing, hitX, hitY, hitZ, metadata, entityLivingBase);
     }
 
     @Override
@@ -425,7 +426,8 @@ public class BlockCarpentersCollapsibleBlock extends BlockFacing
      * mask.) Parameters: World, X, Y, Z, mask, list, colliding entity
      */
     @Override
-    public void addCollisionBoxToList(IBlockState blockState, World world, BlockPos blockPos, AxisAlignedBB axisAlignedBB, List<AxisAlignedBB> collidingBoxes, Entity entity) 
+    public void addCollisionBoxToList(IBlockState blockState, World world, BlockPos blockPos, AxisAlignedBB axisAlignedBB, List<AxisAlignedBB>
+            collidingBoxes, Entity entity, boolean update)
     {
     	CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
         if (cbTileEntity != null) 

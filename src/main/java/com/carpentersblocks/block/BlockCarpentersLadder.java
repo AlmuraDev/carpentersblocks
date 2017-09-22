@@ -26,21 +26,21 @@ public class BlockCarpentersLadder extends BlockLadder
 	}
 	
 	@Override
-	protected boolean canBlockStay(World worldIn, BlockPos pos, EnumFacing facing) 
+	public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing facing)
 	{
 		if(Reference.enableFreeStandingLadders)
 			return true;
-		return super.canBlockStay(worldIn, pos, facing);
-	} 
+		return super.canPlaceBlockOnSide(worldIn, pos, facing);
+	}
 	
 	@Override
-	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
-			int meta, EntityLivingBase placer) 
+	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
+			int meta, EntityLivingBase placer)
 	{
 		if(Reference.enableFreeStandingLadders)
 		{
 			facing = placer.getHorizontalFacing().getOpposite();
 		}
-		return super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
+		return super.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
 	}
 }

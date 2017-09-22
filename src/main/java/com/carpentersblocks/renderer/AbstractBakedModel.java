@@ -49,6 +49,8 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class AbstractBakedModel implements IBakedModel
 { 
@@ -95,6 +97,7 @@ public abstract class AbstractBakedModel implements IBakedModel
     	return blockState;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing facing, long rand)
     {
@@ -109,7 +112,7 @@ public abstract class AbstractBakedModel implements IBakedModel
     	_blockPos = ((IExtendedBlockState)blockState).getValue(Property.BLOCK_POS);
     	_renderFace = ((IExtendedBlockState)blockState).getValue(Property.RENDER_FACE);
     	_cbAttrHelper = new AttributeHelper((Map<Key, AbstractAttribute>) ((IExtendedBlockState)blockState).getValue(Property.ATTR_MAP));
-    	_uncoveredRenderLayer = Minecraft.getMinecraft().theWorld.getBlockState(_blockPos).getBlock().getBlockLayer();
+    	_uncoveredRenderLayer = Minecraft.getMinecraft().world.getBlockState(_blockPos).getBlock().getBlockLayer();
     	_quadContainer = new QuadContainer(_format, EnumAttributeLocation.HOST, false);
     	boolean hasSideCoverYN = _cbAttrHelper.hasAttribute(EnumAttributeLocation.DOWN, EnumAttributeType.COVER);
     	boolean hasSideCoverYP = _cbAttrHelper.hasAttribute(EnumAttributeLocation.UP, EnumAttributeType.COVER);
@@ -130,6 +133,7 @@ public abstract class AbstractBakedModel implements IBakedModel
      * 
      * @return a list of baked quads
      */
+    @SideOnly(Side.CLIENT)
     private List<BakedQuad> getQuads()
     {
     	List<BakedQuad> quads = new ArrayList<BakedQuad>();
@@ -216,7 +220,7 @@ public abstract class AbstractBakedModel implements IBakedModel
 	                			int color = hasDye ? dyeColor : NO_COLOR;
 	                			if (!hasDye && bakedQuad.hasTintIndex()) 
 	                			{
-	                				color = blockColors.colorMultiplier(attributeState, Minecraft.getMinecraft().theWorld, _blockPos, 0);
+	                				color = blockColors.colorMultiplier(attributeState, Minecraft.getMinecraft().world, _blockPos, 0);
 	                			}
 	                			quads.addAll(getQuadsForSide(quadContainer, facing, bakedQuad.getSprite(), color));
 	                		}
@@ -252,7 +256,8 @@ public abstract class AbstractBakedModel implements IBakedModel
 	        	if (Overlay.GRASS.equals(overlay))
 	        	{
 	        		IBlockState overlayBlockState = Blocks.GRASS.getDefaultState();
-	        		overlayColor = blockColors.colorMultiplier(overlayBlockState, Minecraft.getMinecraft().theWorld, _blockPos, ForgeHooksClient.getWorldRenderPass());
+	        		overlayColor = blockColors.colorMultiplier(overlayBlockState, Minecraft.getMinecraft().world, _blockPos, ForgeHooksClient
+							.getWorldRenderPass());
 	        	}        	
 	        	for (EnumFacing facing : EnumFacing.VALUES)
 	        	{
@@ -297,6 +302,7 @@ public abstract class AbstractBakedModel implements IBakedModel
     	return quadContainer.getBakedQuads(facing, sprite, rgb);
     }
     
+    @SideOnly(Side.CLIENT)
     private Map<EnumFacing, List<BakedQuad>> getCoverQuads(QuadContainer quadContainer, EnumAttributeLocation location)
     {
     	Map<EnumFacing, List<BakedQuad>> map = new HashMap<EnumFacing, List<BakedQuad>>();    	

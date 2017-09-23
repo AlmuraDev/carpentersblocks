@@ -5,7 +5,7 @@ import java.util.Collections;
 
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.renderer.BakedBlock;
-import com.google.common.base.Function;
+import java.util.function.Function;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -40,5 +40,5 @@ public class ModelBlock implements IModel
     public IModelState getDefaultState() 
     {
         return TRSRTransformation.identity();
-    } 
+    }
 }

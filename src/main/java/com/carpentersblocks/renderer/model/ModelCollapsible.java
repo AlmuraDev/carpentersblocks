@@ -5,7 +5,7 @@ import java.util.Collections;
 
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.renderer.BakedCollapsibleBlock;
-import com.google.common.base.Function;
+import java.util.function.Function;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -15,6 +15,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 import static com.carpentersblocks.Reference.*;
 public class ModelCollapsible implements IModel
 { 
@@ -30,6 +33,7 @@ public class ModelCollapsible implements IModel
 		return ImmutableSet.of(new ResourceLocation( MOD_ID, "blocks/general/solid"));
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) 
 	{

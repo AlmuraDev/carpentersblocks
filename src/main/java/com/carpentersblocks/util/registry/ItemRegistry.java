@@ -13,8 +13,11 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 import static com.carpentersblocks.Reference.*;
 public class ItemRegistry 
 { 
@@ -27,6 +30,7 @@ public class ItemRegistry
     /**
      * Registers item IDs.
      */
+    @SideOnly(Side.CLIENT)
     public static void preInit(FMLPreInitializationEvent event)
     {  
         // Register items
@@ -38,7 +42,7 @@ public class ItemRegistry
             		.setUnlocalizedName("itemCarpentersHammer")
             		.setCreativeTab(CarpentersBlocks.CREATIVE_TAB)
             		.setMaxStackSize(1);
-            GameRegistry.register(itemCarpentersHammer);
+            ForgeRegistries.ITEMS.register(itemCarpentersHammer);
             if (itemCarpentersToolsDamageable)
             {
             	itemCarpentersHammer.setMaxDamage(itemCarpentersToolsUses);
@@ -55,7 +59,7 @@ public class ItemRegistry
             		.setUnlocalizedName("itemCarpentersChisel")
             		.setCreativeTab(CarpentersBlocks.CREATIVE_TAB)
             		.setMaxStackSize(1);
-            GameRegistry.register(itemCarpentersChisel);
+            ForgeRegistries.ITEMS.register(itemCarpentersChisel);
             if (itemCarpentersToolsDamageable)
             {
             	itemCarpentersChisel.setMaxDamage(itemCarpentersToolsUses);

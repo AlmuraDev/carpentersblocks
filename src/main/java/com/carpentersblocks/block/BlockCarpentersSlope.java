@@ -16,6 +16,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.NonNullList;
 
 public class BlockCarpentersSlope extends BlockCoverable 
 { 
@@ -32,11 +33,11 @@ public class BlockCarpentersSlope extends BlockCoverable
     }
     
     @Override
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) 
+    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list)
     {
     	for(BlockCarpentersSlope.EnumType blockSlope : BlockCarpentersSlope.EnumType.values())
     	{
-    		list.add(new ItemStack(itemIn, 1, blockSlope.getMeta()));
+    		list.add(new ItemStack(this, 1, blockSlope.getMeta()));
     	}
     } 
     

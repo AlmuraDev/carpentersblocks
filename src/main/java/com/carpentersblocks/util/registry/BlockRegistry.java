@@ -278,7 +278,7 @@ public class BlockRegistry
 
         if(enableTorch) 
         {
-            blockCarpentersTorch = new BlockCarpentersTorch(blockCarpentersTorch.getDefaultState())
+            blockCarpentersTorch = new BlockCarpentersTorch()
                 .setUnlocalizedName("blockCarpentersTorch")
                 .setRegistryName(REGISTRY_NAME_TORCH)
                 .setHardness(0.2F)
@@ -395,113 +395,116 @@ public class BlockRegistry
      /*
      * Block initialiation.
      */
-    public static void init(FMLInitializationEvent event) 
+
+    public static void init(FMLInitializationEvent event)
     {
+    /*
         GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersBlock"),new ResourceLocation("carpentersblocks",
-                "Carpenters Blocks"), new ItemStack(blockCarpentersBlock, recipeQuantityBlock), new Object[] {"XXX", "XYX", "XXX", 'X',
+                "CarpentersBlocks"), new ItemStack(blockCarpentersBlock, recipeQuantityBlock), new Object[] {"XXX", "XYX", "XXX", 'X',
                 "stickWood", 'Y', "plankWood", blockCarpentersBlock});
 
         if(enableBarrier) 
         {
             GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersBarrier"),new ResourceLocation("carpentersblocks",
-                    "Carpenters Blocks"), new ItemStack(blockCarpentersBarrier,recipeQuantityBarrier), new Object[] { " Y ", "XYX", 'X',
+                    "CarpentersBlocks"), new ItemStack(blockCarpentersBarrier,recipeQuantityBarrier), new Object[] { " Y ", "XYX", 'X',
                     "stickWood", 'Y', blockCarpentersBlock});
         }
         
         if(enableButton) 
         {
             GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersButton"),new ResourceLocation("carpentersblocks",
-                    "Carpenters Blocks"), new ItemStack(blockCarpentersButton,recipeQuantityButton), new Object[] { "X", 'X', blockCarpentersBlock});
+                    "CarpentersBlocks"), new ItemStack(blockCarpentersButton,recipeQuantityButton), new Object[] { "X", 'X', blockCarpentersBlock});
         }
         
         if(enableCollapsibleBlock) 
         {
             GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersCollapsibleBlock"),new ResourceLocation("carpentersblocks",
-                    "Carpenters Blocks"), new ItemStack(blockCarpentersCollapsibleBlock,recipeQuantityCollapsibleBlock), new Object[] {"XXX",
+                    "CarpentersBlocks"), new ItemStack(blockCarpentersCollapsibleBlock,recipeQuantityCollapsibleBlock), new Object[] {"XXX",
                     "XXX", "XXX", 'X', blockCarpentersBlock});
         }
         
         if(enableDaylightSensor) 
         {
             GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersDaylightSensor"),new ResourceLocation("carpentersblocks",
-                    "Carpenters Blocks"), new ItemStack(blockCarpentersDaylightSensor,recipeQuantityDaylightSensor), new Object[] {"WWW", "XYX", "ZZZ",
+                    "CarpentersBlocks"), new ItemStack(blockCarpentersDaylightSensor,recipeQuantityDaylightSensor), new Object[] {"WWW", "XYX", "ZZZ",
                      'W', Blocks.GLASS, 'X', Items.REDSTONE, 'Y', new ItemStack(Items.DYE, 1, 4), 'Z', blockCarpentersBlock});
         }
         
         if(enableFlowerPot) 
         {
             GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersFlowerPot"),new ResourceLocation("carpentersblocks",
-                    "Carpenters Blocks"), new ItemStack(blockCarpentersFlowerPot,recipeQuantityFlowerPot), new Object[] { "X X", " X ", 'X', blockCarpentersBlock});
+                    "CarpentersBlocks"), new ItemStack(blockCarpentersFlowerPot,recipeQuantityFlowerPot), new Object[] { "X X", " X ", 'X', blockCarpentersBlock});
         }
         
         if(enableGarageDoor) 
         {
             GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersGarageDoor"),new ResourceLocation("carpentersblocks",
-                    "Carpenters Blocks"), new ItemStack(blockCarpentersGarageDoor,recipeQuantityGarageDoor), new Object[] { "XXX", "X X", "XXX",
+                    "CarpentersBlocks"), new ItemStack(blockCarpentersGarageDoor,recipeQuantityGarageDoor), new Object[] { "XXX", "X X", "XXX",
                      'X', blockCarpentersBlock});
         }
         
         if(enableGate) 
         {
             GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersGate"),new ResourceLocation("carpentersblocks",
-                    "Carpenters Blocks"), new ItemStack(blockCarpentersGate,recipeQuantityGate), new Object[] { "XYX", "XYX", 'X', "stickWood",
+                    "CarpentersBlocks"), new ItemStack(blockCarpentersGate,recipeQuantityGate), new Object[] { "XYX", "XYX", 'X', "stickWood",
                      'Y', blockCarpentersBlock});
         }
         
         if(enableHatch) 
         {
             GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersHatch"),new ResourceLocation("carpentersblocks",
-                    "Carpenters Blocks"), new ItemStack(blockCarpentersHatch,recipeQuantityHatch), new Object[] { "XXX", "XXX", 'X', blockCarpentersBlock});
+                    "CarpentersBlocks"), new ItemStack(blockCarpentersHatch,recipeQuantityHatch), new Object[] { "XXX", "XXX", 'X', blockCarpentersBlock});
         }
         
         if(enableLadder) 
         {
             GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersLadder"),new ResourceLocation("carpentersblocks",
-                    "Carpenters Blocks"), new ItemStack(blockCarpentersLadder,recipeQuantityLadder), new Object[] { "X X", "XXX", "X X", 'X', blockCarpentersBlock});
+                    "CarpentersBlocks"), new ItemStack(blockCarpentersLadder,recipeQuantityLadder), new Object[] { "X X", "XXX", "X X", 'X', blockCarpentersBlock});
         }
         
         if(enableLever) 
         {
             GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersLever"),new ResourceLocation("carpentersblocks",
-                    "Carpenters Blocks"), new ItemStack(blockCarpentersLever,recipeQuantityLever), new Object[] { "X", "Y", 'X', "stickWood", 'Y', blockCarpentersBlock});
+                    "CarpentersBlocks"), new ItemStack(blockCarpentersLever,recipeQuantityLever), new Object[] { "X", "Y", 'X', "stickWood", 'Y', blockCarpentersBlock});
         }
         
         if(enablePressurePlate) 
         {
             GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersPressurePlate"),new ResourceLocation("carpentersblocks",
-                    "Carpenters Blocks"), new ItemStack(blockCarpentersPressurePlate,recipeQuantityPressurePlate), new Object[] { "XX", 'X', blockCarpentersBlock});
+                    "CarpentersBlocks"), new ItemStack(blockCarpentersPressurePlate,recipeQuantityPressurePlate), new Object[] { "XX", 'X', blockCarpentersBlock});
         }
         
         if(enableSafe) 
         {
             GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersSafe"),new ResourceLocation("carpentersblocks",
-                    "Carpenters Blocks"), new ItemStack(blockCarpentersSafe,recipeQuantitySafe), new Object[] { "XXX", "XYX", "XZX", 'X',
+                    "CarpentersBlocks"), new ItemStack(blockCarpentersSafe,recipeQuantitySafe), new Object[] { "XXX", "XYX", "XZX", 'X',
                     blockCarpentersBlock, 'Y', Blocks.IRON_BLOCK, 'Z', Items.REDSTONE});
         }
         
         if(enableSlope) 
         {
             GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersSlope"),new ResourceLocation("carpentersblocks",
-                    "Carpenters Blocks"), new ItemStack(blockCarpentersSlope,recipeQuantitySlope), new Object[] { "  X", " XY", "XYY", 'X',
+                    "CarpentersBlocks"), new ItemStack(blockCarpentersSlope,recipeQuantitySlope), new Object[] { "  X", " XY", "XYY", 'X',
                      "stickWood", 'Y', blockCarpentersBlock});
         }
         
         if(enableStairs)
         {
             GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersStairs"),new ResourceLocation("carpentersblocks",
-                    "Carpenters Blocks"), new ItemStack(blockCarpentersStairs,recipeQuantityStairs), new Object[] { "  X", " XX", "XXX", 'X',
+                    "CarpentersBlocks"), new ItemStack(blockCarpentersStairs,recipeQuantityStairs), new Object[] { "  X", " XX", "XXX", 'X',
                      blockCarpentersBlock});
         }
         
         if(enableTorch) 
         {
             GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersTorch"),new ResourceLocation("carpentersblocks",
-                    "Carpenters Blocks"), new ItemStack(blockCarpentersTorch,recipeQuantityTorch), new Object[] { "X", "Y", 'X', new ItemStack(Items
+                    "CarpentersBlocks"), new ItemStack(blockCarpentersTorch,recipeQuantityTorch), new Object[] { "X", "Y", 'X', new ItemStack(Items
                     .COAL, 1, 0), 'Y', blockCarpentersBlock});
 
             GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "blockCarpentersTorch"),new ResourceLocation("carpentersblocks",
-                    "Carpenters Blocks"), new ItemStack(blockCarpentersTorch,recipeQuantityTorch), new Object[] { "X", "Y", 'X', new ItemStack(Items
+                    "CarpentersBlocks"), new ItemStack(blockCarpentersTorch,recipeQuantityTorch), new Object[] { "X", "Y", 'X', new ItemStack(Items
                     .COAL, 1, 1), 'Y', blockCarpentersBlock});
         }
+        */
     }
 }

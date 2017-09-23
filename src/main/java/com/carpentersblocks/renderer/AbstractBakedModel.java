@@ -75,7 +75,7 @@ public abstract class AbstractBakedModel implements IBakedModel
     private boolean _isSnowCover;
     EnumAttributeLocation _location;
     
-    public AbstractBakedModel(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) 
+    public AbstractBakedModel(IModelState state, VertexFormat format, java.util.function.Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
     {
     	this._format = format;
     }
@@ -297,7 +297,8 @@ public abstract class AbstractBakedModel implements IBakedModel
     			blockState.getBlock().equals(Blocks.SNOW_LAYER);
     }
 
-    private List<BakedQuad> getQuadsForSide(QuadContainer quadContainer, EnumFacing facing, TextureAtlasSprite sprite, int rgb) 
+    @SideOnly(Side.CLIENT)
+    private List<BakedQuad> getQuadsForSide(QuadContainer quadContainer, EnumFacing facing, TextureAtlasSprite sprite, int rgb)
     {
     	return quadContainer.getBakedQuads(facing, sprite, rgb);
     }

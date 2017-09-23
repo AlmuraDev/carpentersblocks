@@ -8,14 +8,17 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.model.IModelState;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BakedBlock extends AbstractBakedModel 
 { 
-    public BakedBlock(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
+    public BakedBlock(IModelState state, VertexFormat format, java.util.function.Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
     {
 		super(state, format, bakedTextureGetter);
 	}
     
+	@SideOnly(Side.CLIENT)
 	@Override
 	protected void fillQuads(QuadContainer quadContainer)
 	{
@@ -28,7 +31,8 @@ public class BakedBlock extends AbstractBakedModel
 		quadContainer.add(renderHelper.getQuadXPos());
     }
 
-	@Override
+	@SideOnly(Side.CLIENT)
+    @Override
 	protected TextureAtlasSprite getUncoveredSprite() 
 	{
 		return SpriteRegistry.sprite_uncovered_quartered;

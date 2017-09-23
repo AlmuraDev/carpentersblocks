@@ -3,7 +3,7 @@ package com.carpentersblocks.renderer;
 import com.carpentersblocks.renderer.helper.RenderHelperCollapsible;
 import com.carpentersblocks.util.block.CollapsibleUtil;
 import com.carpentersblocks.util.registry.SpriteRegistry;
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;

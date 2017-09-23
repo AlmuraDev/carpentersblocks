@@ -43,9 +43,10 @@ public class CommonProxy
         }
 
         // Register tile entities
-        GameRegistry.registerTileEntity(              CbTileEntity.class,            "TileEntityCarpentersSlope"); // Compatibility mapping
-        GameRegistry.registerTileEntity(              CbTileEntity.class,              "TileEntityCarpentersBed"); // Compatibility mapping
-        GameRegistry.registerTileEntity(              CbTileEntity.class,            "TileEntityCarpentersBlock");
+        // Broken:
+        //GameRegistry.registerTileEntity(CbTileEntity.class,            "TileEntityCarpentersSlope"); // Compatibility mapping
+        //GameRegistry.registerTileEntity(              CbTileEntity.class,              "TileEntityCarpentersBed"); // Compatibility mapping
+        GameRegistry.registerTileEntity(CbTileEntity.class,"TileEntityCarpentersBlock");
         // TODO: Implement these
         //GameRegistry.registerTileEntity(CbDaylightSensorTileEntity.class,              "TileEntityCarpentersExt"); // Compatibility mapping
         //GameRegistry.registerTileEntity(CbDaylightSensorTileEntity.class,   "TileEntityCarpentersDaylightSensor");

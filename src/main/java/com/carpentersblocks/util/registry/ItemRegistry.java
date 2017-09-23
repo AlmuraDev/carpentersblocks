@@ -4,7 +4,9 @@ import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.item.ItemCarpentersChisel;
 import com.carpentersblocks.item.ItemCarpentersHammer;
 
+import com.carpentersblocks.item.ItemCarpentersTile;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -69,19 +71,18 @@ public class ItemRegistry
             	ModelLoader.setCustomModelResourceLocation(itemCarpentersChisel, 0, new ModelResourceLocation(MOD_ID + ":" + "carpenters_chisel"));
             }
         }
-        /*
-        if (enableTile) {
-            itemCarpentersTile = new ItemCarpentersTile().setUnlocalizedName("itemCarpentersTile");
-            GameRegistry.registerItem(itemCarpentersTile, "itemCarpentersTile");
+        if (enableTile)
+        {
+            itemCarpentersTile = new ItemCarpentersTile()
+                    .setUnlocalizedName("itemCarpentersTile")
+                    .setRegistryName("carpenters_tile");
+            ForgeRegistries.ITEMS.register(itemCarpentersTile);
+
+            if (Side.CLIENT.equals(event.getSide()))
+            {
+                ModelLoader.setCustomModelResourceLocation(itemCarpentersTile, 0, new ModelResourceLocation(MOD_ID + ":" + "carpenters_tile"));
+            }
         }
-        if (BlockRegistry.enableDoor) {
-            itemCarpentersDoor = new ItemCarpentersDoor().setUnlocalizedName("itemCarpentersDoor");
-            GameRegistry.registerItem(itemCarpentersDoor, "itemCarpentersDoor");
-        }
-        if (BlockRegistry.enableBed) {
-            itemCarpentersBed = new ItemCarpentersBed().setUnlocalizedName("itemCarpentersBed");
-            GameRegistry.registerItem(itemCarpentersBed, "itemCarpentersBed");
-        }*/
     }
 
     public static void init(FMLInitializationEvent event)
@@ -99,9 +100,12 @@ public class ItemRegistry
                     "Carpenters Tools"), new ItemStack(itemCarpentersChisel, 1), new Object[] { "X", "Y", 'X', Items.IRON_INGOT, 'Y',
                     BlockRegistry.blockCarpentersBlock });
         }
-        /*        if (enableTile) {
-            GameRegistry.addRecipe(new ItemStack(itemCarpentersTile, recipeQuantityTile), new Object[] { "XXX", "YYY", 'X', Blocks.hardened_clay, 'Y', BlockRegistry.blockCarpentersBlock });
+        if (enableTile) {
+            GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "itemCarpentersTile"),new ResourceLocation("carpentersblocks",
+                    "Carpenters Tools"), new ItemStack(itemCarpentersTile, recipeQuantityTile), new Object[] {"XXX", "YYY", 'X', Blocks.HARDENED_CLAY,
+                            'Y', BlockRegistry.blockCarpentersBlock });
         }
+        /*
         if (BlockRegistry.enableDoor) {
             GameRegistry.addRecipe(new ItemStack(itemCarpentersDoor, BlockRegistry.recipeQuantityDoor), new Object[] { "XX", "XX", "XX", 'X', BlockRegistry.blockCarpentersBlock });
         }

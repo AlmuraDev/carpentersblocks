@@ -1,0 +1,20 @@
+{
+    "variants": {
+        "power=0": { "model": "carpentersblocks:carpenters_daylight_sensor" },
+        "power=1": { "model": "carpentersblocks:carpenters_daylight_sensor" },
+        "power=2": { "model": "carpentersblocks:carpenters_daylight_sensor" },
+        "power=3": { "model": "carpentersblocks:carpenters_daylight_sensor" },
+        "power=4": { "model": "carpentersblocks:carpenters_daylight_sensor" },
+        "power=5": { "model": "carpentersblocks:carpenters_daylight_sensor" },
+        "power=6": { "model": "carpentersblocks:carpenters_daylight_sensor" },
+        "power=7": { "model": "carpentersblocks:carpenters_daylight_sensor" },
+        "power=8": { "model": "carpentersblocks:carpenters_daylight_sensor" },
+        "power=9": { "model": "carpentersblocks:carpenters_daylight_sensor" },
+        "power=10": { "model": "carpentersblocks:carpenters_daylight_sensor" },
+        "power=11": { "model": "carpentersblocks:carpenters_daylight_sensor" },
+        "power=12": { "model": "carpentersblocks:carpenters_daylight_sensor" },
+        "power=13": { "model": "carpentersblocks:carpenters_daylight_sensor" },
+        "power=14": { "model": "carpentersblocks:carpenters_daylight_sensor" },
+        "power=15": { "model": "carpentersblocks:carpenters_daylight_sensor" }
+    }
+}

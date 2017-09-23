@@ -60,7 +60,9 @@ public class Reference
     public static boolean itemCarpentersToolsDamageable        = true; 
     public static double itemHammerDamageChanceFromSlopes      = 0.75D;
     public static double itemHammerDamageChanceFromStairs      = 1.0D;
-    public static double itemHammerDamageChanceFromCollapsible = 0.2D; 
+    public static double itemHammerDamageChanceFromCollapsible = 0.2D;
+    public static int     slopeSmoothness           = 2;
+    public static int     multiBlockSizeLimit       = 500;
     
     //features
     public static boolean enableCovers              = true;
@@ -117,10 +119,8 @@ public class Reference
     public static int carpentersSlopeRenderID;
     public static int carpentersStairsRenderID;
     public static int carpentersTorchRenderID; 
-    
+
+    //overlays
     public static ArrayList<String> overlayItems    = new ArrayList<String>();
     public static ArrayList<String> coverExceptions = new ArrayList<String>();
-
-    public static int     slopeSmoothness           = 2;
-    public static int     multiBlockSizeLimit       = 500;
 } 

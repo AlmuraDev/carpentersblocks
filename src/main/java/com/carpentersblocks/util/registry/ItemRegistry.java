@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -83,11 +84,16 @@ public class ItemRegistry
     {
         if (enableHammer)
         {
-            GameRegistry.addRecipe(new ItemStack(itemCarpentersHammer, 1), new Object[] { "XX ", " YX", " Y ", 'X', Items.IRON_INGOT, 'Y', BlockRegistry.blockCarpentersBlock });
+            GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "itemCarpentersHammer"),new ResourceLocation("carpentersblocks",
+                    "Carpenters Tools"),(new
+                    ItemStack(itemCarpentersHammer, 1)), new Object[] { "XX ", " YX", " Y ", 'X', Items.IRON_INGOT, 'Y',
+                    BlockRegistry.blockCarpentersBlock });
         }
         if (enableChisel) 
         {
-            GameRegistry.addRecipe(new ItemStack(itemCarpentersChisel, 1), new Object[] { "X", "Y", 'X', Items.IRON_INGOT, 'Y', BlockRegistry.blockCarpentersBlock });
+            GameRegistry.addShapedRecipe(new ResourceLocation("carpentersblocks", "itemCarpentersChisel"),new ResourceLocation("carpentersblocks",
+                    "Carpenters Tools"), new ItemStack(itemCarpentersChisel, 1), new Object[] { "X", "Y", 'X', Items.IRON_INGOT, 'Y',
+                    BlockRegistry.blockCarpentersBlock });
         }
         /*        if (enableTile) {
             GameRegistry.addRecipe(new ItemStack(itemCarpentersTile, recipeQuantityTile), new Object[] { "XXX", "YYY", 'X', Blocks.hardened_clay, 'Y', BlockRegistry.blockCarpentersBlock });

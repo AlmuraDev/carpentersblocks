@@ -373,7 +373,7 @@ public abstract class BlockCoverable extends Block
         // Allow block to change cbTileEntity if needed before altering attributes
         cbTileEntity = getTileEntityForBlockActivation(cbTileEntity);
         ActionResult actionResult = new ActionResult();
-        ItemStack itemStack = entityPlayer.getActiveItemStack();
+        ItemStack itemStack = entityPlayer.getHeldItemMainhand();
         preOnBlockActivated(cbTileEntity, entityPlayer, facing, hitX, hitY, hitZ, actionResult);
 
         // If no prior event occurred, try regular activation

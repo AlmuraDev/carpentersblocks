@@ -8,6 +8,7 @@ import com.carpentersblocks.util.registry.SpriteRegistry;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -20,17 +21,19 @@ public class ClientProxy extends CommonProxy
     public void preInit(FMLPreInitializationEvent event, Configuration config) 
     {
     	super.preInit(event, config);
-        ModelLoaderRegistry.registerLoader(new ModelLoader());        
+
+        MinecraftForge.EVENT_BUS.register(new SpriteRegistry()); //Note: this must be in Pre-Init (otherwise it misses the event call.
+        ModelLoaderRegistry.registerLoader(new ModelLoader());
     }
     
     @Override
     public void init(FMLInitializationEvent event) 
     {
         super.init(event);
-        MinecraftForge.EVENT_BUS.register(new SpriteRegistry());
+
         CarpentersBlocksCachedResources.INSTANCE.init();
         BlockRegistry.registerRenderers();
-    	//Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(CbBlockColor.INSTANCE, BlockRegistry.blockCarpentersBlock);
+        //Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(CbBlockColor.INSTANCE, BlockRegistry.blockCarpentersBlock);
     	
         // TODO: Check if these are needed
         //if (FMLClientHandler.instance().hasOptifine()) {
@@ -41,5 +44,6 @@ public class ClientProxy extends CommonProxy
 
         // Register entity renderers
         //RenderingRegistry.registerEntityRenderingHandler(EntityCarpentersTile.class, new RenderCarpentersTile());
-    } 
+    }
+
 }

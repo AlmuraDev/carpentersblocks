@@ -1,5 +1,6 @@
 package com.carpentersblocks.block;
 
+import com.carpentersblocks.block.state.Property;
 import com.carpentersblocks.block.types.BlockCoverable;
 import com.carpentersblocks.util.registry.BlockRegistry;
 
@@ -19,6 +20,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 public class BlockCarpentersSafe extends BlockCoverable  
 { 
@@ -35,7 +38,7 @@ public class BlockCarpentersSafe extends BlockCoverable
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new BlockStateContainer(this, new IProperty[] {LOCKED, FACING});
+		return new ExtendedBlockState(this, new IProperty[] {LOCKED, FACING}, Property.unlistedProperties.toArray(new IUnlistedProperty[Property.unlistedProperties.size()]));
 	}
 	
 	@Override

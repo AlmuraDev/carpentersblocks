@@ -1,13 +1,13 @@
 package com.carpentersblocks.block;
 
-import com.carpentersblocks.block.types.BlockCoverable;
+import net.minecraft.block.BlockFenceGate;
+import net.minecraft.block.BlockPlanks.EnumType;
 
-import net.minecraft.block.material.Material;
-
-public class BlockCarpentersGate extends BlockCoverable
-{ 
-	public BlockCarpentersGate(Material material)
+public class BlockCarpentersGate extends BlockFenceGate
+{
+	public BlockCarpentersGate(EnumType type)
 	{
-		super(material); 
-	} 
+		super(type);
+		this.setDefaultState(this.blockState.getBaseState().withProperty(OPEN, Boolean.valueOf(false)).withProperty(POWERED, Boolean.valueOf(false)).withProperty(IN_WALL, Boolean.valueOf(false)));
+	}
 }

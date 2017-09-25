@@ -3,6 +3,7 @@ package com.carpentersblocks.renderer;
 import com.carpentersblocks.Reference;
 import com.carpentersblocks.renderer.model.ModelBlock;
 import com.carpentersblocks.renderer.model.ModelCollapsible;
+import com.carpentersblocks.renderer.model.ModelSafe;
 import com.carpentersblocks.renderer.model.ModelSlope;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -19,7 +20,8 @@ public class ModelLoader implements ICustomModelLoader
     
     public static final ModelBlock BLOCK_MODEL = new ModelBlock();
     public static final ModelCollapsible COLLAPSIBLE_MODEL = new ModelCollapsible();
-    public static final IModel SLOPE_MODEL = new ModelSlope();  
+    public static final ModelSafe SAFE_MODEL = new ModelSafe();
+    public static final IModel SLOPE_MODEL = new ModelSlope();
     
     @Override
     public boolean accepts(ResourceLocation modelLocation)
@@ -40,8 +42,12 @@ public class ModelLoader implements ICustomModelLoader
     	if (isModel(resourceLocation, Reference.REGISTRY_NAME_COLLAPSIBLE)) 
     	{
     		return COLLAPSIBLE_MODEL;
-    	}  
-    	else if (isModel(resourceLocation, Reference.REGISTRY_NAME_SLOPE)) 
+    	}
+        else if (isModel(resourceLocation, Reference.REGISTRY_NAME_SAFE))
+        	{
+        		return SAFE_MODEL;
+        	}
+    	else if (isModel(resourceLocation, Reference.REGISTRY_NAME_SLOPE))
     	{
     		return SLOPE_MODEL;
     	} 

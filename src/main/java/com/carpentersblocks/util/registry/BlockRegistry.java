@@ -22,6 +22,7 @@ import com.carpentersblocks.block.BlockCarpentersStairs;
 import com.carpentersblocks.block.BlockCarpentersTorch;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockPressurePlate.Sensitivity;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -182,7 +183,7 @@ public class BlockRegistry
 
         if(enableGate) 
         {
-            blockCarpentersGate = new BlockCarpentersGate(material)
+            blockCarpentersGate = new BlockCarpentersGate(BlockPlanks.EnumType.OAK)
                 .setUnlocalizedName("blockCarpentersGate")
                 .setRegistryName(REGISTRY_NAME_GATE)
                 .setHardness(0.2F)

@@ -1,5 +1,5 @@
 {
-    "parent": "carpentersblocks:block/stairs/stone_stairs",
+    "parent": "carpentersblocks:block/stairs/carpenters_stairs",
     "display": {
         "thirdperson": {
             "rotation": [ 10, -45, 170],

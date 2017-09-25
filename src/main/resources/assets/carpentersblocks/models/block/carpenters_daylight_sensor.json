@@ -1,6 +1,6 @@
 {
-    "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
     "textures": {
+	"particle": "carpentersblocks:blocks/general/solid",
         "0": "blocks/glass",
         "1": "carpentersblocks:blocks/general/solid",
 	"2": "blocks/redstone_block",

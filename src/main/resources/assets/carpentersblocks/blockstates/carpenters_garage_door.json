@@ -1,0 +1,12 @@
+{
+	"variants": {
+		"facing=north,open=false": { "model": "carpentersblocks:garagedoor/carpenters_garage_close" },
+		"facing=east,open=false": { "model": "carpentersblocks:garagedoor/carpenters_garage_close", "y": 90 },
+		"facing=south,open=false": { "model": "carpentersblocks:garagedoor/carpenters_garage_close", "y": 180 },
+		"facing=west,open=false": { "model": "carpentersblocks:garagedoor/carpenters_garage_close", "y": 270 },
+		"facing=north,open=true": { "model": "carpentersblocks:garagedoor/carpenters_garage_top" },
+		"facing=east,open=true": { "model": "carpentersblocks:garagedoor/carpenters_garage_top", "y": 90 },
+		"facing=south,open=true": { "model": "carpentersblocks:garagedoor/carpenters_garage_top", "y": 180 },
+		"facing=west,open=true": { "model": "carpentersblocks:garagedoor/carpenters_garage_top", "y": 270 }
+	}
+}

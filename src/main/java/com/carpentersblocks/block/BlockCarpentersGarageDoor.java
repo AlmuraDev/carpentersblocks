@@ -1,5 +1,6 @@
 package com.carpentersblocks.block;
 
+import com.carpentersblocks.Reference;
 import com.carpentersblocks.block.types.BlockCoverable;
 
 import net.minecraft.block.Block;
@@ -160,34 +161,171 @@ public class BlockCarpentersGarageDoor extends BlockCoverable
 	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer entityPlayer,
 			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
-		boolean open = blockState.getValue(OPEN).booleanValue();
-		world.setBlockState(blockPos, blockState.withProperty(FACING, blockState.getValue(FACING)).withProperty(OPEN, !open));
-		open = !open;
+		Boolean open = blockState.getValue(OPEN).booleanValue();
+		facing = blockState.getValue(FACING);
+		EnumFacing left = facing.rotateY().getOpposite();
+		int rowSize = 0;
+		BlockPos topleft = blockPos;
+		switch(left)
+		{
+			case NORTH:
+				while(world.getBlockState(topleft.north()).getBlock().equals(this)
+						&& world.getBlockState(topleft.north()).getValue(FACING).equals(facing))
+				{
+					topleft = topleft.north();
+				}
+				break;
+			case EAST:
+				while(world.getBlockState(topleft.east()).getBlock().equals(this)
+						&& world.getBlockState(topleft.east()).getValue(FACING).equals(facing))
+				{
+					topleft = topleft.east();
+				}
+				break;
+			case SOUTH:
+				while(world.getBlockState(topleft.south()).getBlock().equals(this)
+						&& world.getBlockState(topleft.south()).getValue(FACING).equals(facing))
+				{
+					topleft = topleft.south();
+				}
+				break;
+			case WEST:
+				while(world.getBlockState(topleft.west()).getBlock().equals(this)
+						&& world.getBlockState(topleft.west()).getValue(FACING).equals(facing))
+				{
+					topleft = topleft.west();
+				}
+				break;
+		}
+
+		while(world.getBlockState(topleft.up()).getBlock().equals(this)
+				&& world.getBlockState(topleft.up()).getValue(FACING).equals(facing))
+		{
+			topleft = topleft.up();
+		}
+
+		BlockPos temp = topleft;
+		switch(left.getOpposite())
+		{
+			case NORTH:
+				while(world.getBlockState(temp.north()).getBlock().equals(this)
+						&& world.getBlockState(temp.north()).getValue(FACING).equals(facing))
+				{
+					rowSize++;
+					temp = temp.north();
+				}
+				break;
+			case EAST:
+				while(world.getBlockState(temp.east()).getBlock().equals(this)
+						&& world.getBlockState(temp.east()).getValue(FACING).equals(facing))
+				{
+					rowSize++;
+					temp = temp.east();
+				}
+				break;
+			case SOUTH:
+				while(world.getBlockState(temp.south()).getBlock().equals(this)
+						&& world.getBlockState(temp.south()).getValue(FACING).equals(facing))
+				{
+					rowSize++;
+					temp = temp.south();
+				}
+				break;
+			case WEST:
+				while(world.getBlockState(temp.west()).getBlock().equals(this)
+						&& world.getBlockState(temp.west()).getValue(FACING).equals(facing))
+				{
+					rowSize++;
+					temp = temp.west();
+				}
+				break;
+		}
+		blockPos = topleft;
+
 		if(open)
 		{
+			Boolean nextRow = true;
+			int total = 0;
 
-			while(world.getBlockState(blockPos.down()).getBlock().equals(this) && blockPos.getY() > 0)
-				blockPos = blockPos.down();
-
-			while(world.getBlockState(blockPos).getBlock().equals(this) && world.getBlockState(blockPos.up()).getBlock().equals(this))
+			for(int i=0; i<=rowSize; i++)
 			{
-				world.setBlockToAir(blockPos);
-				blockPos = blockPos.up();
-			}
+				if(world.getBlockState(blockPos).getBlock().equals(this))
+				{
+					world.playSound(entityPlayer, blockPos, SoundEvents.BLOCK_WOODEN_TRAPDOOR_CLOSE, SoundCategory.BLOCKS, 1f, 1f);
+				}
+				world.setBlockState(blockPos, this.getDefaultState().withProperty(FACING, facing).withProperty(OPEN, false));
+				total++;
 
-			world.setBlockState(blockPos, blockState.withProperty(FACING, blockState.getValue(FACING)).withProperty(OPEN, true));
-			world.playSound(blockPos.getX(), blockPos.getY(), blockPos.getZ(), SoundEvents.BLOCK_WOODEN_TRAPDOOR_OPEN, SoundCategory.BLOCKS, 1f, 1f, false);
+				if(!world.getBlockState(blockPos.down()).getBlock().equals(Blocks.AIR))
+					nextRow = false;
+
+
+
+				if(i==rowSize)
+				{
+					if(!nextRow || blockPos.getY()-1 < 0 || (total+rowSize+1) > Reference.multiBlockSizeLimit)
+						break;
+					blockPos = new BlockPos(topleft.getX(), blockPos.getY()-1, topleft.getZ());
+					i=-1;
+				}
+				else
+				{
+					switch(left.getOpposite())
+					{
+						case NORTH:
+							blockPos = blockPos.north();
+							break;
+						case EAST:
+							blockPos = blockPos.east();
+							break;
+						case SOUTH:
+							blockPos = blockPos.south();
+							break;
+						case WEST:
+							blockPos = blockPos.west();
+							break;
+					}
+				}
+			}
 		}
 		else
 		{
-			world.playSound(blockPos.getX(), blockPos.getY(), blockPos.getZ(), SoundEvents.BLOCK_WOODEN_TRAPDOOR_CLOSE, SoundCategory.BLOCKS, 1f, 1f, false);
-			blockPos = blockPos.down();
-			while(world.getBlockState(blockPos).getBlock().equals(Blocks.AIR) && blockPos.getY() >= 0)
+			for(int i=0; i<=rowSize;i++)
 			{
-				world.setBlockState(blockPos, blockState.withProperty(FACING, blockState.getValue(FACING)).withProperty(OPEN, false));
-				blockPos = blockPos.down();
-			}
+				world.setBlockState(blockPos, this.getDefaultState().withProperty(OPEN, true).withProperty(FACING, facing));
+				world.playSound(entityPlayer, blockPos, SoundEvents.BLOCK_WOODEN_TRAPDOOR_OPEN, SoundCategory.BLOCKS, 1f, 1f);
 
+				while(world.getBlockState(blockPos.down()).getBlock().equals(this) && blockPos.getY() > 0)
+					blockPos = blockPos.down();
+
+				int minY = blockPos.getY();
+
+				while(blockPos.getY() >= 0 && world.getBlockState(blockPos.up()).getBlock().equals(this))
+				{
+
+					world.setBlockToAir(blockPos);
+					blockPos = blockPos.up();
+				}
+
+				world.setBlockState(blockPos, this.getDefaultState().withProperty(FACING, facing).withProperty(OPEN, true));
+				blockPos = new BlockPos(blockPos.getX(), minY, blockPos.getZ());
+
+				switch(left.getOpposite())
+				{
+					case NORTH:
+						blockPos = blockPos.north();
+						break;
+					case EAST:
+						blockPos = blockPos.east();
+						break;
+					case SOUTH:
+						blockPos = blockPos.south();
+						break;
+					case WEST:
+						blockPos = blockPos.west();
+						break;
+				}
+			}
 		}
 		return true;
 	}

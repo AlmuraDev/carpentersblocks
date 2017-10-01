@@ -6,8 +6,6 @@ itemGroup.carpentersBlocks.name=Carpenter's Blocks
 # ITEMS
 item.itemCarpentersHammer.name=Молоток плотника
 item.itemCarpentersChisel.name=Стамеска плотника
-item.itemCarpentersDoor.name=Дверь плотника
-item.itemCarpentersBed.name=Кровать плотника
 item.itemCarpentersTile.name=Плитка плотника
 
 # BLOCKS

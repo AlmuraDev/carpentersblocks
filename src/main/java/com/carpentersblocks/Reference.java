@@ -56,14 +56,14 @@ public class Reference
     public static boolean enableTile             = true;
     
     //tool variables
-    public static int itemCarpentersToolsUses                  = 400;
-    public static boolean itemCarpentersToolsDamageable        = true; 
+    public static boolean itemCarpentersToolsDamageable        = true;
     public static double itemHammerDamageChanceFromSlopes      = 0.75D;
     public static double itemHammerDamageChanceFromStairs      = 1.0D;
     public static double itemHammerDamageChanceFromCollapsible = 0.2D;
-    public static int     slopeSmoothness           = 2;
-    public static int     multiBlockSizeLimit       = 500;
-    
+    public static int slopeSmoothness           = 2;
+    public static int multiBlockSizeLimit       = 500;
+    public static int itemCarpentersToolsUses                  = 400;
+
     //features
     public static boolean enableCovers              = true;
     public static boolean enableOverlays            = true;

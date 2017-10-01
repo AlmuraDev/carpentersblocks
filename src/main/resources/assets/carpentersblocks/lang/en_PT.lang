@@ -6,8 +6,6 @@ itemGroup.carpentersBlocks.name=Stumpcutter's Chunks
 # ITEMS
 item.itemCarpentersHammer.name=Stumpcutter's Thumper
 item.itemCarpentersChisel.name=Stumpcutter's Cutter
-item.itemCarpentersDoor.name=Stumpcutter's Door
-item.itemCarpentersBed.name=Stumpcutter's Bunk
 item.itemCarpentersTile.name=Stumpcutter's Shiny Plate
 
 # BLOCKS

@@ -6,8 +6,6 @@ itemGroup.carpentersBlocks.name=Carpenter's Blocks
 # ITEMS
 item.itemCarpentersHammer.name=木匠锤
 item.itemCarpentersChisel.name=木匠凿
-item.itemCarpentersDoor.name=木匠门
-item.itemCarpentersBed.name=木匠床
 item.itemCarpentersTile.name=木匠瓷砖
 
 # BLOCKS

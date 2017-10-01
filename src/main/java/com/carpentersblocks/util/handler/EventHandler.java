@@ -97,7 +97,8 @@ public class EventHandler
     @SubscribeEvent
     public void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) 
     {
-    	if (isValidBlockEvent(event.getWorld(), event.getPos())) 
+        System.out.println("LeftClick-A1");
+        if (isValidBlockEvent(event.getWorld(), event.getPos()))
     	{
     		eventFace = event.getFace();
     		eventHand = event.getHand();
@@ -126,17 +127,21 @@ public class EventHandler
     @SubscribeEvent
     public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event)
     {
-    	if (isValidBlockEvent(event.getWorld(), event.getPos())) {
+    	System.out.println("RightClick-A1");
+        if (isValidBlockEvent(event.getWorld(), event.getPos())) {
     		eventFace = event.getFace();
     		eventHand = event.getHand();
     		eventHitVector = getNormalizedHitVec(event.getHitVec(), event.getPos());
     		ItemStack itemStack = event.getEntityPlayer().getHeldItem(event.getHand());
+    		System.out.println("RC1");
             if (event.getEntityPlayer().isSneaking()) 
             {
+                System.out.println("RC2");
                 if (!(itemStack != null && itemStack.getItem() instanceof ItemBlock && !BlockUtil.isOverlay(itemStack)))
                 {
+                    System.out.println("RC3");
                 	IBlockState blockState = event.getWorld().getBlockState(event.getPos());
-                	//Update this may be incorrect.
+                	//Updaet
                 	blockState.getBlock().onBlockActivated(event.getEntityPlayer().world, event.getPos(), blockState, event.getEntityPlayer(),EnumHand
                             .MAIN_HAND, event.getFace(), 1.0F, 1.0F, 1.0F);
                 }

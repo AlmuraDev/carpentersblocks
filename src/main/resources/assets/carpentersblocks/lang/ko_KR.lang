@@ -6,8 +6,6 @@ itemGroup.carpentersBlocks.name=Carpenter's Blocks
 # ITEMS
 item.itemCarpentersHammer.name=목수의 망치
 item.itemCarpentersChisel.name=목수의 징
-item.itemCarpentersDoor.name=목수의 문
-item.itemCarpentersBed.name=목수의 침대
 item.itemCarpentersTile.name=목수의 타일
 
 # BLOCKS

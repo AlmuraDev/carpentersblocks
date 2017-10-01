@@ -1,11 +1,11 @@
 {
     "variants": {
-		"half=false,facing=up": { "model": "carpentersblocks:carpenters_block"},
-		"facing=up,half=true": { "model": "carpentersblocks:carpenters_block"},
-		"facing=down,half=true": { "model": "carpentersblocks:carpenters_block"},
-		"facing=north,half=true": { "model": "carpentersblocks:carpenters_block"},
-		"facing=east,half=true": { "model": "carpentersblocks:carpenters_block"},
-		"facing=south,half=true": { "model": "carpentersblocks:carpenters_block"},
-		"facing=west,half=true": { "model": "carpentersblocks:carpenters_block"}
+        "facing=up,half=false": { "model": "carpentersblocks:carpenters_block"},
+	"facing=up,half=true": { "model": "carpentersblocks:carpentersblock/upper_slab_carpenters"},
+	"facing=down,half=true": { "model": "carpentersblocks:carpentersblock/half_slab_carpenters"},
+	"facing=north,half=true": { "model": "carpentersblocks:carpentersblock/wall_slab_carpenters"},
+	"facing=east,half=true": { "model": "carpentersblocks:carpentersblock/wall_slab_carpenters", "y": 90},
+	"facing=south,half=true": { "model": "carpentersblocks:carpentersblock/wall_slab_carpenters", "y": 180},
+	"facing=west,half=true": { "model": "carpentersblocks:carpentersblock/wall_slab_carpenters", "y": 270}
     }
 }

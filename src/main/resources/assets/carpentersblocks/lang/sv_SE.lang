@@ -6,8 +6,6 @@ itemGroup.carpentersBlocks.name=Carpenter's Blocks
 # ITEMS
 item.itemCarpentersHammer.name=Snickarens Hammare
 item.itemCarpentersChisel.name=Snickarens Stämjärn
-item.itemCarpentersDoor.name=Snickarens Dörr
-item.itemCarpentersBed.name=Snickarens Säng
 item.itemCarpentersTile.name=Snickarens Kakelplatta
 
 # BLOCKS

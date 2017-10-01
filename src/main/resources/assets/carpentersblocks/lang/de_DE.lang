@@ -6,8 +6,6 @@ itemGroup.carpentersBlocks.name=Carpenter's Blocks
 # ITEMS
 item.itemCarpentersHammer.name=Hammer des Zimmermanns
 item.itemCarpentersChisel.name=Meißel des Zimmermanns
-item.itemCarpentersDoor.name=Tür des Zimmermanns
-item.itemCarpentersBed.name=Bett des Zimmermanns
 item.itemCarpentersTile.name=Fliese des Zimmermanns
 
 # BLOCKS

@@ -16,6 +16,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class CommonProxy
 { 
@@ -23,7 +24,9 @@ public class CommonProxy
     {
     	CBConfig.config(config); 
         BlockRegistry.preInit(event); // Do before item registration
-        ItemRegistry.preInit(event);
+        if (event.getSide() == Side.CLIENT) {
+            ItemRegistry.preInit(event);
+        }
         DesignHandler.preInit(event);        
     }
     

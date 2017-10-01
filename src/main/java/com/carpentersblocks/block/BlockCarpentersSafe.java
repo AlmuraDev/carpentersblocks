@@ -4,6 +4,7 @@ import com.carpentersblocks.block.state.Property;
 import com.carpentersblocks.block.types.BlockCoverable;
 import com.carpentersblocks.tileentity.CbTileEntity;
 import com.carpentersblocks.util.handler.ChatHandler;
+import com.carpentersblocks.util.handler.EventHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
 
 import net.minecraft.block.material.Material;
@@ -109,7 +110,7 @@ public class BlockCarpentersSafe extends BlockCoverable
 	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer entityPlayer,
 			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
-		ItemStack itemStack = entityPlayer.getHeldItemMainhand();
+		ItemStack itemStack = entityPlayer.getHeldItem(EventHandler.eventHand);
 		if(itemStack == null && blockState.getValue(LOCKED).booleanValue() && !world.isRemote && hand.equals(EnumHand.MAIN_HAND))
 		{
 			ChatHandler.sendMessageToPlayer("message.block_lock.name", entityPlayer);

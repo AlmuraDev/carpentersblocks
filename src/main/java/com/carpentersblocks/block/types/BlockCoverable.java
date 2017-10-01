@@ -488,7 +488,10 @@ public abstract class BlockCoverable extends Block
 
         if (actionResult.decInv) 
         {
-            EntityLivingUtil.decrementCurrentSlot(entityPlayer);
+            if (!entityPlayer.isCreative())
+            {
+                EntityLivingUtil.decrementCurrentSlot(entityPlayer);
+            }
         }
 
         return actionResult.altered;

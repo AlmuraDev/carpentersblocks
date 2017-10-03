@@ -71,9 +71,9 @@ public class PlayerPermissions
             UUID.fromString(object.getOwner());
             return object.getOwner().equals(entityPlayer.getUniqueID().toString());
         }
-        catch (IllegalArgumentException e) 
+        catch (IllegalArgumentException e)
         {
-            return object.getOwner().equals(entityPlayer.getDisplayName());
+            return object.getOwner().equals(entityPlayer.getDisplayNameString());
         }
     }
 }

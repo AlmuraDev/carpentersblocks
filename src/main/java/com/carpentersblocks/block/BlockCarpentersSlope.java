@@ -31,17 +31,7 @@ public class BlockCarpentersSlope extends BlockCoverable
         super(material);
         this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, BlockCarpentersSlope.EnumType.WEDGE));
     }
-    
-    @Override
-    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list)
-    {
-    	for(BlockCarpentersSlope.EnumType blockSlope : BlockCarpentersSlope.EnumType.values())
-    	{
-    		list.add(new ItemStack(this, 1, blockSlope.getMeta()));
-    	}
-    } 
-    
-    
+
     @Override
     public String getUnlocalizedName() 
     {

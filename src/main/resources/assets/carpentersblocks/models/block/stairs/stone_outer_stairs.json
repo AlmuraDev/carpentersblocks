@@ -1,8 +1,0 @@
-{
-    "parent": "block/outer_stairs",
-    "textures": {
-        "bottom": "carpentersblocks:blocks/general/quartered_frame",
-        "top": "carpentersblocks:blocks/general/quartered_frame",
-        "side": "carpentersblocks:blocks/general/quartered_frame"
-    }
-}

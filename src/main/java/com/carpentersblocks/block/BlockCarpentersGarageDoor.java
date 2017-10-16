@@ -1,6 +1,7 @@
 package com.carpentersblocks.block;
 
 import com.carpentersblocks.Reference;
+import com.carpentersblocks.block.state.Property;
 import com.carpentersblocks.block.types.BlockCoverable;
 
 import net.minecraft.block.Block;
@@ -24,6 +25,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -45,6 +48,12 @@ public class BlockCarpentersGarageDoor extends BlockCoverable
 	}
 
 	@Override
+	public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
+	{
+			super.breakBlock(worldIn, pos, state);
+	}
+
+	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
 	{
 		if(!state.getValue(OPEN).booleanValue())
@@ -58,7 +67,6 @@ public class BlockCarpentersGarageDoor extends BlockCoverable
 				case SOUTH:
 					return SOUTH_CLOSED_AABB;
 				case NORTH:
-				default:
 					return NORTH_CLOSED_AABB;
 			}
 		}
@@ -79,7 +87,6 @@ public class BlockCarpentersGarageDoor extends BlockCoverable
 				case SOUTH:
 					return SOUTH_CLOSED_AABB;
 				case NORTH:
-				default:
 					return NORTH_CLOSED_AABB;
 			}
 		}
@@ -100,7 +107,6 @@ public class BlockCarpentersGarageDoor extends BlockCoverable
 				case SOUTH:
 					return 2;
 				case NORTH:
-				default:
 					return 1;
 			}
 		}

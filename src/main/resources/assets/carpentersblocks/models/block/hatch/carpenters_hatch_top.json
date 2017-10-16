@@ -1,5 +1,5 @@
 {
-    "parent": "block/trapdoor_top",
+    "parent": "carpentersblocks:block/trapdoor_top",
     "textures": {
         "texture": "carpentersblocks:blocks/general/solid"
     }

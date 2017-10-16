@@ -97,14 +97,14 @@ public class BlockRegistry
         
         if(enableBed) 
         {
-            blockCarpentersBed = new BlockCarpentersBed(material)
-                .setUnlocalizedName("blockCarpentersBed")
-                .setRegistryName(REGISTRY_NAME_BED)
-                .setHardness(0.4F)
-                .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-            ForgeRegistries.BLOCKS.register(blockCarpentersBed);
-            ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersBed).setRegistryName(blockCarpentersBed.getRegistryName()));
-            Blocks.FIRE.setFireInfo(blockCarpentersBed, 5, 20);
+        //    blockCarpentersBed = new BlockCarpentersBed(material)
+        //        .setUnlocalizedName("blockCarpentersBed")
+        //        .setRegistryName(REGISTRY_NAME_BED)
+        //        .setHardness(0.4F)
+        //        .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
+        //    ForgeRegistries.BLOCKS.register(blockCarpentersBed);
+        //    ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersBed).setRegistryName(blockCarpentersBed.getRegistryName()));
+        //   Blocks.FIRE.setFireInfo(blockCarpentersBed, 5, 20);
         }
         
         if(enableButton) 
@@ -181,7 +181,7 @@ public class BlockRegistry
             Blocks.FIRE.setFireInfo(blockCarpentersGarageDoor, 5, 20);
         }
 
-        if(enableGate) 
+        if(enableGate)
         {
             blockCarpentersGate = new BlockCarpentersGate(BlockPlanks.EnumType.OAK)
                 .setUnlocalizedName("blockCarpentersGate")
@@ -257,12 +257,11 @@ public class BlockRegistry
         if (enableSlope) 
         {
         		blockCarpentersSlope = new BlockCarpentersSlope(material)
-                        .setRegistryName(REGISTRY_NAME_SLOPE) 
+                        .setRegistryName(REGISTRY_NAME_SLOPE)
                         .setHardness(0.2F)
                         .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
             ForgeRegistries.BLOCKS.register(blockCarpentersSlope);
             ForgeRegistries.ITEMS.register(new ItemBlock(blockCarpentersSlope).setRegistryName(blockCarpentersSlope.getRegistryName()));
-        	
         }
 
         if(enableStairs) 
@@ -326,7 +325,7 @@ public class BlockRegistry
         
         if(enableGarageDoor) 
         {
-        	registerItemBlockRender(blockCarpentersDoor);
+        	registerItemBlockRender(blockCarpentersGarageDoor);
         }
         
         if(enableGate) 
@@ -365,7 +364,7 @@ public class BlockRegistry
         
         if(enableBed) 
         {
-        	registerItemBlockRender(blockCarpentersBed);
+        	//registerItemBlockRender(blockCarpentersBed);
         }
         
         if(enableLadder) 

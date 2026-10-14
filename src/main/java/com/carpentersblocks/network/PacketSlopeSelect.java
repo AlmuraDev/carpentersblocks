@@ -27,8 +27,12 @@ public class PacketSlopeSelect implements ICarpentersPacket {
     public void processData(EntityPlayer entityPlayer, ByteBufInputStream bbis) throws IOException {
         int slot = bbis.readInt();
         boolean incDmg = bbis.readBoolean();
+        // Only the held slot can be scrolled
+        if (slot != entityPlayer.inventory.currentItem) {
+            return;
+        }
         ItemStack itemStack = entityPlayer.inventory.getStackInSlot(slot);
-        if (itemStack != null && BlockRegistry.blockCarpentersSlope.equals(BlockUtil.toBlock(itemStack))) {
+        if (!itemStack.isEmpty() && BlockRegistry.blockCarpentersSlope != null && BlockRegistry.blockCarpentersSlope.equals(BlockUtil.toBlock(itemStack))) {
             int maxDmg = BlockCarpentersSlope.slopeType.length - 1;
             int itemDmg = itemStack.getItemDamage();
             itemDmg += incDmg ? 1 : -1;

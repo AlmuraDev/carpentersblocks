@@ -78,6 +78,14 @@ public class BlockCarpentersCollapsibleBlock extends BlockFacing {
     }
 
     /**
+     * Whether smoothing may change the adjacent block: same orientation and same owner,
+     * so players can't reshape blocks they don't own.
+     */
+    private boolean canSmoothInto(CbTileEntity cbTileEntity, CbTileEntity adjacentTileEntity) {
+    	return isSameOrientation(cbTileEntity, adjacentTileEntity) && cbTileEntity.getOwner().equals(adjacentTileEntity.getOwner());
+    }
+
+    /**
      * Will attempt to smooth transitions to any adjacent collapsible blocks
      * given a cbTileEntity and source quadrant.
      */
@@ -95,46 +103,46 @@ public class BlockCarpentersCollapsibleBlock extends BlockFacing {
 
         switch (src_quadrant) {
             case QUAD_XZNN:
-                if (cbTileEntity_ZN != null && isSameOrientation(cbTileEntity, cbTileEntity_ZN)) {
+                if (cbTileEntity_ZN != null && canSmoothInto(cbTileEntity, cbTileEntity_ZN)) {
                 	util.setQuadDepth(cbTileEntity_ZN, QUAD_XZNP, depth);
                 }
-                if (cbTileEntity_XZNN != null && isSameOrientation(cbTileEntity, cbTileEntity_XZNN)) {
+                if (cbTileEntity_XZNN != null && canSmoothInto(cbTileEntity, cbTileEntity_XZNN)) {
                 	util.setQuadDepth(cbTileEntity_XZNN, QUAD_XZPP, depth);
                 }
-                if (cbTileEntity_XN != null && isSameOrientation(cbTileEntity, cbTileEntity_XN)) {
+                if (cbTileEntity_XN != null && canSmoothInto(cbTileEntity, cbTileEntity_XN)) {
                 	util.setQuadDepth(cbTileEntity_XN, QUAD_XZPN, depth);
                 }
                 break;
             case QUAD_XZNP:
-                if (cbTileEntity_XN != null && isSameOrientation(cbTileEntity, cbTileEntity_XN)) {
+                if (cbTileEntity_XN != null && canSmoothInto(cbTileEntity, cbTileEntity_XN)) {
                 	util.setQuadDepth(cbTileEntity_XN, QUAD_XZPP, depth);
                 }
-                if (cbTileEntity_XZNP != null && isSameOrientation(cbTileEntity, cbTileEntity_XZNP)) {
+                if (cbTileEntity_XZNP != null && canSmoothInto(cbTileEntity, cbTileEntity_XZNP)) {
                 	util.setQuadDepth(cbTileEntity_XZNP, QUAD_XZPN, depth);
                 }
-                if (cbTileEntity_ZP != null && isSameOrientation(cbTileEntity, cbTileEntity_ZP)) {
+                if (cbTileEntity_ZP != null && canSmoothInto(cbTileEntity, cbTileEntity_ZP)) {
                 	util.setQuadDepth(cbTileEntity_ZP, QUAD_XZNN, depth);
                 }
                 break;
             case QUAD_XZPN:
-                if (cbTileEntity_XP != null && isSameOrientation(cbTileEntity, cbTileEntity_XP)) {
+                if (cbTileEntity_XP != null && canSmoothInto(cbTileEntity, cbTileEntity_XP)) {
                 	util.setQuadDepth(cbTileEntity_XP, QUAD_XZNN, depth);
                 }
-                if (cbTileEntity_XZPN != null && isSameOrientation(cbTileEntity, cbTileEntity_XZPN)) {
+                if (cbTileEntity_XZPN != null && canSmoothInto(cbTileEntity, cbTileEntity_XZPN)) {
                 	util.setQuadDepth(cbTileEntity_XZPN, QUAD_XZNP, depth);
                 }
-                if (cbTileEntity_ZN != null && isSameOrientation(cbTileEntity, cbTileEntity_ZN)) {
+                if (cbTileEntity_ZN != null && canSmoothInto(cbTileEntity, cbTileEntity_ZN)) {
                 	util.setQuadDepth(cbTileEntity_ZN, QUAD_XZPP, depth);
                 }
                 break;
             case QUAD_XZPP:
-                if (cbTileEntity_ZP != null && isSameOrientation(cbTileEntity, cbTileEntity_ZP)) {
+                if (cbTileEntity_ZP != null && canSmoothInto(cbTileEntity, cbTileEntity_ZP)) {
                 	util.setQuadDepth(cbTileEntity_ZP, QUAD_XZPN, depth);
                 }
-                if (cbTileEntity_XZPP != null && isSameOrientation(cbTileEntity, cbTileEntity_XZPP)) {
+                if (cbTileEntity_XZPP != null && canSmoothInto(cbTileEntity, cbTileEntity_XZPP)) {
                 	util.setQuadDepth(cbTileEntity_XZPP, QUAD_XZNN, depth);
                 }
-                if (cbTileEntity_XP != null && isSameOrientation(cbTileEntity, cbTileEntity_XP)) {
+                if (cbTileEntity_XP != null && canSmoothInto(cbTileEntity, cbTileEntity_XP)) {
                 	util.setQuadDepth(cbTileEntity_XP, QUAD_XZNP, depth);
                 }
                 break;

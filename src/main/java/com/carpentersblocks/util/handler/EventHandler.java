@@ -38,10 +38,25 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class EventHandler {
 
-	public static EnumFacing eventFace;
-	public static EnumHand eventHand;
-	public static Vec3d eventHitVector;
-	
+	// Face and hit of the last block click, read by the block code that runs right after the event.
+	// Thread local so the integrated server and the client don't overwrite each other.
+	private static final ThreadLocal<EnumFacing> eventFace = new ThreadLocal<EnumFacing>();
+	private static final ThreadLocal<Vec3d> eventHitVector = new ThreadLocal<Vec3d>();
+
+	/**
+	 * Gets the face of the last clicked block, or null when the block was not clicked through an event (fake players).
+	 */
+	public static EnumFacing getEventFace() {
+		return eventFace.get();
+	}
+
+	/**
+	 * Gets the normalized hit vector of the last clicked block, or null.
+	 */
+	public static Vec3d getEventHitVector() {
+		return eventHitVector.get();
+	}
+
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     /**
@@ -67,8 +82,8 @@ public class EventHandler {
      * @param event
      */
     public void onEntityJoinWorldEvent(EntityJoinWorldEvent event) {
-    	if (event.getEntity() != null
-    		&& event.getEntity() instanceof EntityItem
+    	if (event.getEntity() instanceof EntityItem
+    		&& BlockRegistry.blockCarpentersSlope != null
     		&& BlockRegistry.blockCarpentersSlope.getRegistryName().equals(((EntityItem)event.getEntity()).getItem().getItem().getRegistryName())) {
     		// Carpenter's Slope should always drop as wedge
     		((EntityItem)event.getEntity()).getItem().setItemDamage(0);
@@ -109,9 +124,8 @@ public class EventHandler {
     @SubscribeEvent
     public void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
     	if (isValidBlockEvent(event.getWorld(), event.getPos())) {
-    		eventFace = event.getFace();
-    		eventHand = event.getHand();
-    		eventHitVector = getNormalizedHitVec(event.getHitVec(), event.getPos());
+    		eventFace.set(event.getFace());
+    		eventHitVector.set(getNormalizedHitVec(event.getHitVec(), event.getPos()));
 	    	ItemStack itemStack = event.getEntityPlayer().getHeldItem(event.getHand());
 	    	boolean hasTool = itemStack != null && (itemStack.getItem() instanceof ICarpentersHammer || itemStack.getItem() instanceof ICarpentersChisel);
 	        if (hasTool && event.getEntityPlayer().capabilities.isCreativeMode) {
@@ -135,9 +149,8 @@ public class EventHandler {
     @SubscribeEvent
     public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
     	if (isValidBlockEvent(event.getWorld(), event.getPos())) {
-    		eventFace = event.getFace();
-    		eventHand = event.getHand();
-    		eventHitVector = getNormalizedHitVec(event.getHitVec(), event.getPos());
+    		eventFace.set(event.getFace());
+    		eventHitVector.set(getNormalizedHitVec(event.getHitVec(), event.getPos()));
     		ItemStack itemStack = event.getEntityPlayer().getHeldItem(event.getHand());
             if (event.getEntityPlayer().isSneaking()) {
                 if (!(itemStack != null && itemStack.getItem() instanceof ItemBlock && !BlockUtil.isOverlay(itemStack))) {
@@ -159,7 +172,7 @@ public class EventHandler {
             EntityPlayer entityPlayer = Minecraft.getMinecraft().player;
             if (entityPlayer != null && entityPlayer.isSneaking()) {
                 ItemStack itemStack = entityPlayer.getHeldItemMainhand();
-                if (itemStack != null && itemStack.getItem() instanceof ItemBlock && BlockRegistry.blockCarpentersSlope.equals(BlockUtil.toBlock(itemStack))) {
+                if (itemStack != null && itemStack.getItem() instanceof ItemBlock && BlockRegistry.blockCarpentersSlope != null && BlockRegistry.blockCarpentersSlope.equals(BlockUtil.toBlock(itemStack))) {
                     if (event.getDwheel() != 0) {
                         PacketHandler.sendPacketToServer(new PacketSlopeSelect(entityPlayer.inventory.currentItem, event.getDwheel() > 0));
                     }

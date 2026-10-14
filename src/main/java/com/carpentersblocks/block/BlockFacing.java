@@ -92,10 +92,13 @@ public abstract class BlockFacing extends BlockCoverable {
      */
     public void onNeighborChange(IBlockAccess blockAccess, BlockPos blockPos, BlockPos neighborBlockPos) {
         super.onNeighborChange(blockAccess, blockPos, neighborBlockPos);
+        if (!(blockAccess instanceof World) || ((World)blockAccess).isRemote) {
+            return;
+        }
         World world = (World)blockAccess;
         CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
         if (cbTileEntity != null && !canPlaceBlockOnSide(world, blockPos, getFacing(cbTileEntity)) && !canFloat()) {
-            //destroyBlock(world, blockPos, true);
+            destroyBlock(world, blockPos, true);
         }
     }
 

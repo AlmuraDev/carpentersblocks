@@ -55,7 +55,7 @@ import net.minecraft.world.World;
 	    private String _cbOwner = "";
 
 	    // Indicates lighting calculations are underway
-	    private static boolean _calcLighting = false;
+	    private boolean _calcLighting = false;
 	    
 	    // The most recent light value of block
 	    private int _lightValue = -1;
@@ -81,7 +81,10 @@ import net.minecraft.world.World;
                 }
                 if (attribute != null) {
                 	attribute.readFromNBT(nbt1);
-                	_cbAttrMap.put(attribute.getKey(), attribute);
+                	// Skip covers whose item no longer exists, they would render and drop as air
+                	if (!(attribute instanceof AttributeItemStack && ((AttributeItemStack)attribute).isMissing())) {
+                		_cbAttrMap.put(attribute.getKey(), attribute);
+                	}
                 }
             }
             _cbMetadata = nbt.getInteger(TAG_METADATA);
@@ -246,18 +249,28 @@ import net.minecraft.world.World;
 	    }
 	    
 	    /**
-	     * Removes all attributes from block based on attribute location.
-	     * 
+	     * Drops all attributes from block based on attribute location.
+	     * <p>
+	     * Item attributes are dropped through a block event, the rest are removed.
+	     *
 	     * @param location the attribute location
 	     */
-	    public void removeAttributes(EnumAttributeLocation location) {
-	    	Iterator it = _cbAttrMap.entrySet().iterator();
+	    public void dropAttributes(EnumAttributeLocation location) {
+	    	boolean removed = false;
+	    	Iterator<AbstractAttribute> it = _cbAttrMap.values().iterator();
 	        while (it.hasNext()) {
-	            Map.Entry pair = (Map.Entry)it.next();
-	            AbstractAttribute attribute = (AbstractAttribute) pair.getValue();
+	            AbstractAttribute attribute = it.next();
 	            if (attribute.getLocation().equals(location)) {
-	            	removeAttribute(attribute);
+	            	if (attribute instanceof AttributeItemStack) {
+	            		createBlockDropEvent((AttributeItemStack)attribute);
+	            	} else {
+	            		it.remove();
+	            		removed = true;
+	            	}
 	            }
+	        }
+	        if (removed) {
+	        	update(true);
 	        }
 	    }
 
@@ -364,10 +377,11 @@ import net.minecraft.world.World;
 	     * @return the light value
 	     */
 	    public int getLightValue() {
+	        // Called by the light engine, so only cache the value here; relighting is done by update()
 	        if (_lightValue == -1 && !_calcLighting) {
-	            updateCachedLighting();
+	            _lightValue = getDynamicLightValue();
 	        }
-	        return _lightValue;
+	        return Math.max(0, _lightValue);
 	    }
 	    
 	    /**
@@ -381,16 +395,19 @@ import net.minecraft.world.World;
 	    		return 15;
 	    	} else {
 	    		_calcLighting = true;
-	    		for (IBlockState blockState : _cbAttrHelper.getAttributeBlockStates()) {
-    				// Determine state-sensitive light value (usually recursive, and not useful)
-    				int posLightValue = blockState.getBlock().getLightValue(blockState, getWorld(), getPos());
-    				if (posLightValue > 0) {
-    					value = Math.max(value, posLightValue);
-    				} else {
-    					value = Math.max(value, blockState.getBlock().getLightValue(blockState));
-    				}
+	    		try {
+		    		for (IBlockState blockState : _cbAttrHelper.getAttributeBlockStates()) {
+	    				// Determine state-sensitive light value (usually recursive, and not useful)
+	    				int posLightValue = blockState.getBlock().getLightValue(blockState, getWorld(), getPos());
+	    				if (posLightValue > 0) {
+	    					value = Math.max(value, posLightValue);
+	    				} else {
+	    					value = Math.max(value, blockState.getBlock().getLightValue(blockState));
+	    				}
+		    		}
+	    		} finally {
+	    			_calcLighting = false;
 	    		}
-	    		_calcLighting = false;
 	    	}
 	    	return value;
 	    }

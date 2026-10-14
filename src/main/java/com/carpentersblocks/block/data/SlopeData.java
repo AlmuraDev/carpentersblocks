@@ -50,7 +50,7 @@ public class SlopeData extends RotatableData {
 	public static void setNextType(CbTileEntity cbTileEntity) {
 		Type type = getType(cbTileEntity.getCbMetadata());
 		int newType = type.ordinal() + 1;
-		if (newType > Type.values().length) {
+		if (newType >= Type.values().length) {
 			newType = 0;
 		}
 		int temp = cbTileEntity.getCbMetadata();

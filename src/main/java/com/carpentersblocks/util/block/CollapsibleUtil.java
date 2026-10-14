@@ -4,6 +4,7 @@ import com.carpentersblocks.tileentity.CbTileEntity;
 import com.carpentersblocks.util.handler.EventHandler;
 
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.AxisAlignedBB;
 
 public class CollapsibleUtil extends DataUtil implements IDataFacing {
@@ -31,15 +32,16 @@ public class CollapsibleUtil extends DataUtil implements IDataFacing {
      * Returns corner number.
      */
     public static int getHitQuad() {
-    	if (EventHandler.eventHitVector != null) {
-	    	if (Math.round(EventHandler.eventHitVector.x) == 0) {
-	    		if (Math.round(EventHandler.eventHitVector.z) == 0) {
+    	Vec3d hitVector = EventHandler.getEventHitVector();
+    	if (hitVector != null) {
+	    	if (Math.round(hitVector.x) == 0) {
+	    		if (Math.round(hitVector.z) == 0) {
 	    			return QUAD_XZNN;
 	    		} else {
 	    			return QUAD_XZNP;
 	    		}
 	    	} else {
-	    		if (Math.round(EventHandler.eventHitVector.z) == 0) {
+	    		if (Math.round(hitVector.z) == 0) {
 	    			return QUAD_XZPN;
 	    		} else {
 	    			return QUAD_XZPP;

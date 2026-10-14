@@ -39,7 +39,8 @@ public class BlockCarpentersSlope extends BlockCoverable {
      * Alters block direction.
      */
     protected boolean onHammerLeftClick(CbTileEntity cbTileEntity, EntityPlayer entityPlayer) {
-    	return rotateBlock(cbTileEntity.getWorld(), cbTileEntity.getPos(), EventHandler.eventFace);
+    	EnumFacing facing = EventHandler.getEventFace();
+    	return facing != null && rotateBlock(cbTileEntity.getWorld(), cbTileEntity.getPos(), facing);
     }
 
     @Override
@@ -265,11 +266,19 @@ public class BlockCarpentersSlope extends BlockCoverable {
         	}
         	
         	// Set rotation
-        	float x = _threadLocalHitCoords.get()[0];
-        	float y = _threadLocalHitCoords.get()[1];
-        	float z = _threadLocalHitCoords.get()[2];
+        	// Placed without getStateForPlacement (machines, fake players): treat as placed on top of a block
+        	Float[] hitCoords = _threadLocalHitCoords.get();
+        	if (hitCoords == null) {
+        		hitCoords = new Float[] { 0.5f, 1.0f, 0.5f };
+        	}
+        	float x = hitCoords[0];
+        	float y = hitCoords[1];
+        	float z = hitCoords[2];
         	_threadLocalHitCoords.remove();
         	EnumFacing facing = _threadLocalFacing.get();
+        	if (facing == null) {
+        		facing = EnumFacing.UP;
+        	}
         	_threadLocalFacing.remove();
         	Rotation rotation = Rotation.X0_Y0_Z0;
         	EnumFacing cardinalFacing = entityLivingBase.getHorizontalFacing().getOpposite();

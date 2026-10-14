@@ -2,22 +2,21 @@ package com.carpentersblocks.util;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 
 public class EntityLivingUtil {
 
     /**
-     * Decrements the player's currently active ItemStack.
+     * Decrements the ItemStack in the player's hand.
      *
      * @param entityPlayer the player
+     * @param hand the hand holding the item that was used
      */
-    public static void decrementCurrentSlot(EntityPlayer entityPlayer) {
-        ItemStack itemStack = entityPlayer.inventory.getCurrentItem();
+    public static void decrementHeldItem(EntityPlayer entityPlayer, EnumHand hand) {
+        ItemStack itemStack = entityPlayer.getHeldItem(hand);
         if (!itemStack.isEmpty()) {
             if (!entityPlayer.capabilities.isCreativeMode) {
             	itemStack.shrink(1);
-            	if (itemStack.isEmpty()) {
-            		entityPlayer.inventory.removeStackFromSlot(entityPlayer.inventory.currentItem);
-            	}
             }
         }
     }

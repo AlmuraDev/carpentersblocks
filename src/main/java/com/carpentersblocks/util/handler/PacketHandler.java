@@ -8,14 +8,13 @@ import org.apache.logging.log4j.Level;
 
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.network.ICarpentersPacket;
-import com.carpentersblocks.network.PacketActivateBlock;
-import com.carpentersblocks.network.PacketEnrichPlant;
 import com.carpentersblocks.network.PacketSlopeSelect;
 import com.carpentersblocks.util.ModLogger;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.Unpooled;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
@@ -28,27 +27,27 @@ public class PacketHandler {
     private final static List<Class> packetCarrier;
     static {
         packetCarrier = new ArrayList<Class>();
-        packetCarrier.add(PacketActivateBlock.class);
-        packetCarrier.add(PacketEnrichPlant.class);
         packetCarrier.add(PacketSlopeSelect.class);
     }
 
     @SubscribeEvent
-    public void onServerPacket(ServerCustomPacketEvent event) throws IOException {
-        ByteBufInputStream bbis = new ByteBufInputStream(event.getPacket().payload());
-        EntityPlayer entityPlayer = ((NetHandlerPlayServer) event.getHandler()).player;
-        int packetId = bbis.readInt();
-        if (packetId < packetCarrier.size()) {
-            try {
-                ICarpentersPacket packetClass = (ICarpentersPacket) packetCarrier.get(packetId).newInstance();
-                packetClass.processData(entityPlayer, bbis);
+    public void onServerPacket(ServerCustomPacketEvent event) {
+        EntityPlayerMP entityPlayer = ((NetHandlerPlayServer) event.getHandler()).player;
+        // Packets arrive on the network thread, so copy the payload and handle it on the server thread
+        ByteBuf payload = event.getPacket().payload().copy();
+        entityPlayer.getServerWorld().addScheduledTask(() -> {
+            try (ByteBufInputStream bbis = new ByteBufInputStream(payload, true)) {
+                int packetId = bbis.readInt();
+                if (packetId >= 0 && packetId < packetCarrier.size()) {
+                    ICarpentersPacket packetClass = (ICarpentersPacket) packetCarrier.get(packetId).newInstance();
+                    packetClass.processData(entityPlayer, bbis);
+                } else {
+                    ModLogger.log(Level.WARN, "Encountered out of range packet Id: " + packetId);
+                }
             } catch (Exception e) {
-                e.printStackTrace();
+                ModLogger.log(Level.WARN, "Failed to handle packet from " + entityPlayer.getName() + ": " + e);
             }
-        } else {
-            ModLogger.log(Level.WARN, "Encountered out of range packet Id: " + packetId);
-        }
-        bbis.close();
+        });
     }
 
     public static void sendPacketToServer(ICarpentersPacket packet) {

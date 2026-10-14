@@ -1,18 +1,27 @@
 package com.carpentersblocks.block;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.carpentersblocks.block.data.SlopeData;
 import com.carpentersblocks.tileentity.CbTileEntity;
 import com.carpentersblocks.util.RotationUtil.Rotation;
+import com.carpentersblocks.util.block.SlopeShape;
 import com.carpentersblocks.util.handler.EventHandler;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -28,8 +37,6 @@ public class BlockCarpentersSlope extends BlockCoverable {
     	"prism",
     	"invertPrism" };
     
-    private boolean rayTracing;
-
     public BlockCarpentersSlope(Material material) {
         super(material);
     }
@@ -62,132 +69,51 @@ public class BlockCarpentersSlope extends BlockCoverable {
         }
     }*/
 
-/*    @Override
-    *//**
-     * Updates the blocks bounds based on its current state. Args: world, x, y, z
-     *//*
-    public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, BlockPos blockPos) {
-        if (!rayTracing) {
+    /**
+     * Gets the stepped collision boxes for the slope, relative to the block position.
+     */
+    private List<AxisAlignedBB> getSlopeBoxes(CbTileEntity cbTileEntity) {
+    	int cbMetadata = cbTileEntity.getCbMetadata();
+    	return SlopeShape.getBoxes(SlopeData.getType(cbMetadata), Rotation.get(cbMetadata));
+    }
 
-            CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
+    /**
+     * Adds the stepped slope boxes, so entities can walk up slopes like stairs.
+     */
+    @Override
+    public void addCollisionBoxToList(IBlockState blockState, World world, BlockPos blockPos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entity, boolean isActualState) {
+    	CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+    	if (cbTileEntity == null) {
+    		super.addCollisionBoxToList(blockState, world, blockPos, entityBox, collidingBoxes, entity, isActualState);
+    		return;
+    	}
+    	for (AxisAlignedBB box : getSlopeBoxes(cbTileEntity)) {
+    		addCollisionBoxToList(blockPos, entityBox, collidingBoxes, box);
+    	}
+    }
 
-            if (cbTileEntity != null) {
-
-                Slope slope = Slope.getSlope(cbTileEntity);
-
-                switch (slope.getPrimaryType()) {
-                    case PRISM:
-                    case PRISM_1P:
-                    case PRISM_2P:
-                    case PRISM_3P:
-                    case PRISM_4P:
-                        if (slope.isPositive) {
-                            setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
-                        } else {
-                            setBlockBounds(0.0F, 0.5F, 0.0F, 1.0F, 1.0F, 1.0F);
-                        }
-                        break;
-                    default:
-                        setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-                        break;
-                }
-
-            }
-
-        }
-    }*/
-
-    /*@Override
-    *//**
-     * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit. Args: world,
-     * x, y, z, startVec, endVec
-     *//*
-    public MovingObjectPosition collisionRayTrace(World world, BlockPos blockPos, Vec3 startVec, Vec3 endVec) {
-        CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
-        MovingObjectPosition finalTrace = null;
-
-        if (cbTileEntity != null) {
-
-            Slope slope = Slope.getSlope(cbTileEntity);
-            SlopeUtil slopeUtil = new SlopeUtil();
-
-            int numPasses = slopeUtil.getNumPasses(slope);
-            int precision = slopeUtil.getNumBoxesPerPass(slope);
-
-            rayTracing = true;
-
-             Determine if ray trace is a hit on slope. 
-            for (int pass = 0; pass < numPasses; ++pass)
-            {
-                for (int slice = 0; slice < precision && finalTrace == null; ++slice)
-                {
-                    float[] box = slopeUtil.genBounds(slope, slice, precision, pass);
-
-                    if (box != null) {
-                        setBlockBounds(box[0], box[1], box[2], box[3], box[4], box[5]);
-                        finalTrace = super.collisionRayTrace(world, x, y, z, startVec, endVec);
-                    }
-                }
-                if (slope.type.equals(Type.OBLIQUE_EXT)) {
-                    --precision;
-                }
-            }
-
-            rayTracing = false;
-
-             Determine true face hit since sloped faces are two or more shared faces. 
-
-            if (finalTrace != null) {
-                setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-                finalTrace = super.collisionRayTrace(world, x, y, z, startVec, endVec);
-            }
-
-        }
-
-        return finalTrace;
-    }*/
-
-    /*@Override
-    *//**
-     * Adds all intersecting collision boxes to a list. (Be sure to only add boxes to the list if they intersect the
-     * mask.) Parameters: World, X, Y, Z, mask, list, colliding entity
-     *//*
-    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB, List list, Entity entity) {
-        CbTileEntity cbTileEntity = getTileEntity(world, x, y, z);
-
-        if (cbTileEntity != null) {
-
-            AxisAlignedBB box = null;
-
-            Slope slope = Slope.getSlope(cbTileEntity);
-            SlopeUtil slopeUtil = new SlopeUtil();
-
-            int precision = slopeUtil.getNumBoxesPerPass(slope);
-            int numPasses = slopeUtil.getNumPasses(slope);
-
-            for (int pass = 0; pass < numPasses; ++pass) {
-
-                for (int slice = 0; slice < precision; ++slice)
-                {
-                    float[] dim = slopeUtil.genBounds(slope, slice, precision, pass);
-
-                    if (dim != null) {
-                        box = AxisAlignedBB.getBoundingBox(x + dim[0], y + dim[1], z + dim[2], x + dim[3], y + dim[4], z + dim[5]);
-                    }
-
-                    if (box != null && axisAlignedBB.intersectsWith(box)) {
-                        list.add(box);
-                    }
-                }
-
-                if (slope.type.equals(Type.OBLIQUE_EXT)) {
-                    --precision;
-                }
-
-            }
-
-        }
-    }*/
+    /**
+     * Only hits the solid part of the slope, but reports the face of the full block,
+     * since a sloped face is shared by two block faces.
+     */
+    @Nullable
+    @Override
+    public RayTraceResult collisionRayTrace(IBlockState blockState, World world, BlockPos blockPos, Vec3d start, Vec3d end) {
+    	CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+    	if (cbTileEntity != null) {
+    		boolean hit = false;
+    		for (AxisAlignedBB box : getSlopeBoxes(cbTileEntity)) {
+    			if (rayTrace(blockPos, start, end, box) != null) {
+    				hit = true;
+    				break;
+    			}
+    		}
+    		if (!hit) {
+    			return null;
+    		}
+    	}
+    	return rayTrace(blockPos, start, end, FULL_BLOCK_AABB);
+    }
 
 /*    @Override
     *//**

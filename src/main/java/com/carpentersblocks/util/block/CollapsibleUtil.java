@@ -229,7 +229,7 @@ public class CollapsibleUtil extends DataUtil implements IDataFacing {
 
     @Override
     public EnumFacing getFacing() {
-        return EnumFacing.getFront(getData() & 0x7);
+        return EnumFacing.byIndex(getData() & 0x7);
     }
 
     public boolean isPositive() {

@@ -29,7 +29,7 @@ public class PacketActivateBlock extends TilePacket {
     public void processData(EntityPlayer entityPlayer, ByteBufInputStream bbis) throws IOException {
         super.processData(entityPlayer, bbis);
         ItemStack itemStack = entityPlayer.getHeldItemMainhand();
-        _facing = EnumFacing.getFront(bbis.readInt());
+        _facing = EnumFacing.byIndex(bbis.readInt());
         IBlockState blockState = entityPlayer.getEntityWorld().getBlockState(_blockPos);
         boolean result = blockState.getBlock().onBlockActivated(entityPlayer.getEntityWorld(), _blockPos, blockState, entityPlayer, EnumHand.MAIN_HAND, _facing, 1.0F, 1.0F, 1.0F);
         if (!result) {

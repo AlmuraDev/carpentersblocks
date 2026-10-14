@@ -54,7 +54,7 @@ public class BlockRegistry {
     public void registerBlocks(RegistryEvent.Register<Block> event) {
     	{ // Carpenters Block always enabled
     		blockCarpentersBlock = new BlockCarpentersBlock(material)
-            		.setUnlocalizedName("blockCarpentersBlock")
+            		.setTranslationKey("blockCarpentersBlock")
                 	.setRegistryName(REGISTRY_NAME_BLOCK)
                 	.setHardness(0.2F)
                     .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
@@ -101,7 +101,7 @@ public class BlockRegistry {
     	}
     	if (ConfigRegistry.enableCollapsibleBlock) {
     		blockCarpentersCollapsibleBlock = new BlockCarpentersCollapsibleBlock(material)
-                .setUnlocalizedName("blockCarpentersCollapsibleBlock")
+                .setTranslationKey("blockCarpentersCollapsibleBlock")
                 .setRegistryName(REGISTRY_NAME_COLLAPSIBLE_BLOCK)
                 .setHardness(0.2F)
                 .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
@@ -210,7 +210,7 @@ public class BlockRegistry {
         	StateLoader stateLoader = new StateLoader(REGISTRY_NAME_PRESSURE_PLATE);
         	StateMap stateMap = stateLoader.getStateMap();
         	blockCarpentersPressurePlate = new BlockCarpentersPressurePlate(Material.CIRCUITS, stateMap)
-                .setUnlocalizedName("blockCarpentersPressurePlate")
+                .setTranslationKey("blockCarpentersPressurePlate")
                 .setRegistryName(REGISTRY_NAME_PRESSURE_PLATE)
 	            .setHardness(0.2F)
 	            .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
@@ -231,7 +231,7 @@ public class BlockRegistry {
     	}
     	if (ConfigRegistry.enableSlope) {
     		blockCarpentersSlope = new BlockCarpentersSlope(Material.WOOD)
-                    .setUnlocalizedName("blockCarpentersSlope")
+                    .setTranslationKey("blockCarpentersSlope")
                     .setRegistryName(REGISTRY_NAME_SLOPE)
                     .setHardness(0.2F)
                     .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);

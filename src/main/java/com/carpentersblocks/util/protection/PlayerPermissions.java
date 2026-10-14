@@ -17,7 +17,7 @@ public class PlayerPermissions {
     public static boolean isOp(EntityPlayer entityPlayer)
     {
         if (!entityPlayer.getEntityWorld().isRemote) {
-            return ((EntityPlayerMP)entityPlayer).mcServer.getPlayerList().getOppedPlayers().getEntry(entityPlayer.getGameProfile()) != null;
+            return ((EntityPlayerMP)entityPlayer).server.getPlayerList().getOppedPlayers().getEntry(entityPlayer.getGameProfile()) != null;
         } else {
             return false;
         }

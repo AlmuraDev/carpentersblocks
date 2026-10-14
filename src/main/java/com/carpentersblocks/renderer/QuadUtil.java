@@ -262,10 +262,10 @@ public class QuadUtil {
 				translation = -1 * (Math.max(TL.y, TR.y) - 1.0D);
 			}
 			if (Double.compare(0.0D, translation) != 0) {
-				TL = TL.addVector(0, translation, 0);
-				BL = BL.addVector(0, translation, 0);
-				BR = BR.addVector(0, translation, 0);
-				TR = TR.addVector(0, translation, 0);
+				TL = TL.add(0, translation, 0);
+				BL = BL.add(0, translation, 0);
+				BR = BR.add(0, translation, 0);
+				TR = TR.add(0, translation, 0);
 			}
 		}
 		
@@ -630,163 +630,163 @@ public class QuadUtil {
 			case DOWN:
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.NORTH,
-					vecs[2].addVector(0, 0, 0),
-					vecs[2].addVector(0, -depth, 0),
-					vecs[1].addVector(0, -depth, 0),
-					vecs[1].addVector(0, 0, 0)));
+					vecs[2].add(0, 0, 0),
+					vecs[2].add(0, -depth, 0),
+					vecs[1].add(0, -depth, 0),
+					vecs[1].add(0, 0, 0)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.SOUTH,
-					vecs[0].addVector(0, 0, 0),
-					vecs[0].addVector(0, -depth, 0),
-					vecs[3].addVector(0, -depth, 0),
-					vecs[3].addVector(0, 0, 0)));
+					vecs[0].add(0, 0, 0),
+					vecs[0].add(0, -depth, 0),
+					vecs[3].add(0, -depth, 0),
+					vecs[3].add(0, 0, 0)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.WEST,
-					vecs[1].addVector(0, 0, 0),
-					vecs[1].addVector(0, -depth, 0),
-					vecs[0].addVector(0, -depth, 0),
-					vecs[0].addVector(0, 0, 0)));
+					vecs[1].add(0, 0, 0),
+					vecs[1].add(0, -depth, 0),
+					vecs[0].add(0, -depth, 0),
+					vecs[0].add(0, 0, 0)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.EAST,
-					vecs[3].addVector(0, 0, 0),
-					vecs[3].addVector(0, -depth, 0),
-					vecs[2].addVector(0, -depth, 0),
-					vecs[2].addVector(0, 0, 0)));
+					vecs[3].add(0, 0, 0),
+					vecs[3].add(0, -depth, 0),
+					vecs[2].add(0, -depth, 0),
+					vecs[2].add(0, 0, 0)));
 				preparePerdendicularQuads(list, EnumFacing.DOWN);
 				break;
 			case UP:
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.NORTH,
-					vecs[3].addVector(0, depth, 0),
-					vecs[3].addVector(0, 0, 0),
-					vecs[0].addVector(0, 0, 0),
-					vecs[0].addVector(0, depth, 0)));
+					vecs[3].add(0, depth, 0),
+					vecs[3].add(0, 0, 0),
+					vecs[0].add(0, 0, 0),
+					vecs[0].add(0, depth, 0)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.SOUTH,
-					vecs[1].addVector(0, depth, 0),
-					vecs[1].addVector(0, 0, 0),
-					vecs[2].addVector(0, 0, 0),
-					vecs[2].addVector(0, depth, 0)));
+					vecs[1].add(0, depth, 0),
+					vecs[1].add(0, 0, 0),
+					vecs[2].add(0, 0, 0),
+					vecs[2].add(0, depth, 0)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.WEST,
-					vecs[0].addVector(0, depth, 0),
-					vecs[0].addVector(0, 0, 0),
-					vecs[1].addVector(0, 0, 0),
-					vecs[1].addVector(0, depth, 0)));
+					vecs[0].add(0, depth, 0),
+					vecs[0].add(0, 0, 0),
+					vecs[1].add(0, 0, 0),
+					vecs[1].add(0, depth, 0)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.EAST,
-					vecs[2].addVector(0, depth, 0),
-					vecs[2].addVector(0, 0, 0),
-					vecs[3].addVector(0, 0, 0),
-					vecs[3].addVector(0, depth, 0)));
+					vecs[2].add(0, depth, 0),
+					vecs[2].add(0, 0, 0),
+					vecs[3].add(0, 0, 0),
+					vecs[3].add(0, depth, 0)));
 				preparePerdendicularQuads(list, EnumFacing.UP);
 				break;
 			case NORTH:
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.DOWN,
-					vecs[2].addVector(0, 0, 0),
-					vecs[2].addVector(0, 0, -depth),
-					vecs[1].addVector(0, 0, -depth),
-					vecs[1].addVector(0, 0, 0)));
+					vecs[2].add(0, 0, 0),
+					vecs[2].add(0, 0, -depth),
+					vecs[1].add(0, 0, -depth),
+					vecs[1].add(0, 0, 0)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.UP,
-					vecs[3].addVector(0, 0, -depth),
-					vecs[3].addVector(0, 0, 0),
-					vecs[0].addVector(0, 0, 0),
-					vecs[0].addVector(0, 0, -depth)));
+					vecs[3].add(0, 0, -depth),
+					vecs[3].add(0, 0, 0),
+					vecs[0].add(0, 0, 0),
+					vecs[0].add(0, 0, -depth)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.WEST,
-					vecs[3].addVector(0, 0, -depth),
-					vecs[2].addVector(0, 0, -depth),
-					vecs[2].addVector(0, 0, 0),
-					vecs[3].addVector(0, 0, 0)));
+					vecs[3].add(0, 0, -depth),
+					vecs[2].add(0, 0, -depth),
+					vecs[2].add(0, 0, 0),
+					vecs[3].add(0, 0, 0)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.EAST,
-					vecs[0].addVector(0, 0, 0),
-					vecs[1].addVector(0, 0, 0),
-					vecs[1].addVector(0, 0, -depth),
-					vecs[0].addVector(0, 0, -depth)));
+					vecs[0].add(0, 0, 0),
+					vecs[1].add(0, 0, 0),
+					vecs[1].add(0, 0, -depth),
+					vecs[0].add(0, 0, -depth)));
 				preparePerdendicularQuads(list, EnumFacing.NORTH);
 				break;
 			case SOUTH:
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.DOWN,
-					vecs[1].addVector(0, 0, depth),
-					vecs[1].addVector(0, 0, 0),
-					vecs[2].addVector(0, 0, 0),
-					vecs[2].addVector(0, 0, depth)));
+					vecs[1].add(0, 0, depth),
+					vecs[1].add(0, 0, 0),
+					vecs[2].add(0, 0, 0),
+					vecs[2].add(0, 0, depth)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.UP,
-					vecs[0].addVector(0, 0, 0),
-					vecs[0].addVector(0, 0, depth),
-					vecs[3].addVector(0, 0, depth),
-					vecs[3].addVector(0, 0, 0)));
+					vecs[0].add(0, 0, 0),
+					vecs[0].add(0, 0, depth),
+					vecs[3].add(0, 0, depth),
+					vecs[3].add(0, 0, 0)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.WEST,
-					vecs[0].addVector(0, 0, 0),
-					vecs[1].addVector(0, 0, 0),
-					vecs[1].addVector(0, 0, depth),
-					vecs[0].addVector(0, 0, depth)));
+					vecs[0].add(0, 0, 0),
+					vecs[1].add(0, 0, 0),
+					vecs[1].add(0, 0, depth),
+					vecs[0].add(0, 0, depth)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.EAST,
-					vecs[3].addVector(0, 0, depth),
-					vecs[2].addVector(0, 0, depth),
-					vecs[2].addVector(0, 0, 0),
-					vecs[3].addVector(0, 0, 0)));
+					vecs[3].add(0, 0, depth),
+					vecs[2].add(0, 0, depth),
+					vecs[2].add(0, 0, 0),
+					vecs[3].add(0, 0, 0)));
 				preparePerdendicularQuads(list, EnumFacing.SOUTH);
 				break;
 			case WEST:
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.DOWN,
-					vecs[2].addVector(-depth, 0, 0),
-					vecs[1].addVector(-depth, 0, 0),
-					vecs[1].addVector(0, 0, 0),
-					vecs[2].addVector(0, 0, 0)));
+					vecs[2].add(-depth, 0, 0),
+					vecs[1].add(-depth, 0, 0),
+					vecs[1].add(0, 0, 0),
+					vecs[2].add(0, 0, 0)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.UP,
-					vecs[0].addVector(-depth, 0, 0),
-					vecs[3].addVector(-depth, 0, 0),
-					vecs[3].addVector(0, 0, 0),
-					vecs[0].addVector(0, 0, 0)));
+					vecs[0].add(-depth, 0, 0),
+					vecs[3].add(-depth, 0, 0),
+					vecs[3].add(0, 0, 0),
+					vecs[0].add(0, 0, 0)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.NORTH,
-					vecs[0].addVector(0, 0, 0),
-					vecs[1].addVector(0, 0, 0),
-					vecs[1].addVector(-depth, 0, 0),
-					vecs[0].addVector(-depth, 0, 0)));
+					vecs[0].add(0, 0, 0),
+					vecs[1].add(0, 0, 0),
+					vecs[1].add(-depth, 0, 0),
+					vecs[0].add(-depth, 0, 0)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.SOUTH,
-					vecs[3].addVector(-depth, 0, 0),
-					vecs[2].addVector(-depth, 0, 0),
-					vecs[2].addVector(0, 0, 0),
-					vecs[3].addVector(0, 0, 0)));
+					vecs[3].add(-depth, 0, 0),
+					vecs[2].add(-depth, 0, 0),
+					vecs[2].add(0, 0, 0),
+					vecs[3].add(0, 0, 0)));
 				preparePerdendicularQuads(list, EnumFacing.WEST);
 				break;
 			case EAST:
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.DOWN,
-					vecs[1].addVector(0, 0, 0),
-					vecs[2].addVector(0, 0, 0),
-					vecs[2].addVector(depth, 0, 0),
-					vecs[1].addVector(depth, 0, 0)));
+					vecs[1].add(0, 0, 0),
+					vecs[2].add(0, 0, 0),
+					vecs[2].add(depth, 0, 0),
+					vecs[1].add(depth, 0, 0)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.UP,
-					vecs[3].addVector(0, 0, 0),
-					vecs[0].addVector(0, 0, 0),
-					vecs[0].addVector(depth, 0, 0),
-					vecs[3].addVector(depth, 0, 0)));
+					vecs[3].add(0, 0, 0),
+					vecs[0].add(0, 0, 0),
+					vecs[0].add(depth, 0, 0),
+					vecs[3].add(depth, 0, 0)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.NORTH,
-					vecs[3].addVector(depth, 0, 0),
-					vecs[2].addVector(depth, 0, 0),
-					vecs[2].addVector(0, 0, 0),
-					vecs[3].addVector(0, 0, 0)));
+					vecs[3].add(depth, 0, 0),
+					vecs[2].add(depth, 0, 0),
+					vecs[2].add(0, 0, 0),
+					vecs[3].add(0, 0, 0)));
 				list.add(Quad.getUnsortedQuad(
 					EnumFacing.SOUTH,
-					vecs[0].addVector(0, 0, 0),
-					vecs[1].addVector(0, 0, 0),
-					vecs[1].addVector(depth, 0, 0),
-					vecs[0].addVector(depth, 0, 0)));
+					vecs[0].add(0, 0, 0),
+					vecs[1].add(0, 0, 0),
+					vecs[1].add(depth, 0, 0),
+					vecs[0].add(depth, 0, 0)));
 				preparePerdendicularQuads(list, EnumFacing.EAST);
 				break;
 		}

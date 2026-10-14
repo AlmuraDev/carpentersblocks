@@ -23,6 +23,9 @@ run
 /*
 !.gitignore
 !build.gradle
+!gradlew
+!gradlew.bat
+!gradle/
 !LICENSE-carpentersblocks.txt
 !README.md
 !src/

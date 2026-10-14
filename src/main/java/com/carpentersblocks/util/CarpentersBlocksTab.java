@@ -2,7 +2,6 @@ package com.carpentersblocks.util;
 
 import com.carpentersblocks.util.registry.ItemRegistry;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -16,13 +15,14 @@ public class CarpentersBlocksTab extends CreativeTabs {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public ItemStack getTabIconItem() {
+    public ItemStack createIcon() {
         return new ItemStack(ItemRegistry.itemCarpentersHammer);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
-    public String getTranslatedTabLabel() {
-        return I18n.format("itemGroup.carpentersBlocks.name", new Object[0]);
+    public String getTranslationKey() {
+        return "itemGroup.carpentersBlocks.name";
     }
 
 }

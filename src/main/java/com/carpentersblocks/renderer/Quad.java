@@ -123,7 +123,7 @@ public class Quad {
 	public Quad offset(double x, double y, double z) {
 		Quad quad = new Quad(this);
 		for (int i = 0; i < quad._vecs.length; ++i) {
-			quad._vecs[i] = quad._vecs[i].addVector(x, y, z);
+			quad._vecs[i] = quad._vecs[i].add(x, y, z);
 		}
 		quad.setUVOffset(new Vec3d(-x, -y, -z));
 		return quad;

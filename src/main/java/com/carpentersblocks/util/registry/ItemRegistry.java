@@ -10,6 +10,8 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemRegistry {
 
@@ -24,7 +26,7 @@ public class ItemRegistry {
     	if (ConfigRegistry.enableHammer) {
 			itemCarpentersHammer = new ItemCarpentersHammer()
 				.setRegistryName("carpenters_hammer")
-				.setUnlocalizedName("itemCarpentersHammer")
+				.setTranslationKey("itemCarpentersHammer")
 				.setCreativeTab(CarpentersBlocks.CREATIVE_TAB)
 				.setMaxStackSize(1);
 			if (ConfigRegistry.itemCarpentersToolsDamageable) {
@@ -35,7 +37,7 @@ public class ItemRegistry {
     	if (ConfigRegistry.enableChisel) {
 			itemCarpentersChisel = new ItemCarpentersChisel()
 				.setRegistryName("carpenters_chisel")
-				.setUnlocalizedName("itemCarpentersChisel")
+				.setTranslationKey("itemCarpentersChisel")
 				.setCreativeTab(CarpentersBlocks.CREATIVE_TAB)
 				.setMaxStackSize(1);
 			if (ConfigRegistry.itemCarpentersToolsDamageable) {
@@ -47,6 +49,7 @@ public class ItemRegistry {
     }
     
     @SubscribeEvent
+    @SideOnly(Side.CLIENT)
     public void registerModels(ModelRegistryEvent event) {
         if (ConfigRegistry.enableHammer) {
         	ModelLoader.setCustomModelResourceLocation(itemCarpentersHammer, 0, new ModelResourceLocation(CarpentersBlocks.MOD_ID + ":" + "carpenters_hammer"));
@@ -56,15 +59,15 @@ public class ItemRegistry {
         }
         /*
         if (enableTile) {
-            itemCarpentersTile = new ItemCarpentersTile().setUnlocalizedName("itemCarpentersTile");
+            itemCarpentersTile = new ItemCarpentersTile().setTranslationKey("itemCarpentersTile");
             GameRegistry.registerItem(itemCarpentersTile, "itemCarpentersTile");
         }
         if (BlockRegistry.enableDoor) {
-            itemCarpentersDoor = new ItemCarpentersDoor().setUnlocalizedName("itemCarpentersDoor");
+            itemCarpentersDoor = new ItemCarpentersDoor().setTranslationKey("itemCarpentersDoor");
             GameRegistry.registerItem(itemCarpentersDoor, "itemCarpentersDoor");
         }
         if (BlockRegistry.enableBed) {
-            itemCarpentersBed = new ItemCarpentersBed().setUnlocalizedName("itemCarpentersBed");
+            itemCarpentersBed = new ItemCarpentersBed().setTranslationKey("itemCarpentersBed");
             GameRegistry.registerItem(itemCarpentersBed, "itemCarpentersBed");
         }*/
     }

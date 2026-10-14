@@ -36,7 +36,7 @@ public class CarpentersBlocksCachedResources extends DummyModContainer {
 
     public final static CarpentersBlocksCachedResources INSTANCE = new CarpentersBlocksCachedResources();
     private String MODID = "CarpentersBlocksCachedResources";
-    private String resourceDir = FilenameUtils.normalizeNoEndSeparator(Minecraft.getMinecraft().mcDataDir.getAbsolutePath()) + File.separator + "mods" + File.separator + CarpentersBlocks.MOD_ID.toLowerCase();
+    private String resourceDir = FilenameUtils.normalizeNoEndSeparator(Minecraft.getMinecraft().gameDir.getAbsolutePath()) + File.separator + "mods" + File.separator + CarpentersBlocks.MOD_ID.toLowerCase();
     private static ZipFile resourcePackZipFile;
     private static ArrayList<Object[]> resources = new ArrayList<Object[]>();
     private final int RESOURCE_PATH  = 0;

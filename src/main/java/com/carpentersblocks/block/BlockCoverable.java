@@ -1207,12 +1207,6 @@ public abstract class BlockCoverable extends Block {
         return false;
     }*/
     
-    @Override
-    public void onBlockDestroyedByPlayer(World worldIn, BlockPos pos, IBlockState state) {
-    	// TODO Auto-generated method stub
-    	super.onBlockDestroyedByPlayer(worldIn, pos, state);
-    }
-
     /**
      * Whether block should be neighbor block brightness
      * when rendered.
@@ -1396,7 +1390,7 @@ public abstract class BlockCoverable extends Block {
     }
     
     @SideOnly(Side.CLIENT)
-    public BlockRenderLayer getBlockLayer() {
+    public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT_MIPPED;
     }
     

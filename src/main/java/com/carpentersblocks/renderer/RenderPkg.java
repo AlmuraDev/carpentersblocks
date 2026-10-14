@@ -73,7 +73,7 @@ public class RenderPkg {
     	_blockPos = (BlockPos) getThreadedProperty(Property.BLOCK_POS);
     	_cbMetadata = (Integer) getThreadedProperty(Property.CB_METADATA);
     	Block block = Minecraft.getMinecraft().world.getBlockState(_blockPos).getBlock();
-    	_uncoveredRenderLayer = block.getBlockLayer();
+    	_uncoveredRenderLayer = block.getRenderLayer();
     	_cbAttrHelper = new AttributeHelper((Map<Key, AbstractAttribute>) getThreadedProperty(Property.ATTR_MAP));
     	_quadContainer = new QuadContainer(EnumAttributeLocation.HOST);
     }

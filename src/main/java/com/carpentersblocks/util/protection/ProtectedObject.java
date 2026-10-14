@@ -18,7 +18,7 @@ public class ProtectedObject {
     public String toString()
     {
         if (FMLCommonHandler.instance().getSide() == Side.SERVER) {
-            if (((EntityPlayerMP)entityPlayer).mcServer.isServerInOnlineMode()) {
+            if (((EntityPlayerMP)entityPlayer).server.isServerInOnlineMode()) {
                 return entityPlayer.getUniqueID().toString();
             }
         }

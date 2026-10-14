@@ -22,19 +22,19 @@ public class ModelLoader implements ICustomModelLoader {
 	public boolean accepts(ResourceLocation resourceLocation) {
     	IModel model = null;
     	try { model = loadModel(resourceLocation); } catch (Exception ex) {}
-    	return CarpentersBlocks.MOD_ID.equalsIgnoreCase(resourceLocation.getResourceDomain())
+    	return CarpentersBlocks.MOD_ID.equalsIgnoreCase(resourceLocation.getNamespace())
     			&& model != null;
 	}
 
 	@Override
 	public IModel loadModel(ResourceLocation resourceLocation) throws Exception {
-    	if (resourceLocation.getResourcePath().equals(BlockRegistry.REGISTRY_NAME_BLOCK)) {
+    	if (resourceLocation.getPath().equals(BlockRegistry.REGISTRY_NAME_BLOCK)) {
     		return new ModelBlock();
-    	} else if (resourceLocation.getResourcePath().endsWith(BlockRegistry.REGISTRY_NAME_SLOPE)) {
+    	} else if (resourceLocation.getPath().endsWith(BlockRegistry.REGISTRY_NAME_SLOPE)) {
     		return new ModelSlope(((ModelResourceLocation)resourceLocation).getVariant());
-    	} else if (resourceLocation.getResourcePath().equals(BlockRegistry.REGISTRY_NAME_COLLAPSIBLE_BLOCK)) {
+    	} else if (resourceLocation.getPath().equals(BlockRegistry.REGISTRY_NAME_COLLAPSIBLE_BLOCK)) {
     		return new ModelCollapsibleBlock();
-    	} else if (resourceLocation.getResourcePath().equals(BlockRegistry.REGISTRY_NAME_PRESSURE_PLATE)) {
+    	} else if (resourceLocation.getPath().equals(BlockRegistry.REGISTRY_NAME_PRESSURE_PLATE)) {
     		return new ModelPressurePlate();
     	} else {
     		return null;

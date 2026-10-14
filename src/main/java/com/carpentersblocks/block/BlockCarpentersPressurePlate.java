@@ -133,7 +133,7 @@ public class BlockCarpentersPressurePlate extends BlockFacing implements IStateI
      * Triggered whenever an entity collides with this block (enters into the block). Args: world, x, y, z, entity
      */
     @Override
-    public void onEntityCollidedWithBlock(World world, BlockPos blockPos, IBlockState blockState, Entity entity) {
+    public void onEntityCollision(World world, BlockPos blockPos, IBlockState blockState, Entity entity) {
         if (!world.isRemote) {
             CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
             if (cbTileEntity != null) {

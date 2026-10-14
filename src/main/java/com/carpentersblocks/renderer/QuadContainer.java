@@ -73,7 +73,7 @@ public class QuadContainer {
 
 	public QuadContainer toSideLocation(IBlockState blockState, EnumAttributeLocation location, double depth) {
 		QuadContainer quadContainer = new QuadContainer(location);
-		EnumFacing facing = EnumFacing.getFront(location.ordinal());
+		EnumFacing facing = EnumFacing.byIndex(location.ordinal());
 	    for (Quad quad : _quads) {
 	    	EnumFacing offsetFacing = quad.getSideCoverAltFacing(); // Sloped faces should be UP/DOWN
 	    	if (facing.equals(offsetFacing)) { // Side cover direction matches offset facing
@@ -81,7 +81,7 @@ public class QuadContainer {
 		    	Quad offsetQuad = new Quad(quad);
 		    	offsetQuad.applyFacing(true, offsetFacing);
 	    		quadContainer.addAll(QuadUtil.getPerpendicularQuads(offsetQuad, depth));
-	    		quadContainer.add(quad.offset(offsetFacing.getFrontOffsetX() * depth, offsetFacing.getFrontOffsetY() * depth, offsetFacing.getFrontOffsetZ() * depth));
+	    		quadContainer.add(quad.offset(offsetFacing.getXOffset() * depth, offsetFacing.getYOffset() * depth, offsetFacing.getZOffset() * depth));
 	    	}
 	    }
 	    

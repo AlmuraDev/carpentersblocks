@@ -138,6 +138,32 @@ public class DesignHandler {
         }
     }
 
+    /**
+     * Gets a design as a number for render data: its place in the list plus one, or 0 for none.
+     */
+    public static int getDesignNumber(DesignType type, String design) {
+        return design == null ? 0 : getListForType(type).indexOf(design) + 1;
+    }
+
+    /**
+     * Gets a design from its render data number, or null for none (or one no longer installed).
+     */
+    public static String getDesign(DesignType type, int number) {
+        List<String> list = getListForType(type);
+        return number > 0 && number <= list.size() ? list.get(number - 1) : null;
+    }
+
+    public static net.minecraft.util.ResourceLocation getFlowerPotTexture(String design) {
+        return new net.minecraft.util.ResourceLocation(CarpentersBlocks.MOD_ID, PATH_FLOWER_POT + design);
+    }
+
+    /**
+     * Gets one of the 8 textures a bed design is cut into (in the cached resource pack, see addResources).
+     */
+    public static net.minecraft.util.ResourceLocation getBedTexture(String design, int idx) {
+        return new net.minecraft.util.ResourceLocation("carpentersblockscachedresources", PATH_BED + "cache/" + design + "_" + idx);
+    }
+
     public static List<String> getListForType(DesignType type) {
         return type.equals(DesignType.CHISEL) ? new ArrayList<String>(listChisel) :
                type.equals(DesignType.BED) ? new ArrayList<String>(listBed) :
@@ -166,7 +192,7 @@ public class DesignHandler {
         if (tempList.isEmpty()) {
             return iconName;
         } else {
-            int idx = iconName.equals("") ? tempList.size() - 1 : tempList.indexOf(iconName) - 1;
+            int idx = iconName == null || iconName.equals("") ? tempList.size() - 1 : tempList.indexOf(iconName) - 1;
             return tempList.get(idx < 0 ? tempList.size() - 1 : idx);
         }
     }

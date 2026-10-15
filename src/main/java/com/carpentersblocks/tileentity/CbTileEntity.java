@@ -214,6 +214,14 @@ import net.minecraft.world.World;
 	    }
 	    
 	    /**
+	     * Drops one item attribute (a cover pushed out by a design, for instance) through a block event.
+	     */
+	    public boolean dropAttribute(EnumAttributeLocation location, EnumAttributeType type) {
+	        AbstractAttribute attribute = _cbAttrHelper.getAttribute(location, type);
+	        return attribute instanceof AttributeItemStack && createBlockDropEvent((AttributeItemStack) attribute);
+	    }
+
+	    /**
 	     * Initiates block drop event, which will remove attribute from tile entity.
 	     *
 	     * @param  attrId the attribute ID

@@ -2,7 +2,9 @@ package com.carpentersblocks.block;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.annotation.Nullable;
@@ -10,8 +12,11 @@ import javax.annotation.Nullable;
 import com.carpentersblocks.block.data.SidedUtil;
 import com.carpentersblocks.tileentity.CbTileEntity;
 import com.carpentersblocks.util.attribute.AttributeItemStack;
+import com.carpentersblocks.util.attribute.AttributeString;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 import com.carpentersblocks.util.attribute.EnumAttributeType;
+import com.carpentersblocks.util.handler.DesignHandler;
+import com.carpentersblocks.util.handler.DesignHandler.DesignType;
 import com.carpentersblocks.util.registry.ItemRegistry;
 
 import net.minecraft.block.Block;
@@ -30,6 +35,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -51,6 +57,11 @@ public class BlockCarpentersBed extends BlockCoverable implements IShapedBlock {
 	private static final int PARALLEL_POS = 1 << 17;
 	private static final int BLANKET_COLOR_SHIFT = 18; // 5 bits: dye color + 1, 0 for white
 	private static final int INVENTORY = 1 << 23;
+	private static final int DESIGN_SHIFT = 24; // 8 bits: design number, 0 for none
+
+	// Bed design textures (0-7) of the blanket faces in authored order (down, up, north, south, west, east), from 1.7.10
+	private static final int[] DESIGN_HEAD_FACES = { 2, 2, 2, 7, 1, 3 };
+	private static final int[] DESIGN_FOOT_FACES = { 5, 5, 2, 7, 4, 6 };
 
 	public BlockCarpentersBed(Material material) {
 		super(material);
@@ -127,6 +138,7 @@ public class BlockCarpentersBed extends BlockCoverable implements IShapedBlock {
 		if (color != null) {
 			data |= (color.getMetadata() + 1) << BLANKET_COLOR_SHIFT;
 		}
+		data |= DesignHandler.getDesignNumber(DesignType.BED, getDesign(cbTileEntity)) << DESIGN_SHIFT;
 		return data;
 	}
 
@@ -151,6 +163,78 @@ public class BlockCarpentersBed extends BlockCoverable implements IShapedBlock {
 		return dye.getItem() == Items.DYE ? EnumDyeColor.byDyeDamage(dye.getMetadata()) : null;
 	}
 
+	////////////
+	// Designs
+	////////////
+
+	@Nullable
+	private static String getDesign(CbTileEntity cbTileEntity) {
+		if (!cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_BASIC)) {
+			return null;
+		}
+		return ((AttributeString) cbTileEntity.getAttributeHelper().getAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_BASIC)).getModel();
+	}
+
+	private static void setDesign(CbTileEntity cbTileEntity, @Nullable String design) {
+		cbTileEntity.removeAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_BASIC);
+		if (design != null) {
+			cbTileEntity.addAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_BASIC, design);
+		}
+		cbTileEntity.update(true);
+	}
+
+	/**
+	 * Sets the blanket design on both halves, like 1.7.10.
+	 */
+	private boolean setBedDesign(CbTileEntity cbTileEntity, @Nullable String design) {
+		String current = getDesign(cbTileEntity);
+		if (design == null ? current == null : design.equals(current)) {
+			return false;
+		}
+		setDesign(cbTileEntity, design);
+		CbTileEntity other = getOtherHalf(cbTileEntity.getWorld(), cbTileEntity.getPos(), cbTileEntity.getCbMetadata());
+		if (other != null) {
+			setDesign(other, design);
+		}
+		return true;
+	}
+
+	/**
+	 * Hammer left click: previous design.
+	 */
+	@Override
+	protected boolean onHammerLeftClick(CbTileEntity cbTileEntity, EntityPlayer entityPlayer) {
+		return setBedDesign(cbTileEntity, DesignHandler.getPrev(DesignType.BED, getDesign(cbTileEntity)));
+	}
+
+	/**
+	 * Hammer right click: next design, or none when sneaking.
+	 */
+	@Override
+	protected boolean onHammerRightClick(CbTileEntity cbTileEntity, EntityPlayer entityPlayer) {
+		return setBedDesign(cbTileEntity, entityPlayer.isSneaking() ? null : DesignHandler.getNext(DesignType.BED, getDesign(cbTileEntity)));
+	}
+
+	/**
+	 * Gets where a face of a part authored with the foot to the south ends up once rotated like the part.
+	 */
+	private static EnumFacing rotateFace(EnumFacing authoredFace, EnumFacing direction) {
+		Vec3d point = SidedUtil.rotate(new Vec3d(0.5 + 0.5 * authoredFace.getXOffset(), 0.5 + 0.5 * authoredFace.getYOffset(), 0.5 + 0.5 * authoredFace.getZOffset()), direction);
+		return EnumFacing.getFacingFromVector((float) (point.x - 0.5), (float) (point.y - 0.5), (float) (point.z - 0.5));
+	}
+
+	/**
+	 * Gets the blanket face textures of a design, by world facing.
+	 */
+	private static Map<EnumFacing, ResourceLocation> getDesignBlanketFaces(String design, boolean head, EnumFacing direction) {
+		int[] faces = head ? DESIGN_HEAD_FACES : DESIGN_FOOT_FACES;
+		Map<EnumFacing, ResourceLocation> textures = new EnumMap<EnumFacing, ResourceLocation>(EnumFacing.class);
+		for (EnumFacing authoredFace : EnumFacing.VALUES) {
+			textures.put(rotateFace(authoredFace, direction), DesignHandler.getBedTexture(design, faces[authoredFace.ordinal()]));
+		}
+		return textures;
+	}
+
 	@Override
 	public List<ShapePart> getRenderParts(int renderData) {
 		boolean head = isHead(renderData);
@@ -162,6 +246,7 @@ public class BlockCarpentersBed extends BlockCoverable implements IShapedBlock {
 		ResourceLocation blanket = colorIdx == 0 ? ShapeTextures.WOOL_WHITE
 			: new ResourceLocation("minecraft", "blocks/wool_colored_" + EnumDyeColor.byMetadata(colorIdx - 1).getName());
 		double yTop = isOccupied(renderData) ? 0.875 : 0.625;
+		String design = inventory ? null : DesignHandler.getDesign(DesignType.BED, renderData >>> DESIGN_SHIFT);
 
 		// Authored for a bed whose foot is to the south
 		List<ShapePart> parts = new ArrayList<ShapePart>();
@@ -179,7 +264,9 @@ public class BlockCarpentersBed extends BlockCoverable implements IShapedBlock {
 			blanketBoxes.add(new AxisAlignedBB(0, yTop - 0.3125, 0.5, 0.0625, yTop, 1));
 			blanketBoxes.add(new AxisAlignedBB(0.9375, yTop - 0.3125, 0.5, 1, yTop, 1));
 			mattress = new AxisAlignedBB(mattressX0, 0.3125, 0.125, mattressX1, 0.5625, 1);
-			parts.add(ShapePart.textured(SidedUtil.rotate(new AxisAlignedBB(0.125, 0.5625, 0.1875, 0.875, 0.6875, 0.5625), direction), ShapeTextures.BED_PILLOW));
+			AxisAlignedBB pillow = SidedUtil.rotate(new AxisAlignedBB(0.125, 0.5625, 0.1875, 0.875, 0.6875, 0.5625), direction);
+			parts.add(design == null ? ShapePart.textured(pillow, ShapeTextures.BED_PILLOW)
+				: ShapePart.textured(pillow, DesignHandler.getBedTexture(design, 0)).withUVRotation(direction));
 		} else {
 			frame.add(new AxisAlignedBB(0, 0.1875, 0, 1, 0.3125, 1));
 			if (!parallelNeg) {
@@ -198,7 +285,14 @@ public class BlockCarpentersBed extends BlockCoverable implements IShapedBlock {
 			parts.add(ShapePart.covered(SidedUtil.rotate(box, direction)));
 		}
 		for (AxisAlignedBB box : blanketBoxes) {
-			parts.add(ShapePart.textured(SidedUtil.rotate(box, direction), blanket));
+			if (design == null) {
+				parts.add(ShapePart.textured(SidedUtil.rotate(box, direction), blanket));
+			} else {
+				// A design replaces the blanket color, its textures picked per face like 1.7.10
+				parts.add(ShapePart.textured(SidedUtil.rotate(box, direction), DesignHandler.getBedTexture(design, head ? 2 : 5))
+					.withFaceTextures(getDesignBlanketFaces(design, head, direction))
+					.withUVRotation(direction));
+			}
 		}
 		parts.add(ShapePart.textured(SidedUtil.rotate(mattress, direction), ShapeTextures.WOOL_WHITE));
 		return parts;

@@ -61,6 +61,11 @@ public class BakedShapedBlock extends AbstractBakedModel {
 				? RenderHelper.getCuboidQuads(part.getCorners(), sprite)
 				: RenderHelper.getBoxQuads(part.getBox(), sprite);
 			for (Quad quad : quads) {
+				ResourceLocation faceTexture = part.getTexture(quad.getFacing());
+				if (faceTexture != null && !faceTexture.equals(part.getTexture())) {
+					quad.setSprite(Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(faceTexture.toString()));
+				}
+				quad.setUVRotation(part.getUVRotation());
 				// Panes blend on the translucent pass, or are cut out when "Enable Pane Alpha Rendering" is off
 				if (part.isTranslucent() && com.carpentersblocks.util.registry.ConfigRegistry.enableAlphaPanes) {
 					quad.setRenderLayer(BlockRenderLayer.TRANSLUCENT);

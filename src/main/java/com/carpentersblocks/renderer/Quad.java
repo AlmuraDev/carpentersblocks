@@ -36,6 +36,10 @@ public class Quad {
 	private boolean _isOblique;
 	private Vec3d _uvOffset;
 	private EnumFacing _uvFloat;
+	// Tint applied by the renderer through block colors (see CoverColorHandler), or -1
+	private int _tintIndex = -1;
+	// Side a top or bottom face was rotated to with SidedUtil; its texture turns with it (null: world aligned)
+	private EnumFacing _uvRotation;
 	
 	public enum Rotation {
 		
@@ -73,6 +77,8 @@ public class Quad {
 		_isOblique = src.isObliqueSlope();
 		_uvFloat = src.getUVFloat();
 		_uvOffset = src.getUVOffset();
+		_tintIndex = src.getTintIndex();
+		_uvRotation = src._uvRotation;
 	}
 	
 	public static Quad getQuad(EnumFacing facing, Vec3d ... inVecs) {
@@ -129,6 +135,18 @@ public class Quad {
 		return quad;
 	}
 	
+	public void setUVRotation(EnumFacing side) {
+		_uvRotation = side;
+	}
+
+	public int getTintIndex() {
+		return _tintIndex;
+	}
+
+	public void setTintIndex(int tintIndex) {
+		_tintIndex = tintIndex;
+	}
+
 	public EnumFacing getFacing() {
 		return _facing;
 	}
@@ -176,7 +194,8 @@ public class Quad {
 	public BakedQuad bake(EnumAttributeLocation location) {
 		VertexFormat vertexFormat = RenderPkg._threadLocalVertexFormat.get();
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(vertexFormat);
-        builder.setTexture(_sprite);        
+        builder.setTexture(_sprite);
+        builder.setQuadTint(_tintIndex);        
         
         boolean isFloatingOverlay = _sprite.getIconName().equals(GRASS_SIDE_OVERLAY)
         	|| _sprite.getIconName().contains("overlay/overlay_")
@@ -198,6 +217,7 @@ public class Quad {
         builder.setQuadOrientation(EnumFacing.getFacingFromVector((float) normal.x, (float) normal.y, (float) normal.z));
 
         UV[] uv = QuadUtil.getUV(this, isFloatingOverlay, location);
+        uv = rotateUV(uv);
         for (int i = 0; i < 4; ++i) {
         	//_rgb = i == 0 ? 0xff0000 : i == 1 ? 0x00ff00 : i == 2 ? 0x0000ff : 0xffff00; // Debug
 	        for (int idx = 0; idx < vertexFormat.getElementCount(); idx++) {
@@ -255,6 +275,31 @@ public class Quad {
 		return builder.build();
 	}
 	
+	/**
+	 * Turns top and bottom face UVs back into the frame a part was authored in (see SidedUtil.rotate),
+	 * so the texture turns with the part.
+	 */
+	private UV[] rotateUV(UV[] uv) {
+		if (_uvRotation == null || (_facing != EnumFacing.UP && _facing != EnumFacing.DOWN)) {
+			return uv;
+		}
+		boolean down = _facing == EnumFacing.DOWN;
+		UV[] out = new UV[uv.length];
+		for (int i = 0; i < uv.length; ++i) {
+			double x = uv[i].getU() / 16.0D;
+			double z = down ? 1.0D - uv[i].getV() / 16.0D : uv[i].getV() / 16.0D;
+			double ax, az;
+			switch (_uvRotation) {
+				case NORTH: ax = 1.0D - x; az = 1.0D - z; break;
+				case EAST:  ax = 1.0D - z; az = x; break;
+				case WEST:  ax = z; az = 1.0D - x; break;
+				default:    ax = x; az = z; break;
+			}
+			out[i] = new UV(ax, down ? 1.0D - az : az);
+		}
+		return out;
+	}
+
 	/**
 	 * Rotates quads about axis. Positive axis is clockwise rotation.
 	 * Negative axis is counter-clockwise rotation.

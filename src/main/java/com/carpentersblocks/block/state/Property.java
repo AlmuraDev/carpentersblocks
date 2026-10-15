@@ -27,6 +27,11 @@ public class Property {
 	public static final IUnlistedProperty<AbstractState> CB_STATE;
 	// Direction a sloping rail above rises toward, when a wedge is drawn under it ("Enable Rail Slope Fill")
 	public static final IUnlistedProperty<EnumFacing> RAIL_SLOPE;
+	// Block state of the plant in a flower pot, worked out with the chunk snapshot
+	public static final IUnlistedProperty<IBlockState> PLANT;
+	// Liquid shown in the block space and its surface height ("Routable Fluids"), or null
+	public static final IUnlistedProperty<IBlockState> ROUTED_FLUID;
+	public static final IUnlistedProperty<Float> ROUTED_FLUID_HEIGHT;
 
 	static {
 		_unlistedProperties = new ArrayList<IUnlistedProperty>();
@@ -39,6 +44,9 @@ public class Property {
 		_unlistedProperties.add(RENDER_FACE = new UnlistedProperty(Boolean[].class, "cbRenderFace"));
 		_unlistedProperties.add(CB_STATE = new UnlistedProperty(AbstractState.class, "cbState"));
 		_unlistedProperties.add(RAIL_SLOPE = new UnlistedProperty(EnumFacing.class, "cbRailSlope"));
+		_unlistedProperties.add(PLANT = new UnlistedProperty(IBlockState.class, "cbPlant"));
+		_unlistedProperties.add(ROUTED_FLUID = new UnlistedProperty(IBlockState.class, "cbRoutedFluid"));
+		_unlistedProperties.add(ROUTED_FLUID_HEIGHT = new UnlistedProperty(Float.class, "cbRoutedFluidHeight"));
 	}
 	
 	public static class UnlistedProperty implements IUnlistedProperty {

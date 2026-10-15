@@ -2,6 +2,7 @@ package com.carpentersblocks.proxy;
 
 import com.carpentersblocks.CarpentersBlocksCachedResources;
 import com.carpentersblocks.entity.EntityCarpentersTile;
+import com.carpentersblocks.renderer.CoverColorHandler;
 import com.carpentersblocks.renderer.ModelLoader;
 import com.carpentersblocks.renderer.entity.RenderCarpentersTile;
 import com.carpentersblocks.util.ModLogger;
@@ -34,7 +35,13 @@ public class ClientProxy extends CommonProxy {
         super.init(event);
         CarpentersBlocksCachedResources.INSTANCE.init();
         //BlockRegistry.registerRenderers();
-    	//Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(CbBlockColor.INSTANCE, BlockRegistry.blockCarpentersBlock);
+            // Biome tints of covers and potted plants, applied by the renderer
+        CoverColorHandler coverColorHandler = new CoverColorHandler();
+        for (net.minecraft.block.Block block : net.minecraftforge.fml.common.registry.ForgeRegistries.BLOCKS) {
+            if (block instanceof com.carpentersblocks.block.BlockCoverable) {
+                net.minecraft.client.Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(coverColorHandler, block);
+            }
+        }
 
         //ShadersHandler.init();
 

@@ -78,4 +78,6 @@ processResources {
 jar {
     archiveName = project.archivesBaseName + " v" + project.version + " - MC " + project.minecraft.version + ".jar"
     destinationDir = project.getBuildDir()
+    // Compile-only copies of optional mod APIs (CTM), provided by those mods at runtime
+    exclude "team/**", "team"
 }

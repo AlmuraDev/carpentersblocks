@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.carpentersblocks.api.ICarpentersHammer;
 import com.carpentersblocks.tileentity.CbTileEntity;
 import com.carpentersblocks.util.attribute.AttributeItemStack;
+import com.carpentersblocks.util.attribute.AttributeString;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 import com.carpentersblocks.util.attribute.EnumAttributeType;
 import com.carpentersblocks.util.block.FlowerPotUtil;
 import com.carpentersblocks.util.handler.EventHandler;
+import com.carpentersblocks.util.handler.DesignHandler;
+import com.carpentersblocks.util.handler.DesignHandler.DesignType;
 
 import net.minecraft.block.BlockCactus;
 import net.minecraft.block.material.Material;
@@ -40,6 +45,8 @@ public class BlockCarpentersFlowerPot extends BlockCoverable implements IShapedB
 
 	public static final int HAS_PLANT = 1 << 16;
 	public static final int TALL_PLANT = 1 << 17;
+	private static final int DESIGN_SHIFT = 18; // 8 bits: design number, 0 for none
+	private static final int DESIGN_MASK = 0xFF;
 
 	private static final AxisAlignedBB POT_BOUNDS = new AxisAlignedBB(0.3125, 0, 0.3125, 0.6875, 0.375, 0.6875);
 	private static final AxisAlignedBB SOIL_BOX = new AxisAlignedBB(0.375, 0.0625, 0.375, 0.625, 0.25, 0.625);
@@ -85,7 +92,86 @@ public class BlockCarpentersFlowerPot extends BlockCoverable implements IShapedB
 				data |= TALL_PLANT;
 			}
 		}
+		data |= DesignHandler.getDesignNumber(DesignType.FLOWERPOT, getDesign(cbTileEntity)) << DESIGN_SHIFT;
 		return data;
+	}
+
+	////////////
+	// Designs
+	////////////
+
+	@Nullable
+	private static String getDesign(CbTileEntity cbTileEntity) {
+		if (!cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_BASIC)) {
+			return null;
+		}
+		return ((AttributeString) cbTileEntity.getAttributeHelper().getAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_BASIC)).getModel();
+	}
+
+	/**
+	 * Sets the pot design, pushing out the cover (a designed pot takes no cover), like 1.7.10.
+	 */
+	private static boolean setDesign(CbTileEntity cbTileEntity, @Nullable String design) {
+		String current = getDesign(cbTileEntity);
+		if (design == null ? current == null : design.equals(current)) {
+			return false;
+		}
+		cbTileEntity.removeAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_BASIC);
+		if (design != null) {
+			cbTileEntity.addAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_BASIC, design);
+			cbTileEntity.dropAttribute(EnumAttributeLocation.HOST, EnumAttributeType.COVER);
+		}
+		cbTileEntity.update(true);
+		return true;
+	}
+
+	/**
+	 * Hammer left click: previous design.
+	 */
+	@Override
+	protected boolean onHammerLeftClick(CbTileEntity cbTileEntity, EntityPlayer entityPlayer) {
+		return setDesign(cbTileEntity, DesignHandler.getPrev(DesignType.FLOWERPOT, getDesign(cbTileEntity)));
+	}
+
+	/**
+	 * Hammer right click: next design, or none when sneaking.
+	 */
+	@Override
+	protected boolean onHammerRightClick(CbTileEntity cbTileEntity, EntityPlayer entityPlayer) {
+		return setDesign(cbTileEntity, entityPlayer.isSneaking() ? null : DesignHandler.getNext(DesignType.FLOWERPOT, getDesign(cbTileEntity)));
+	}
+
+	/**
+	 * A pot with a design takes no cover.
+	 */
+	@Override
+	protected boolean canSupportCover(CbTileEntity cbTileEntity, EnumAttributeLocation location) {
+		return EnumAttributeLocation.HOST.equals(location) && getDesign(cbTileEntity) == null;
+	}
+
+	@Override
+	public List<ShapePart> getRenderParts(int renderData) {
+		String design = DesignHandler.getDesign(DesignType.FLOWERPOT, (renderData >> DESIGN_SHIFT) & DESIGN_MASK);
+		List<ShapePart> parts = new ArrayList<ShapePart>();
+		for (AxisAlignedBB box : getShapeBoxes(renderData)) {
+			parts.add(design == null ? ShapePart.covered(box) : ShapePart.textured(box, DesignHandler.getFlowerPotTexture(design)));
+		}
+		return parts;
+	}
+
+	/**
+	 * Adds the plant's block state, worked out here with the chunk snapshot rather than by the model.
+	 */
+	@Override
+	public IBlockState getExtendedState(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos) {
+		IBlockState extendedState = super.getExtendedState(blockState, blockAccess, blockPos);
+		CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
+		if (cbTileEntity == null || !(extendedState instanceof net.minecraftforge.common.property.IExtendedBlockState)) {
+			return extendedState;
+		}
+		ItemStack plant = getAttributeStack(cbTileEntity, EnumAttributeType.PLANT);
+		IBlockState plantState = plant.isEmpty() ? null : FlowerPotUtil.getPlantState(plant, blockAccess, blockPos);
+		return ((net.minecraftforge.common.property.IExtendedBlockState) extendedState).withProperty(com.carpentersblocks.block.state.Property.PLANT, plantState);
 	}
 
 	private static ItemStack getAttributeStack(CbTileEntity cbTileEntity, EnumAttributeType type) {

@@ -58,7 +58,9 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class BlockCoverable extends Block {
+// Chisel/CTM connected textures connect to the cover (1.7.10 had this for Chisel 2); stripped without CTM
+@net.minecraftforge.fml.common.Optional.Interface(iface = "team.chisel.ctm.api.IFacade", modid = "ctm")
+public abstract class BlockCoverable extends Block implements team.chisel.ctm.api.IFacade {
 	
 	protected static ThreadLocal<Float[]> _threadLocalHitCoords = new ThreadLocal<>();
 	protected static ThreadLocal<EnumFacing> _threadLocalFacing = new ThreadLocal<>();
@@ -1495,7 +1497,7 @@ public abstract class BlockCoverable extends Block {
                 // Tile entity not there yet, render nothing until it is
                 return blockState;
             }
-            return ((IExtendedBlockState)blockState)
+            IExtendedBlockState extendedState = ((IExtendedBlockState)blockState)
             	.withProperty(Property.BLOCK_TYP, this)
     			.withProperty(Property.BLOCK_POS, blockPos)
     			.withProperty(Property.CB_METADATA, getRenderData(blockAccess, blockPos, cbTileEntity))
@@ -1509,8 +1511,108 @@ public abstract class BlockCoverable extends Block {
     			})
     			.withProperty(Property.ATTR_MAP, getRenderAttributeSource(blockAccess, blockPos, cbTileEntity).getAttributeHelper().copyMap())
     			.withProperty(Property.RAIL_SLOPE, getRailSlope(blockState, blockAccess, blockPos));
+            BlockPos fluidPos = getRoutedFluidPos(blockState, blockAccess, blockPos);
+            if (fluidPos != null) {
+                IBlockState fluidState = blockAccess.getBlockState(fluidPos);
+                extendedState = extendedState
+                	.withProperty(Property.ROUTED_FLUID, fluidState)
+                	.withProperty(Property.ROUTED_FLUID_HEIGHT, getFluidHeight(fluidState, blockAccess, fluidPos));
+            }
+            return extendedState;
         }
         return blockState;
+    }
+
+    /**
+     * Gets the block connected textures (Chisel/CTM) treat this block as: the side cover facing the
+     * neighbor asking, else the cover, else the block itself.
+     */
+    @Override
+    public IBlockState getFacade(IBlockAccess blockAccess, BlockPos blockPos, @Nullable EnumFacing side) {
+        IBlockState blockState = blockAccess.getBlockState(blockPos);
+        CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
+        if (cbTileEntity == null) {
+            return blockState;
+        }
+        if (side != null) {
+            IBlockState sideCover = BlockUtil.getAttributeBlockState(cbTileEntity.getAttributeHelper(), EnumAttributeLocation.valueOf(side.ordinal()), EnumAttributeType.COVER);
+            if (sideCover != null) {
+                return sideCover;
+            }
+        }
+        IBlockState cover = BlockUtil.getAttributeBlockState(cbTileEntity.getAttributeHelper(), EnumAttributeLocation.HOST, EnumAttributeType.COVER);
+        return cover != null ? cover : blockState;
+    }
+
+    ////////////
+    // Routable fluids
+    ////////////
+
+    private static boolean isFluid(Block block) {
+        return block instanceof net.minecraft.block.BlockLiquid || block instanceof net.minecraftforge.fluids.IFluidBlock;
+    }
+
+    /**
+     * Gets a liquid beside (or diagonally beside, past open faces) that should show in this block space,
+     * like 1.7.10 ("Routable Fluids"), or null.
+     */
+    @Nullable
+    private BlockPos getRoutedFluidPos(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos) {
+        if (!ConfigRegistry.enableRoutableFluids || isFluid(blockAccess.getBlockState(blockPos.up()).getBlock())) {
+            return null;
+        }
+        // Straight neighbors first, then diagonals reached through an open face and an open neighbor
+        for (EnumFacing side : EnumFacing.HORIZONTALS) {
+            BlockPos fluidPos = blockPos.offset(side);
+            if (isFluid(blockAccess.getBlockState(fluidPos).getBlock()) && !blockState.isSideSolid(blockAccess, blockPos, side)) {
+                return fluidPos;
+            }
+        }
+        for (EnumFacing side : EnumFacing.HORIZONTALS) {
+            EnumFacing turn = side.rotateY();
+            BlockPos fluidPos = blockPos.offset(side).offset(turn);
+            if (!isFluid(blockAccess.getBlockState(fluidPos).getBlock())) {
+                continue;
+            }
+            for (EnumFacing[] route : new EnumFacing[][] { { side, turn }, { turn, side } }) {
+                BlockPos bridgePos = blockPos.offset(route[0]);
+                IBlockState bridgeState = blockAccess.getBlockState(bridgePos);
+                if (!blockState.isSideSolid(blockAccess, blockPos, route[0])
+                		&& !bridgeState.isSideSolid(blockAccess, bridgePos, route[0].getOpposite())
+                		&& !bridgeState.isSideSolid(blockAccess, bridgePos, route[1])) {
+                    return fluidPos;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the surface height of a liquid block.
+     */
+    private static float getFluidHeight(IBlockState fluidState, IBlockAccess blockAccess, BlockPos fluidPos) {
+        Block block = fluidState.getBlock();
+        if (block instanceof net.minecraft.block.BlockLiquid) {
+            return 1.0F - net.minecraft.block.BlockLiquid.getLiquidHeightPercent(fluidState.getValue(net.minecraft.block.BlockLiquid.LEVEL));
+        }
+        if (block instanceof net.minecraftforge.fluids.BlockFluidBase) {
+            return Math.max(0.0625F, Math.min(1.0F, ((net.minecraftforge.fluids.BlockFluidBase) block).getQuantaPercentage(blockAccess, fluidPos)) * 0.875F);
+        }
+        return 0.875F;
+    }
+
+    /**
+     * A liquid beside this block doesn't draw its side into the block space when the block shows the
+     * liquid itself ("Routable Fluids").
+     */
+    @Override
+    public boolean doesSideBlockRendering(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos, EnumFacing face) {
+        if (ConfigRegistry.enableRoutableFluids && face.getAxis().isHorizontal()
+        		&& isFluid(blockAccess.getBlockState(blockPos.offset(face)).getBlock())
+        		&& getRoutedFluidPos(blockState, blockAccess, blockPos) != null) {
+            return true;
+        }
+        return super.doesSideBlockRendering(blockState, blockAccess, blockPos, face);
     }
 
     /**

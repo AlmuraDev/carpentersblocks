@@ -64,6 +64,8 @@ public class RenderPkg {
     private EnumAttributeLocation _location;
     private IModelState _modelState;
     private EnumFacing _railSlope;
+    private IBlockState _routedFluid;
+    private float _routedFluidHeight;
     private final static double SIDE_DEPTH = 1/16D;
     private final static double SNOW_SIDE_DEPTH = 1/8D;
     
@@ -77,6 +79,9 @@ public class RenderPkg {
     	_uncoveredRenderLayer = blockState.getBlock().getRenderLayer();
     	_cbAttrHelper = new AttributeHelper((Map<Key, AbstractAttribute>) getThreadedProperty(Property.ATTR_MAP));
     	_railSlope = (EnumFacing) getThreadedProperty(Property.RAIL_SLOPE);
+    	_routedFluid = (IBlockState) getThreadedProperty(Property.ROUTED_FLUID);
+    	Float fluidHeight = (Float) getThreadedProperty(Property.ROUTED_FLUID_HEIGHT);
+    	_routedFluidHeight = fluidHeight != null ? fluidHeight : 0.875F;
     	_quadContainer = new QuadContainer(EnumAttributeLocation.HOST);
     }
     
@@ -246,22 +251,19 @@ public class RenderPkg {
         		int designIdx = DesignHandler.listChisel.indexOf(design);
         		TextureAtlasSprite chiselSprite = designIdx >= 0 && designIdx < SpriteRegistry.sprite_design_chisel.size() ? SpriteRegistry.sprite_design_chisel.get(designIdx) : null;
         		for (EnumFacing facing : chiselSprite != null ? EnumFacing.VALUES : new EnumFacing[0]) {
-        			quads.addAll(getQuadsForSide(quadContainer, facing, chiselSprite, IConstants.DEFAULT_RGB, false));
+        			quads.addAll(getQuadsForSide(quadContainer, facing, chiselSprite, IConstants.DEFAULT_RGB, -1));
         		}
 	        }
 	        
 	        // Add overlay quads
 	        if (hasOverlay && overlayRenderLayer.equals(renderLayer)) {
 	        	Overlay overlay = OverlayHandler.getOverlayType(((AttributeItemStack)_cbAttrHelper.getAttribute(location, EnumAttributeType.OVERLAY)).getModel());
-	        	int overlayColor = IConstants.DEFAULT_RGB;
-	        	if (Overlay.GRASS.equals(overlay)) {
-	        		IBlockState overlayBlockState = Blocks.GRASS.getDefaultState();
-	        		overlayColor = blockColors.colorMultiplier(overlayBlockState, Minecraft.getMinecraft().world, _blockPos, ForgeHooksClient.getWorldRenderPass());
-	        	}        	
+	        	// Grass is tinted by the renderer (CoverColorHandler)
+	        	int overlayTint = Overlay.GRASS.equals(overlay) ? CoverColorHandler.TINT_GRASS : -1;
 	        	for (EnumFacing facing : EnumFacing.VALUES) {
 	        		TextureAtlasSprite overlaySprite = OverlayHandler.getOverlaySprite(overlay, facing);
 	        		if (overlaySprite != null) {
-	        			quads.addAll(getQuadsForSide(quadContainer, facing, overlaySprite, overlayColor, false));
+	        			quads.addAll(getQuadsForSide(quadContainer, facing, overlaySprite, IConstants.DEFAULT_RGB, overlayTint));
 	        		}
 	        	}
 	        }
@@ -277,10 +279,15 @@ public class RenderPkg {
 	        	for (EnumFacing facing : EnumFacing.VALUES) {
 	        		TextureAtlasSprite overlaySprite = OverlayHandler.getOverlaySprite(Overlay.SNOW, facing);
 	        		if (overlaySprite != null) {
-	        			quads.addAll(getQuadsForSide(quadContainer, facing, overlaySprite, null, false));
+	        			quads.addAll(getQuadsForSide(quadContainer, facing, overlaySprite, null, -1));
 	        		}
 	        	}
 	        }
+    	}
+
+    	// Surface of a liquid beside, shown in the block space ("Routable Fluids")
+    	if (_routedFluid != null && renderLayer.equals(_routedFluid.getBlock().getRenderLayer())) {
+    		quads.addAll(getRoutedFluidQuads(_routedFluid, _routedFluidHeight));
     	}
 
     	// Wedge in the block's cover under a sloping rail above, like 1.7.10 (no overlays)
@@ -294,6 +301,34 @@ public class RenderPkg {
     	}
 
         return quads;
+    }
+
+    /**
+     * Gets the top and underside of a liquid surface across the block space.
+     */
+    private static List<BakedQuad> getRoutedFluidQuads(IBlockState fluidState, float height) {
+    	List<BakedQuad> quads = new ArrayList<BakedQuad>();
+    	net.minecraftforge.fluids.Fluid fluid = net.minecraftforge.fluids.FluidRegistry.lookupFluidForBlock(fluidState.getBlock());
+    	if (fluid == null || fluid.getStill() == null) {
+    		return quads;
+    	}
+    	TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(fluid.getStill().toString());
+    	// Vanilla liquids take the biome color from block colors; others have a fixed fluid color
+    	boolean vanilla = fluidState.getBlock() instanceof net.minecraft.block.BlockLiquid;
+    	int rgb = vanilla ? IConstants.DEFAULT_RGB : fluid.getColor() & 0xFFFFFF;
+    	Quad top = Quad.getQuad(EnumFacing.UP, sprite, rgb,
+    		new Vec3d(0.0D, height, 0.0D), new Vec3d(0.0D, height, 1.0D), new Vec3d(1.0D, height, 1.0D), new Vec3d(1.0D, height, 0.0D));
+    	Quad bottom = Quad.getQuad(EnumFacing.DOWN, sprite, rgb,
+    		new Vec3d(0.0D, height, 1.0D), new Vec3d(0.0D, height, 0.0D), new Vec3d(1.0D, height, 0.0D), new Vec3d(1.0D, height, 1.0D));
+    	for (Quad quad : new Quad[] { top, bottom }) {
+    		if (quad != null) {
+    			if (vanilla) {
+    				quad.setTintIndex(CoverColorHandler.TINT_FLUID);
+    			}
+    			quads.add(quad.bake(EnumAttributeLocation.HOST));
+    		}
+    	}
+    	return quads;
     }
 
     /**
@@ -350,10 +385,8 @@ public class RenderPkg {
 	    	}
     	}
     	
-    	int attrRgb = -1;
-    	if (blockState != null) {
-    		attrRgb = blockColors.colorMultiplier(blockState, Minecraft.getMinecraft().world, _blockPos, ForgeHooksClient.getWorldRenderPass());
-    	}
+    	// Biome tints (grass, leaves) are applied by the renderer through CoverColorHandler, which reads the
+    	// chunk snapshot; reading the live world here would be off the main thread
     	
     	// Add quads
     	for (EnumFacing facing : EnumFacing.values()) {
@@ -366,7 +399,7 @@ public class RenderPkg {
 	    						Quad newQuad = new Quad(quad);
 	    						if (Blocks.GRASS.equals(blockState.getBlock())) {
     								if (isTintedGrassSprite(bakedQuad.getSprite())) {
-    									newQuad.setRgb(attrRgb);
+    									newQuad.setTintIndex(CoverColorHandler.getCoverTint(location, 0));
     								} else if (hasDye) {
     									newQuad.setRgb(dyeRgb);
     								}
@@ -374,7 +407,7 @@ public class RenderPkg {
     								if (hasDye) {
     									newQuad.setRgb(dyeRgb);
     								} else {
-    									newQuad.setRgb(attrRgb);
+    									newQuad.setTintIndex(CoverColorHandler.getCoverTint(location, bakedQuad.getTintIndex()));
     								}
 	    				    	} else if (hasDye) {
 	    				    		newQuad.setRgb(dyeRgb);
@@ -387,7 +420,8 @@ public class RenderPkg {
 	    			}
 	    		}
 	    		if (quad.getRenderLayer().equals(renderLayer)) {
-	    			if (hasDye) {
+	    			// Dye colors the block, not fixed textures (wool, iron, glass), like 1.7.10
+	    			if (hasDye && quad.canCover()) {
 	    				quad.setRgb(dyeRgb);
 	    			}
 	    			map.get(facing).add(quad);
@@ -402,13 +436,14 @@ public class RenderPkg {
     	return "minecraft:blocks/grass_top".equalsIgnoreCase(sprite.getIconName()) || "minecraft:blocks/grass_side_overlay".equalsIgnoreCase(sprite.getIconName());
     }
     
-    private List<BakedQuad> getQuadsForSide(QuadContainer quadContainer, EnumFacing facing, TextureAtlasSprite spriteOverride, Integer rgbOverride, boolean isCover) {
+    private List<BakedQuad> getQuadsForSide(QuadContainer quadContainer, EnumFacing facing, TextureAtlasSprite spriteOverride, Integer rgbOverride, int tintIndex) {
     	List<Quad> srcQuads = quadContainer.getQuads(null, facing);
     	List<Quad> destQuads = new ArrayList<Quad>(srcQuads.size());
     	for (Quad quad : srcQuads) {
     		Quad newQuad = new Quad(quad);
 			if (quad.canCover() && spriteOverride != null) {
 				newQuad.setSprite(spriteOverride);
+				newQuad.setTintIndex(tintIndex);
 			}
     		if (rgbOverride != null) {
     			newQuad.setRgb(rgbOverride);

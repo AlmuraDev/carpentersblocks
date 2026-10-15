@@ -21,6 +21,10 @@ public class ShapePart {
 	private final boolean _translucent;
 	private final boolean _fullBright;
 	private int _rgb = -1;
+	// Textures for single faces, over the part texture (bed designs)
+	private java.util.Map<net.minecraft.util.EnumFacing, ResourceLocation> _faceTextures;
+	// Side the part was rotated to with SidedUtil, so top and bottom textures turn with it (null: world aligned)
+	private net.minecraft.util.EnumFacing _uvRotation;
 
 	private ShapePart(AxisAlignedBB box, @Nullable Vec3d[] corners, @Nullable ResourceLocation texture, boolean translucent, boolean fullBright) {
 		_box = box;
@@ -113,6 +117,38 @@ public class ShapePart {
 	@Nullable
 	public ResourceLocation getTexture() {
 		return _texture;
+	}
+
+	/**
+	 * Gets the texture of one face: its own texture if set, otherwise the part texture.
+	 */
+	@Nullable
+	public ResourceLocation getTexture(net.minecraft.util.EnumFacing face) {
+		if (_faceTextures != null && _faceTextures.containsKey(face)) {
+			return _faceTextures.get(face);
+		}
+		return _texture;
+	}
+
+	/**
+	 * Sets textures for single faces (world facing), over the part texture.
+	 */
+	public ShapePart withFaceTextures(java.util.Map<net.minecraft.util.EnumFacing, ResourceLocation> faceTextures) {
+		_faceTextures = new java.util.EnumMap<net.minecraft.util.EnumFacing, ResourceLocation>(faceTextures);
+		return this;
+	}
+
+	/**
+	 * Turns top and bottom textures with a part rotated by {@link com.carpentersblocks.block.data.SidedUtil#rotate} to a side.
+	 */
+	public ShapePart withUVRotation(net.minecraft.util.EnumFacing side) {
+		_uvRotation = side;
+		return this;
+	}
+
+	@Nullable
+	public net.minecraft.util.EnumFacing getUVRotation() {
+		return _uvRotation;
 	}
 
 	public boolean isTranslucent() {

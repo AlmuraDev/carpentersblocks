@@ -3,18 +3,22 @@ package com.carpentersblocks.renderer;
 import java.util.function.Predicate;
 
 import com.carpentersblocks.CarpentersBlocks;
+import com.carpentersblocks.block.IShapedBlock;
 import com.carpentersblocks.renderer.model.ModelBlock;
 import com.carpentersblocks.renderer.model.ModelCollapsibleBlock;
 import com.carpentersblocks.renderer.model.ModelPressurePlate;
+import com.carpentersblocks.renderer.model.ModelShapedBlock;
 import com.carpentersblocks.renderer.model.ModelSlope;
 import com.carpentersblocks.util.registry.BlockRegistry;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.resource.IResourceType;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class ModelLoader implements ICustomModelLoader {
 	
@@ -36,9 +40,13 @@ public class ModelLoader implements ICustomModelLoader {
     		return new ModelCollapsibleBlock();
     	} else if (resourceLocation.getPath().equals(BlockRegistry.REGISTRY_NAME_PRESSURE_PLATE)) {
     		return new ModelPressurePlate();
-    	} else {
-    		return null;
     	}
+    	// Blocks drawn from their boxes (fences, doors, torches...)
+    	Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(resourceLocation.getNamespace(), resourceLocation.getPath()));
+    	if (block instanceof IShapedBlock) {
+    		return new ModelShapedBlock(block);
+    	}
+    	return null;
 	}
 	
 	/**

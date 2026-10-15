@@ -98,7 +98,28 @@ public class RenderPkg {
     		_quadContainer.add(quad);
     	}
     }
-    
+
+    // Finished quads added as they are (plants in flower pots), by render layer
+    private final Map<BlockRenderLayer, List<BakedQuad>> _extraQuads = new java.util.EnumMap<BlockRenderLayer, List<BakedQuad>>(BlockRenderLayer.class);
+
+    /**
+     * Adds a finished quad, drawn as is in a render layer, without covers.
+     */
+    public void addBakedQuad(BakedQuad bakedQuad, BlockRenderLayer renderLayer) {
+    	_extraQuads.computeIfAbsent(renderLayer, layer -> new ArrayList<BakedQuad>()).add(bakedQuad);
+    }
+
+    /**
+     * Gets the block attributes, or null when drawing an item.
+     */
+    public AttributeHelper getAttributeHelper() {
+    	return _cbAttrHelper;
+    }
+
+    public BlockPos getBlockPos() {
+    	return _blockPos;
+    }
+
 	/**
 	 * Rotates quads about facing axis.
 	 * 
@@ -122,14 +143,18 @@ public class RenderPkg {
     public List<BakedQuad> getInventoryQuads() {
     	return _quadContainer.bakeQuads();
     }
-    
+
     /**
      * Gets a final list of baked quads for rendering.
-     * 
+     *
      * @return a list of baked quads
      */
     public List<BakedQuad> getQuads() {
     	List<BakedQuad> quads = new ArrayList<BakedQuad>();
+    	List<BakedQuad> extraQuads = _extraQuads.get(MinecraftForgeClient.getRenderLayer());
+    	if (extraQuads != null) {
+    		quads.addAll(extraQuads);
+    	}
         BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
         BlockRenderLayer renderLayer = MinecraftForgeClient.getRenderLayer();
         IBlockState hostBlockState = _cbAttrHelper.hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.COVER) ?

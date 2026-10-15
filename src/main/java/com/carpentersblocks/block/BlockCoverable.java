@@ -32,6 +32,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -152,11 +153,90 @@ public abstract class BlockCoverable extends Block {
     }
     
     /**
+     * Gets the data passed to the renderer, and to {@link IShapedBlock} for the block shape.
+     * <p>
+     * Blocks whose shape depends on their neighbors (fences) add that here.
+     *
+     * @param blockAccess the block accessor
+     * @param blockPos the block position
+     * @param cbTileEntity the tile entity
+     * @return the render data
+     */
+    public int getRenderData(IBlockAccess blockAccess, BlockPos blockPos, CbTileEntity cbTileEntity) {
+        return cbTileEntity.getCbMetadata();
+    }
+
+    /**
+     * Gets the {@link IShapedBlock} collision or selection boxes, or null for blocks without a box shape.
+     */
+    @Nullable
+    private List<AxisAlignedBB> getShapeBoxes(IBlockAccess blockAccess, BlockPos blockPos, boolean collision) {
+        if (!(this instanceof IShapedBlock)) {
+            return null;
+        }
+        CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
+        if (cbTileEntity == null) {
+            return null;
+        }
+        int renderData = getRenderData(blockAccess, blockPos, cbTileEntity);
+        IShapedBlock shapedBlock = (IShapedBlock) this;
+        return collision ? shapedBlock.getCollisionBoxes(renderData) : shapedBlock.getSelectionBoxes(renderData);
+    }
+
+    /**
+     * Shaped blocks collide with their boxes.
+     */
+    @Override
+    public void addCollisionBoxToList(IBlockState blockState, World world, BlockPos blockPos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entity, boolean isActualState) {
+        List<AxisAlignedBB> boxes = getShapeBoxes(world, blockPos, true);
+        if (boxes == null) {
+            super.addCollisionBoxToList(blockState, world, blockPos, entityBox, collidingBoxes, entity, isActualState);
+            return;
+        }
+        for (AxisAlignedBB box : boxes) {
+            addCollisionBoxToList(blockPos, entityBox, collidingBoxes, box);
+        }
+    }
+
+    /**
+     * Shaped blocks are outlined around all their boxes.
+     */
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos) {
+        List<AxisAlignedBB> boxes = getShapeBoxes(blockAccess, blockPos, false);
+        if (boxes == null || boxes.isEmpty()) {
+            return super.getBoundingBox(blockState, blockAccess, blockPos);
+        }
+        AxisAlignedBB bounds = boxes.get(0);
+        for (AxisAlignedBB box : boxes) {
+            bounds = bounds.union(box);
+        }
+        return bounds;
+    }
+
+    /**
      * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit.
      */
     @Nullable
     @Override
     public RayTraceResult collisionRayTrace(IBlockState blockState, World world, BlockPos blockPos, Vec3d start, Vec3d end) {
+        List<AxisAlignedBB> boxes = getShapeBoxes(world, blockPos, false);
+        if (boxes != null) {
+            // Nearest box hit
+            RayTraceResult nearest = null;
+            double nearestDist = Double.MAX_VALUE;
+            for (AxisAlignedBB box : boxes) {
+                RayTraceResult result = rayTrace(blockPos, start, end, box);
+                if (result != null) {
+                    double dist = result.hitVec.squareDistanceTo(start);
+                    if (dist < nearestDist) {
+                        nearest = result;
+                        nearestDist = dist;
+                    }
+                }
+            }
+            return nearest;
+        }
         if (this instanceof IStateImplementor) {
 	    	List<RayTraceResult> list = Lists.<RayTraceResult>newArrayList();
 	        CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
@@ -859,7 +939,8 @@ public abstract class BlockCoverable extends Block {
      * @param itemStacks the drops
      */
     private void removeBlockDrop(List<ItemStack> itemStacks) {
-        Item blockItem = Item.getItemFromBlock(this);
+        // Doors and beds drop their own item, not an ItemBlock
+        Item blockItem = getItemDropped(getDefaultState(), new java.util.Random(), 0);
         itemStacks.removeIf(itemStack -> itemStack.getItem() == blockItem);
     }
 
@@ -1364,7 +1445,11 @@ public abstract class BlockCoverable extends Block {
      * @param location the block attribute location
      */
     protected boolean canSupportCover(CbTileEntity cbTileEntity, EnumAttributeLocation location) {
-        return true;
+        // Like 1.7.10: one cover for the whole block, side covers only where a block allows them
+        if (EnumAttributeLocation.HOST.equals(location)) {
+            return true;
+        }
+        return this instanceof IShapedBlock && ((IShapedBlock) this).supportsSideCovers();
     }
 
     /**
@@ -1405,10 +1490,14 @@ public abstract class BlockCoverable extends Block {
     public IBlockState getExtendedState(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos) {
     	if (blockState instanceof IExtendedBlockState) {
             CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
+            if (cbTileEntity == null) {
+                // Tile entity not there yet, render nothing until it is
+                return blockState;
+            }
             return ((IExtendedBlockState)blockState)
             	.withProperty(Property.BLOCK_TYP, this)
     			.withProperty(Property.BLOCK_POS, blockPos)
-    			.withProperty(Property.CB_METADATA, cbTileEntity.getCbMetadata())
+    			.withProperty(Property.CB_METADATA, getRenderData(blockAccess, blockPos, cbTileEntity))
     			.withProperty(Property.RENDER_FACE, new Boolean[] {
     				this.shouldSideBeRendered(blockState, blockAccess, blockPos, EnumFacing.DOWN),
     				this.shouldSideBeRendered(blockState, blockAccess, blockPos, EnumFacing.UP),

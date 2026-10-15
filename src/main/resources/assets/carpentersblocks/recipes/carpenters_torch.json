@@ -1,0 +1,6 @@
+{
+  "type": "forge:ore_shaped",
+  "pattern": [ "X", "Y" ],
+  "key": { "X": { "item": "minecraft:coal", "data": 0 }, "Y": { "item": "carpentersblocks:carpenters_block" } },
+  "result": { "item": "carpentersblocks:carpenters_torch", "count": 8 }
+}

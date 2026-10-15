@@ -1,0 +1,6 @@
+{
+  "type": "forge:ore_shaped",
+  "pattern": [ "X", "Y" ],
+  "key": { "X": { "type": "forge:ore_dict", "ore": "stickWood" }, "Y": { "item": "carpentersblocks:carpenters_block" } },
+  "result": { "item": "carpentersblocks:carpenters_lever", "count": 1 }
+}

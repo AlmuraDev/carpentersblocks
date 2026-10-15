@@ -1,0 +1,6 @@
+{
+  "type": "forge:ore_shaped",
+  "pattern": [ "XXX", "YYY" ],
+  "key": { "X": { "item": "minecraft:hardened_clay" }, "Y": { "item": "carpentersblocks:carpenters_block" } },
+  "result": { "item": "carpentersblocks:carpenters_tile", "count": 12 }
+}

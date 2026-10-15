@@ -17,6 +17,14 @@ public class BlockCarpentersBlock extends BlockCoverable {
         super(material);
     }
 
+    /**
+     * Covers on every side, like 1.7.10.
+     */
+    @Override
+    protected boolean canSupportCover(CbTileEntity cbTileEntity, com.carpentersblocks.util.attribute.EnumAttributeLocation location) {
+        return true;
+    }
+
     @Override
     /**
      * Alters block direction.

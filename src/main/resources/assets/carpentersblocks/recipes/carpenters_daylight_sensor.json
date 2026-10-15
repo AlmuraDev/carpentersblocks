@@ -1,0 +1,6 @@
+{
+  "type": "forge:ore_shaped",
+  "pattern": [ "WWW", "XYX", "ZZZ" ],
+  "key": { "W": { "item": "minecraft:glass" }, "X": { "item": "minecraft:redstone" }, "Y": { "item": "minecraft:dye", "data": 4 }, "Z": { "item": "carpentersblocks:carpenters_block" } },
+  "result": { "item": "carpentersblocks:carpenters_daylight_sensor", "count": 1 }
+}

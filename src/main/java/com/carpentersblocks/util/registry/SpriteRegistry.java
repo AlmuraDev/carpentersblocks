@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.CarpentersBlocksCachedResources;
+import com.carpentersblocks.block.ShapeTextures;
 import com.carpentersblocks.util.handler.DesignHandler;
 
 import net.minecraft.client.Minecraft;
@@ -84,6 +85,9 @@ public class SpriteRegistry {
             sprite_overlay_snow_side       = event.getMap().registerSprite(RESOURCE_OVERLAY_SNOW_SIDE);
             sprite_overlay_mycelium_side   = event.getMap().registerSprite(RESOURCE_OVERLAY_MYCELIUM_SIDE);
             sprite_tile_blank              = event.getMap().registerSprite(RESOURCE_TILE_BLANK);
+            for (ResourceLocation texture : ShapeTextures.getModTextures()) {
+            	event.getMap().registerSprite(texture);
+            }
             sprite_design_chisel.clear();
             sprite_design_bed.clear();
             sprite_design_flower_pot.clear();

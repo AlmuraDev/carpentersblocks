@@ -8,23 +8,23 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 public class ConfigRegistry {
 
 	// Block properties
-    public static boolean enableBarrier          = false;
-    public static boolean enableBed              = false;
-    public static boolean enableButton           = false;
+    public static boolean enableBarrier          = true;
+    public static boolean enableBed              = true;
+    public static boolean enableButton           = true;
     public static boolean enableCollapsibleBlock = true;
-    public static boolean enableDaylightSensor   = false;
-    public static boolean enableDoor             = false;
-    public static boolean enableFlowerPot        = false;
-    public static boolean enableGarageDoor       = false;
-    public static boolean enableGate             = false;
-    public static boolean enableHatch            = false;
-    public static boolean enableLadder           = false;
-    public static boolean enableLever            = false;
+    public static boolean enableDaylightSensor   = true;
+    public static boolean enableDoor             = true;
+    public static boolean enableFlowerPot        = true;
+    public static boolean enableGarageDoor       = true;
+    public static boolean enableGate             = true;
+    public static boolean enableHatch            = true;
+    public static boolean enableLadder           = true;
+    public static boolean enableLever            = true;
     public static boolean enablePressurePlate    = true;
-    public static boolean enableSafe             = false;
+    public static boolean enableSafe             = true;
     public static boolean enableSlope            = true;
-    public static boolean enableStairs           = false;
-    public static boolean enableTorch            = false;
+    public static boolean enableStairs           = true;
+    public static boolean enableTorch            = true;
 	
     // Item properties
     public static boolean enableHammer = true;

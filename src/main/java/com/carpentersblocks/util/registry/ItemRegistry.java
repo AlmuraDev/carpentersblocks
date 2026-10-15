@@ -2,6 +2,9 @@ package com.carpentersblocks.util.registry;
 
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.item.ItemCarpentersChisel;
+import com.carpentersblocks.item.ItemCarpentersBed;
+import com.carpentersblocks.item.ItemCarpentersDoor;
+import com.carpentersblocks.item.ItemCarpentersTile;
 import com.carpentersblocks.item.ItemCarpentersHammer;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -45,7 +48,27 @@ public class ItemRegistry {
 			}
     		event.getRegistry().register(this.itemCarpentersChisel);
     	}
-    	// TODO: Register other items
+    	if (ConfigRegistry.enableDoor) {
+    		itemCarpentersDoor = new ItemCarpentersDoor()
+    			.setRegistryName("carpenters_door_item")
+    			.setTranslationKey("itemCarpentersDoor")
+    			.setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
+    		event.getRegistry().register(itemCarpentersDoor);
+    	}
+    	if (ConfigRegistry.enableBed) {
+    		itemCarpentersBed = new ItemCarpentersBed()
+    			.setRegistryName("carpenters_bed_item")
+    			.setTranslationKey("itemCarpentersBed")
+    			.setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
+    		event.getRegistry().register(itemCarpentersBed);
+    	}
+    	if (ConfigRegistry.enableTile) {
+    		itemCarpentersTile = new ItemCarpentersTile()
+    			.setRegistryName("carpenters_tile")
+    			.setTranslationKey("itemCarpentersTile")
+    			.setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
+    		event.getRegistry().register(itemCarpentersTile);
+    	}
     }
     
     @SubscribeEvent
@@ -56,6 +79,15 @@ public class ItemRegistry {
         }
         if (ConfigRegistry.enableChisel) {
             ModelLoader.setCustomModelResourceLocation(itemCarpentersChisel, 0, new ModelResourceLocation(CarpentersBlocks.MOD_ID + ":" + "carpenters_chisel"));
+        }
+        if (ConfigRegistry.enableDoor) {
+            ModelLoader.setCustomModelResourceLocation(itemCarpentersDoor, 0, new ModelResourceLocation(CarpentersBlocks.MOD_ID + ":" + "carpenters_door_item", "inventory"));
+        }
+        if (ConfigRegistry.enableBed) {
+            ModelLoader.setCustomModelResourceLocation(itemCarpentersBed, 0, new ModelResourceLocation(CarpentersBlocks.MOD_ID + ":" + "carpenters_bed_item", "inventory"));
+        }
+        if (ConfigRegistry.enableTile) {
+            ModelLoader.setCustomModelResourceLocation(itemCarpentersTile, 0, new ModelResourceLocation(CarpentersBlocks.MOD_ID + ":" + "carpenters_tile", "inventory"));
         }
         /*
         if (enableTile) {

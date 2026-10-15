@@ -1,0 +1,17 @@
+{
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "X X",
+    "XXX",
+    "X X"
+  ],
+  "key": {
+    "X": {
+      "item": "carpentersblocks:carpenters_block"
+    }
+  },
+  "result": {
+    "item": "carpentersblocks:carpenters_ladder",
+    "count": 4
+  }
+}

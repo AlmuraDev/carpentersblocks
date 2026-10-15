@@ -361,17 +361,52 @@ public class Quad {
 	 * @return <code>true</code> if transformation succeeds, <code>false</code> if it fails.
 	 */
 	public boolean applyFacing(boolean sortVecs, EnumFacing facing) {
+		// The side the quad faces: its current winding once it has one (rotated or relabeled quads),
+		// otherwise the facing it is built with
+		Vec3d[] previousVecs = _vecs;
+		Vec3d front = _facing != null && _vecs != null ? computeNormal(_vecs) : null;
+		boolean hadWinding = front != null;
+		if (front == null) {
+			front = new Vec3d(facing.getDirectionVec());
+		}
 		if (sortVecs) {
 			_vecs = QuadUtil.sortVec3dsByFacing(facing, _vecs);
+		}
+		// Sorting by a facing that is not the face's own (sloped faces) can wind a face backwards or
+		// scramble a triangle's corners, which hides it. A quad that already had a correct winding keeps it.
+		if (sortVecs && hadWinding && (!QuadUtil.isValid(this) || isMisSorted(_vecs, front))) {
+			_vecs = previousVecs;
 		}
 		if (!QuadUtil.isValid(this)) {
 			return false;
 		}
 		_facing = facing;
-		Vec3d[] vecs1 = new LinkedHashSet<Vec3d>(Arrays.asList(this.getVecs())).toArray(new Vec3d[this.getVecs().length]);
-		_normal = (vecs1[1].subtract(vecs1[0])).crossProduct(vecs1[2].subtract(vecs1[1])).normalize();
+		_normal = computeNormal(_vecs);
 		_isOblique = isSloped(Axis.X) && isSloped(Axis.Y) && isSloped(Axis.Z);
 		return true;
+	}
+
+	/**
+	 * Whether sorted vertices face away from the front, or repeat a triangle corner in non adjacent
+	 * slots (a twisted quad).
+	 */
+	private static boolean isMisSorted(Vec3d[] vecs, Vec3d front) {
+		Vec3d normal = computeNormal(vecs);
+		if (normal == null || normal.dotProduct(front) < 0.0D) {
+			return true;
+		}
+		return vecs.length == 4 && (vecs[0].equals(vecs[2]) || vecs[1].equals(vecs[3]));
+	}
+
+	/**
+	 * Gets the front normal of vertices (counter clockwise seen from the front), or null if degenerate.
+	 */
+	private static Vec3d computeNormal(Vec3d[] vecs) {
+		Vec3d[] unique = new LinkedHashSet<Vec3d>(Arrays.asList(vecs)).toArray(new Vec3d[0]);
+		if (unique.length < 3 || unique[0] == null || unique[1] == null || unique[2] == null) {
+			return null;
+		}
+		return (unique[1].subtract(unique[0])).crossProduct(unique[2].subtract(unique[1])).normalize();
 	}
 	
 	public Vec3d getNormal() {

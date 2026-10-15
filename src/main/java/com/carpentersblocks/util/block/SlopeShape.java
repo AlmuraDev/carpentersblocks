@@ -43,6 +43,43 @@ public class SlopeShape {
 		return boxes;
 	}
 
+	/**
+	 * Whether a face of the slope is completely solid (a full square), so it can take a side cover.
+	 */
+	public static boolean isFaceFull(Type type, Rotation rotation, net.minecraft.util.EnumFacing face) {
+		List<AxisAlignedBB> boxes = getBoxes(type, rotation);
+		double edge = face.getAxisDirection() == net.minecraft.util.EnumFacing.AxisDirection.POSITIVE ? 1.0D - 0.5D / RES : 0.5D / RES;
+		for (int a = 0; a < RES; ++a) {
+			for (int b = 0; b < RES; ++b) {
+				double u = (a + 0.5D) / RES;
+				double v = (b + 0.5D) / RES;
+				double x, y, z;
+				switch (face.getAxis()) {
+					case X:
+						x = edge; y = u; z = v;
+						break;
+					case Y:
+						x = u; y = edge; z = v;
+						break;
+					default:
+						x = u; y = v; z = edge;
+						break;
+				}
+				boolean covered = false;
+				for (AxisAlignedBB box : boxes) {
+					if (x > box.minX && x < box.maxX && y > box.minY && y < box.maxY && z > box.minZ && z < box.maxZ) {
+						covered = true;
+						break;
+					}
+				}
+				if (!covered) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	private static List<AxisAlignedBB> buildBoxes(Type type, Rotation rotation) {
 		boolean[][][] solid = new boolean[RES][RES][RES];
 		for (int x = 0; x < RES; ++x) {

@@ -1,0 +1,6 @@
+{
+  "type": "forge:ore_shaped",
+  "pattern": [ "XXX", "XYX", "XZX" ],
+  "key": { "X": { "item": "carpentersblocks:carpenters_block" }, "Y": { "item": "minecraft:iron_block" }, "Z": { "item": "minecraft:redstone" } },
+  "result": { "item": "carpentersblocks:carpenters_safe", "count": 1 }
+}

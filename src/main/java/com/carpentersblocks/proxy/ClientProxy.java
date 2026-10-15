@@ -1,7 +1,9 @@
 package com.carpentersblocks.proxy;
 
 import com.carpentersblocks.CarpentersBlocksCachedResources;
+import com.carpentersblocks.entity.EntityCarpentersTile;
 import com.carpentersblocks.renderer.ModelLoader;
+import com.carpentersblocks.renderer.entity.RenderCarpentersTile;
 import com.carpentersblocks.util.ModLogger;
 import com.carpentersblocks.util.registry.ConfigRegistry;
 import com.carpentersblocks.util.registry.SpriteRegistry;
@@ -9,6 +11,7 @@ import com.carpentersblocks.util.registry.SpriteRegistry;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -23,6 +26,7 @@ public class ClientProxy extends CommonProxy {
     	super.preInit(event);
     	MinecraftForge.EVENT_BUS.register(new SpriteRegistry());
         ModelLoaderRegistry.registerLoader(new ModelLoader());
+        RenderingRegistry.registerEntityRenderingHandler(EntityCarpentersTile.class, RenderCarpentersTile::new);
     }
     
     @Override

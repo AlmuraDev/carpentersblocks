@@ -12,12 +12,14 @@ import com.carpentersblocks.util.handler.EventHandler;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -27,18 +29,25 @@ import net.minecraft.world.World;
 
 public class BlockCarpentersSlope extends BlockCoverable {
 	
-    public final static String slopeType[] = {
-    	"wedge",
-    	"wedgeInterior",
-    	"wedgeExterior",
-    	"obliqueInterior",
-    	"obliqueExterior",
-    	"prismWedge",
-    	"prism",
-    	"invertPrism" };
+    // Slopes offered as items (creative tab and scroll wheel), like 1.7.10; other shapes come from the hammer
+    public final static String slopeType[] = { "wedge", "obliqueInterior", "obliqueExterior", "prism", "prismWedge" };
+
+    private final static SlopeData.Type[] ITEM_SLOPE_TYPES = {
+    	SlopeData.Type.WEDGE,
+    	SlopeData.Type.OBLIQUE_INTERIOR,
+    	SlopeData.Type.OBLIQUE_EXTERIOR,
+    	SlopeData.Type.PRISM,
+    	SlopeData.Type.PRISM_WEDGE };
     
     public BlockCarpentersSlope(Material material) {
         super(material);
+    }
+
+    @Override
+    public void getSubBlocks(CreativeTabs creativeTab, NonNullList<ItemStack> items) {
+    	for (int damage = 0; damage < slopeType.length; ++damage) {
+    		items.add(new ItemStack(this, 1, damage));
+    	}
     }
 
     @Override
@@ -68,6 +77,19 @@ public class BlockCarpentersSlope extends BlockCoverable {
             super.damageItemWithChance(world, entityPlayer);
         }
     }*/
+
+    /**
+     * Side covers only go on the slope's full, flat faces, like 1.7.10.
+     */
+    @Override
+    protected boolean canSupportCover(CbTileEntity cbTileEntity, com.carpentersblocks.util.attribute.EnumAttributeLocation location) {
+    	if (com.carpentersblocks.util.attribute.EnumAttributeLocation.HOST.equals(location)) {
+    		return true;
+    	}
+    	int cbMetadata = cbTileEntity.getCbMetadata();
+    	EnumFacing face = EnumFacing.byIndex(location.ordinal());
+    	return SlopeShape.isFaceFull(SlopeData.getType(cbMetadata), Rotation.get(cbMetadata), face);
+    }
 
     /**
      * Gets the stepped collision boxes for the slope, relative to the block position.
@@ -164,32 +186,8 @@ public class BlockCarpentersSlope extends BlockCoverable {
         if (cbTileEntity != null) {
 
         	// Set type
-        	switch (itemStack.getItemDamage()) {
-	        	case 0:
-	        		SlopeData.setType(cbTileEntity, SlopeData.Type.WEDGE);
-	        		break;
-	        	case 1:
-	        		SlopeData.setType(cbTileEntity, SlopeData.Type.WEDGE_INTERIOR);
-	        		break;
-	        	case 2:
-	        		SlopeData.setType(cbTileEntity, SlopeData.Type.WEDGE_EXTERIOR);
-	        		break;
-	        	case 3:
-	        		SlopeData.setType(cbTileEntity, SlopeData.Type.OBLIQUE_INTERIOR);
-	        		break;
-	        	case 4:
-	        		SlopeData.setType(cbTileEntity, SlopeData.Type.OBLIQUE_EXTERIOR);
-	        		break;
-	        	case 5:
-	        		SlopeData.setType(cbTileEntity, SlopeData.Type.PRISM_WEDGE);
-	        		break;
-	        	case 6:
-	        		SlopeData.setType(cbTileEntity, SlopeData.Type.PRISM);
-	        		break;
-        		default: // 7
-        			SlopeData.setType(cbTileEntity, SlopeData.Type.INVERT_PRISM);
-        			break;
-        	}
+        	int damage = itemStack.getItemDamage();
+        	SlopeData.setType(cbTileEntity, ITEM_SLOPE_TYPES[damage >= 0 && damage < ITEM_SLOPE_TYPES.length ? damage : 0]);
         	
         	// Set rotation
         	// Placed without getStateForPlacement (machines, fake players): treat as placed on top of a block

@@ -1,4 +1,5 @@
 {
+  "conditions": [ { "type": "carpentersblocks:enabled", "feature": "bed" } ],
   "type": "forge:ore_shaped",
   "pattern": [ "XXX", "YYY" ],
   "key": { "X": { "item": "minecraft:wool", "data": 32767 }, "Y": { "item": "carpentersblocks:carpenters_block" } },

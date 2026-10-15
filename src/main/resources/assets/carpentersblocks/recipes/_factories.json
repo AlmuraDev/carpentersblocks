@@ -1,0 +1,5 @@
+{
+  "conditions": {
+    "enabled": "com.carpentersblocks.util.recipe.EnabledConditionFactory"
+  }
+}

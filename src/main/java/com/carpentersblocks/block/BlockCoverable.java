@@ -524,7 +524,8 @@ public abstract class BlockCoverable extends Block {
                             location = EnumAttributeLocation.valueOf(facing.ordinal());
                         }
                         
-                        if (canSupportCover(cbTileEntity, location) && !cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.COVER)) {
+                        boolean sideCoverAllowed = EnumAttributeLocation.HOST.equals(location) || ConfigRegistry.enableSideCovers;
+                        if (sideCoverAllowed && canSupportCover(cbTileEntity, location) && !cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.COVER)) {
                             cbTileEntity.addAttribute(location, EnumAttributeType.COVER, tempStack);
                             actionResult.setAltered().decInventory().setSoundSource(itemStack);
                         }
@@ -1506,9 +1507,45 @@ public abstract class BlockCoverable extends Block {
     				this.shouldSideBeRendered(blockState, blockAccess, blockPos, EnumFacing.WEST),
     				this.shouldSideBeRendered(blockState, blockAccess, blockPos, EnumFacing.EAST)
     			})
-    			.withProperty(Property.ATTR_MAP, cbTileEntity.getAttributeHelper().copyMap());
+    			.withProperty(Property.ATTR_MAP, getRenderAttributeSource(blockAccess, blockPos, cbTileEntity).getAttributeHelper().copyMap())
+    			.withProperty(Property.RAIL_SLOPE, getRailSlope(blockState, blockAccess, blockPos));
         }
         return blockState;
+    }
+
+    /**
+     * Gets the tile entity whose cover, dye and overlays are drawn for this block.
+     * Blocks drawn with another piece's look (an open garage door) override this.
+     */
+    protected CbTileEntity getRenderAttributeSource(IBlockAccess blockAccess, BlockPos blockPos, CbTileEntity cbTileEntity) {
+        return cbTileEntity;
+    }
+
+    /**
+     * Gets the direction a sloping rail above rises toward, so a wedge can be drawn under it
+     * like 1.7.10 ("Enable Rail Slope Fill"), or null when there is none.
+     */
+    private EnumFacing getRailSlope(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos) {
+        if (!ConfigRegistry.enableRailSlopes || !blockState.isSideSolid(blockAccess, blockPos, EnumFacing.UP)) {
+            return null;
+        }
+        BlockPos railPos = blockPos.up();
+        IBlockState railState = blockAccess.getBlockState(railPos);
+        if (!(railState.getBlock() instanceof net.minecraft.block.BlockRailBase)) {
+            return null;
+        }
+        switch (((net.minecraft.block.BlockRailBase) railState.getBlock()).getRailDirection(blockAccess, railPos, railState, null)) {
+            case ASCENDING_EAST:
+                return EnumFacing.EAST;
+            case ASCENDING_WEST:
+                return EnumFacing.WEST;
+            case ASCENDING_NORTH:
+                return EnumFacing.NORTH;
+            case ASCENDING_SOUTH:
+                return EnumFacing.SOUTH;
+            default:
+                return null;
+        }
     }
     
     /**

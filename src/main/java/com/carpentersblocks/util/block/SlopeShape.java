@@ -17,12 +17,12 @@ import net.minecraft.util.math.AxisAlignedBB;
  * <p>
  * Each slope type is described in its unrotated form (as drawn by BakedSlope), sampled on a
  * voxel grid, rotated the same way the model is rotated, and merged into boxes. Steps are
- * 1/{@value #RES} block high, so entities walk up slopes like stairs.
+ * 1/RES block high (the "Smoothness" config option), so entities walk up slopes like stairs.
  */
 public class SlopeShape {
 
-	/** Voxels per block side. */
-	private static final int RES = 8;
+	/** Voxels per block side, from the "Smoothness" config option. */
+	private static int RES = 8;
 
 	private static final Map<Integer, List<AxisAlignedBB>> CACHE = new ConcurrentHashMap<Integer, List<AxisAlignedBB>>();
 
@@ -33,6 +33,14 @@ public class SlopeShape {
 	 * @param rotation the slope rotation
 	 * @return the boxes
 	 */
+	/**
+	 * Sets the steps per block (2 is like stairs, higher is smoother), clamped to 2-32.
+	 */
+	public static void setResolution(int steps) {
+		RES = Math.max(2, Math.min(32, steps));
+		CACHE.clear();
+	}
+
 	public static List<AxisAlignedBB> getBoxes(Type type, Rotation rotation) {
 		int key = type.ordinal() << 8 | rotation.ordinal();
 		List<AxisAlignedBB> boxes = CACHE.get(key);

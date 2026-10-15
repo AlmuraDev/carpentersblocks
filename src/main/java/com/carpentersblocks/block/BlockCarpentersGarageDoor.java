@@ -135,6 +135,27 @@ public class BlockCarpentersGarageDoor extends BlockCoverable implements IShaped
 		return data;
 	}
 
+	/**
+	 * An open door is drawn rolled up with the bottom piece's cover, like 1.7.10.
+	 */
+	@Override
+	protected CbTileEntity getRenderAttributeSource(IBlockAccess blockAccess, BlockPos blockPos, CbTileEntity cbTileEntity) {
+		if (!isOpen(cbTileEntity.getCbMetadata())) {
+			return cbTileEntity;
+		}
+		CbTileEntity bottom = cbTileEntity;
+		BlockPos pos = blockPos.down();
+		for (int count = 0; count < MAX_PIECES && blockAccess.getBlockState(pos).getBlock() == this; ++count) {
+			CbTileEntity piece = getTileEntity(blockAccess, pos);
+			if (piece == null) {
+				break;
+			}
+			bottom = piece;
+			pos = pos.down();
+		}
+		return bottom;
+	}
+
 	@Override
 	public List<ShapePart> getRenderParts(int renderData) {
 		List<ShapePart> parts = new ArrayList<ShapePart>();
@@ -250,7 +271,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable implements IShaped
 		Deque<BlockPos> queue = new ArrayDeque<BlockPos>();
 		queue.add(start.getPos());
 		visited.add(start.getPos());
-		while (!queue.isEmpty() && pieces.size() < MAX_PIECES) {
+		while (!queue.isEmpty() && pieces.size() < com.carpentersblocks.util.registry.ConfigRegistry.multiBlockSizeLimit) { // "MultiBlock Size Limit"
 			BlockPos pos = queue.poll();
 			CbTileEntity piece = getPiece(world, pos);
 			if (piece == null || getFacing(piece.getCbMetadata()) != facing) {
@@ -351,7 +372,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable implements IShaped
 			return;
 		}
 		// Fill a gap opened up below
-		if (neighborBlock != this && world.isAirBlock(blockPos.down())) {
+		if (com.carpentersblocks.util.registry.ConfigRegistry.enableGarageDoorVoidFill && neighborBlock != this && world.isAirBlock(blockPos.down())) {
 			CbTileEntity host = findHost(cbTileEntity);
 			if (host != null) {
 				fillDown(host);

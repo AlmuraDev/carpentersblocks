@@ -1,0 +1,22 @@
+{
+  "conditions": [ { "type": "carpentersblocks:enabled", "feature": "slope" } ],
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "  X",
+    " XY",
+    "XYY"
+  ],
+  "key": {
+    "X": {
+      "type": "forge:ore_dict",
+      "ore": "stickWood"
+    },
+    "Y": {
+      "item": "carpentersblocks:carpenters_block"
+    }
+  },
+  "result": {
+    "item": "carpentersblocks:carpenters_slope",
+    "count": 6
+  }
+}

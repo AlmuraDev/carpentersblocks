@@ -25,6 +25,8 @@ public class Property {
 	public static final IUnlistedProperty<Integer> CB_METADATA;
 	public static final IUnlistedProperty<Boolean[]> RENDER_FACE;
 	public static final IUnlistedProperty<AbstractState> CB_STATE;
+	// Direction a sloping rail above rises toward, when a wedge is drawn under it ("Enable Rail Slope Fill")
+	public static final IUnlistedProperty<EnumFacing> RAIL_SLOPE;
 
 	static {
 		_unlistedProperties = new ArrayList<IUnlistedProperty>();
@@ -36,6 +38,7 @@ public class Property {
 		_unlistedProperties.add(CB_METADATA = new UnlistedProperty(Integer.class, "cbMetadata"));
 		_unlistedProperties.add(RENDER_FACE = new UnlistedProperty(Boolean[].class, "cbRenderFace"));
 		_unlistedProperties.add(CB_STATE = new UnlistedProperty(AbstractState.class, "cbState"));
+		_unlistedProperties.add(RAIL_SLOPE = new UnlistedProperty(EnumFacing.class, "cbRailSlope"));
 	}
 	
 	public static class UnlistedProperty implements IUnlistedProperty {

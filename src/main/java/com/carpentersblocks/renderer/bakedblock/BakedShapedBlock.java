@@ -61,7 +61,8 @@ public class BakedShapedBlock extends AbstractBakedModel {
 				? RenderHelper.getCuboidQuads(part.getCorners(), sprite)
 				: RenderHelper.getBoxQuads(part.getBox(), sprite);
 			for (Quad quad : quads) {
-				if (part.isTranslucent()) {
+				// Panes blend on the translucent pass, or are cut out when "Enable Pane Alpha Rendering" is off
+				if (part.isTranslucent() && com.carpentersblocks.util.registry.ConfigRegistry.enableAlphaPanes) {
 					quad.setRenderLayer(BlockRenderLayer.TRANSLUCENT);
 				}
 				if (part.isFullBright()) {

@@ -68,15 +68,15 @@ public class BlockCarpentersSlope extends BlockCoverable {
         return true;        
     }
 
-/*    @Override
-    *//**
+    @Override
+    /**
      * Damages hammer with a chance to not damage.
-     *//*
-    protected void damageItemWithChance(World world, EntityPlayer entityPlayer) {
-        if (world.rand.nextFloat() <= ItemRegistry.itemHammerDamageChanceFromSlopes) {
-            super.damageItemWithChance(world, entityPlayer);
+     */
+    protected void damageItemWithChance(World world, EntityPlayer entityPlayer, EnumHand hand) {
+        if (world.rand.nextFloat() <= com.carpentersblocks.util.registry.ConfigRegistry.itemHammerDamageChanceFromSlopes) {
+            super.damageItemWithChance(world, entityPlayer, hand);
         }
-    }*/
+    }
 
     /**
      * Side covers only go on the slope's full, flat faces, like 1.7.10.

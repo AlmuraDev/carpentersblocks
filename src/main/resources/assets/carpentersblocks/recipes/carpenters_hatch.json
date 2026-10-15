@@ -1,4 +1,5 @@
 {
+  "conditions": [ { "type": "carpentersblocks:enabled", "feature": "hatch" } ],
   "type": "forge:ore_shaped",
   "pattern": [ "XXX", "XXX" ],
   "key": { "X": { "item": "carpentersblocks:carpenters_block" } },

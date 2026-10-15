@@ -51,7 +51,7 @@ public class ConfigRegistry {
     public static boolean enableGarageDoorVoidFill    = true;
     public static boolean enableFreeStandingLadders   = false;
     public static boolean enableOptifineCompatibility = false;
-    public static int slopeSmoothness     = 2;
+    public static int slopeSmoothness     = 8;
     public static int multiBlockSizeLimit = 500;
     public static ArrayList<String> overlayItems    = new ArrayList<String>();
     public static ArrayList<String> coverExceptions = new ArrayList<String>();
@@ -110,8 +110,9 @@ public class ConfigRegistry {
         enableOwnership = ownershipProp.getBoolean(enableOwnership);
 
         Property slopeSmoothnessProp = config.get("features", "Smoothness", slopeSmoothness);
-        slopeSmoothnessProp.setComment("This controls the smoothness of the slope faces.\nNote: smoothness of 2 is similar to stairs, while a value above 25 is generally fluid.");
+        slopeSmoothnessProp.setComment("This controls the smoothness of the slope faces.\nNote: smoothness of 2 is similar to stairs, while a value above 25 is generally fluid. Range 2-32.");
         slopeSmoothness = slopeSmoothnessProp.getInt(slopeSmoothness);
+        com.carpentersblocks.util.block.SlopeShape.setResolution(slopeSmoothness);
 
         Property multiBlockSizeLimitProp = config.get("features", "MultiBlock Size Limit", multiBlockSizeLimit);
         multiBlockSizeLimitProp.setComment("This controls how many blocks can be connected as a single entity.\nNote: only applies to Garage Doors.");

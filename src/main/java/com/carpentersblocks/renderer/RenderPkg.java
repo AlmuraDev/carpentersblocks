@@ -63,6 +63,7 @@ public class RenderPkg {
     private boolean _isSnowCover;
     private EnumAttributeLocation _location;
     private IModelState _modelState;
+    private EnumFacing _railSlope;
     private final static double SIDE_DEPTH = 1/16D;
     private final static double SNOW_SIDE_DEPTH = 1/8D;
     
@@ -75,6 +76,7 @@ public class RenderPkg {
     	// Chunks are built off the main thread, so use the state handed in rather than the live world
     	_uncoveredRenderLayer = blockState.getBlock().getRenderLayer();
     	_cbAttrHelper = new AttributeHelper((Map<Key, AbstractAttribute>) getThreadedProperty(Property.ATTR_MAP));
+    	_railSlope = (EnumFacing) getThreadedProperty(Property.RAIL_SLOPE);
     	_quadContainer = new QuadContainer(EnumAttributeLocation.HOST);
     }
     
@@ -280,10 +282,43 @@ public class RenderPkg {
 	        	}
 	        }
     	}
-    	
+
+    	// Wedge in the block's cover under a sloping rail above, like 1.7.10 (no overlays)
+    	if (_railSlope != null) {
+    		Map<EnumFacing, List<Quad>> railQuadMap = getCoveredQuads(getRailSlopeContainer(_railSlope), EnumAttributeLocation.HOST, renderLayer);
+    		for (List<Quad> railQuads : railQuadMap.values()) {
+    			for (Quad quad : railQuads) {
+    				quads.add(quad.bake(EnumAttributeLocation.HOST));
+    			}
+    		}
+    	}
+
         return quads;
     }
-    
+
+    /**
+     * Gets a wedge in the block space above, rising toward a direction (the slope model's wedge, without its base).
+     */
+    static QuadContainer getRailSlopeContainer(EnumFacing rising) {
+    	QuadContainer wedge = new QuadContainer(EnumAttributeLocation.HOST);
+    	TextureAtlasSprite sprite = SpriteRegistry.sprite_uncovered_full;
+    	wedge.add(com.carpentersblocks.renderer.helper.RenderHelper.getQuadZNeg(sprite));
+    	wedge.add(com.carpentersblocks.renderer.helper.RenderHelperSlope.getWedgeXNeg());
+    	wedge.add(com.carpentersblocks.renderer.helper.RenderHelperSlope.getWedgeXPos());
+    	wedge.add(Quad.getQuad(EnumFacing.SOUTH, sprite,
+    		new Vec3d(1.0D, 0.0D, 1.0D), new Vec3d(1.0D, 1.0D, 0.0D), new Vec3d(0.0D, 1.0D, 0.0D), new Vec3d(0.0D, 0.0D, 1.0D)));
+    	// Unrotated, the wedge's high side is north
+    	wedge.rotate(EnumFacing.EAST.equals(rising) ? Rotation.X0_Y90_Z0
+    		: EnumFacing.SOUTH.equals(rising) ? Rotation.X0_Y180_Z0
+    		: EnumFacing.WEST.equals(rising) ? Rotation.X0_Y270_Z0
+    		: Rotation.X0_Y0_Z0);
+    	QuadContainer raised = new QuadContainer(EnumAttributeLocation.HOST);
+    	for (Quad quad : wedge.getQuads(null)) {
+    		raised.add(quad.offset(0.0D, 1.0D, 0.0D));
+    	}
+    	return raised;
+    }
+
     private boolean isSnowState(IBlockState blockState) {
     	return blockState.getBlock().equals(Blocks.SNOW) ||
     			blockState.getBlock().equals(Blocks.SNOW_LAYER);

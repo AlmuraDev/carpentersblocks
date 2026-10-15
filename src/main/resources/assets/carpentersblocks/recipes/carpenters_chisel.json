@@ -1,4 +1,5 @@
 {
+  "conditions": [ { "type": "carpentersblocks:enabled", "feature": "chisel" } ],
   "type": "forge:ore_shaped",
   "pattern": [
     "   ",

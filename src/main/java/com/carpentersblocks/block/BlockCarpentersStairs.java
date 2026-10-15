@@ -120,6 +120,16 @@ public class BlockCarpentersStairs extends BlockCoverable implements IShapedBloc
 		return cbTileEntity.setCbMetadata(StairsData.getNextType(id));
 	}
 
+	/**
+	 * Damages the hammer with a chance to not damage.
+	 */
+	@Override
+	protected void damageItemWithChance(World world, EntityPlayer entityPlayer, EnumHand hand) {
+		if (world.rand.nextFloat() <= com.carpentersblocks.util.registry.ConfigRegistry.itemHammerDamageChanceFromStairs) {
+			super.damageItemWithChance(world, entityPlayer, hand);
+		}
+	}
+
 	@Override
 	public boolean rotateBlock(World world, BlockPos blockPos, EnumFacing axis) {
 		if (axis.getAxis() != EnumFacing.Axis.Y) {

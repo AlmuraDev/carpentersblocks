@@ -1,4 +1,5 @@
 {
+  "conditions": [ { "type": "carpentersblocks:enabled", "feature": "flower_pot" } ],
   "type": "forge:ore_shaped",
   "pattern": [ "X X", " X " ],
   "key": { "X": { "item": "carpentersblocks:carpenters_block" } },

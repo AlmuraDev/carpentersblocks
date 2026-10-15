@@ -42,12 +42,6 @@ public class BlockCarpentersBlock extends BlockCoverable {
     }
     
     @Override
-    @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
-        return false;
-    }
-
-    @Override
     public boolean isBlockNormalCube(IBlockState blockState) {
         return false;
     }

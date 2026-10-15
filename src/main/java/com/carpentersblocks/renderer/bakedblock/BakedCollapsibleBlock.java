@@ -21,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class BakedCollapsibleBlock extends AbstractBakedModel {
 
-	private static List<BakedQuad> _inventoryBakedQuads;
+	private List<BakedQuad> _inventoryBakedQuads; // Per instance: models are baked again on resource reload
 	
     public BakedCollapsibleBlock(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
 		super(state, format, bakedTextureGetter);

@@ -190,9 +190,14 @@ public class BlockCarpentersHatch extends BlockCoverable implements IShapedBlock
 				parts.add(ShapePart.textured(SidedUtil.rotate(box, baseDir), ShapeTextures.IRON_BLOCK));
 			}
 		} else if (!open) {
+			// Closed hatches are seen from both sides (the room and through the opening), so the
+			// handle is mirrored onto the far face too. Open ones rest their far face on the support.
 			EnumFacing turn = high ? baseDir : baseDir.getOpposite();
+			double mirror = 2 - zo; // twice the panel's middle depth
 			for (AxisAlignedBB box : handle) {
+				AxisAlignedBB far = new AxisAlignedBB(box.minX, box.minY, mirror - box.maxZ, box.maxX, box.maxY, mirror - box.minZ);
 				parts.add(ShapePart.textured(SidedUtil.rotate(SidedUtil.rotate(box, side), turn), ShapeTextures.IRON_BLOCK));
+				parts.add(ShapePart.textured(SidedUtil.rotate(SidedUtil.rotate(far, side), turn), ShapeTextures.IRON_BLOCK));
 			}
 		}
 		return parts;

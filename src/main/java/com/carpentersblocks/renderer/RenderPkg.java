@@ -72,13 +72,14 @@ public class RenderPkg {
     	_rand = rand;
     	_blockPos = (BlockPos) getThreadedProperty(Property.BLOCK_POS);
     	_cbMetadata = (Integer) getThreadedProperty(Property.CB_METADATA);
-    	Block block = Minecraft.getMinecraft().world.getBlockState(_blockPos).getBlock();
-    	_uncoveredRenderLayer = block.getRenderLayer();
+    	// Chunks are built off the main thread, so use the state handed in rather than the live world
+    	_uncoveredRenderLayer = blockState.getBlock().getRenderLayer();
     	_cbAttrHelper = new AttributeHelper((Map<Key, AbstractAttribute>) getThreadedProperty(Property.ATTR_MAP));
     	_quadContainer = new QuadContainer(EnumAttributeLocation.HOST);
     }
     
     public RenderPkg(VertexFormat vertexFormat, EnumFacing facing, long rand) {
+    	_threadLocalBlockState.remove(); // Items have no block state; don't read one left by a block render
     	_threadLocalVertexFormat.set(vertexFormat);
     	_cbMetadata = 0;
     	_rand = rand;
@@ -239,8 +240,10 @@ public class RenderPkg {
 	        // Add chisel quads
 	        if (hasChiselDesign && chiselDesignRenderLayer.equals(renderLayer)) {
         		String design = ((AttributeString)_cbAttrHelper.getAttribute(location, EnumAttributeType.DESIGN_CHISEL)).getModel();
-        		TextureAtlasSprite chiselSprite = SpriteRegistry.sprite_design_chisel.get(DesignHandler.listChisel.indexOf(design));
-        		for (EnumFacing facing : EnumFacing.VALUES) {
+        		// A design missing from this client (removed resource pack, mismatched mod version) is skipped
+        		int designIdx = DesignHandler.listChisel.indexOf(design);
+        		TextureAtlasSprite chiselSprite = designIdx >= 0 && designIdx < SpriteRegistry.sprite_design_chisel.size() ? SpriteRegistry.sprite_design_chisel.get(designIdx) : null;
+        		for (EnumFacing facing : chiselSprite != null ? EnumFacing.VALUES : new EnumFacing[0]) {
         			quads.addAll(getQuadsForSide(quadContainer, facing, chiselSprite, IConstants.DEFAULT_RGB, false));
         		}
 	        }
@@ -454,6 +457,13 @@ public class RenderPkg {
     	return _cbMetadata;
     }
     
+    /**
+     * Releases the state held for this thread, so render threads don't keep the last block (and its world data) alive.
+     */
+    public static void clearThreadedState() {
+    	_threadLocalBlockState.remove();
+    }
+
     public static Object getThreadedProperty(IProperty property) {
 		IBlockState blockState = _threadLocalBlockState.get();
 		if (blockState != null) {

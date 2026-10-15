@@ -23,7 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class BakedPressurePlate extends AbstractBakedModel {
 
-	private static List<BakedQuad> _inventoryBakedQuads;
+	private List<BakedQuad> _inventoryBakedQuads; // Per instance: models are baked again on resource reload
 	
     public BakedPressurePlate(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
 		super(state, format, bakedTextureGetter);

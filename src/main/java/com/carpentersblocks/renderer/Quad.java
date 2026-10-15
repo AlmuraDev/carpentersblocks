@@ -186,13 +186,17 @@ public class Quad {
         Block block = (Block) RenderPkg.getThreadedProperty(Property.BLOCK_TYP);
         Integer cbMetadata = (Integer) RenderPkg.getThreadedProperty(Property.CB_METADATA);
         
-        if (BlockRegistry.blockCarpentersCollapsibleBlock.equals(block) && (isSloped(Axis.X) || isSloped(Axis.Y) || isSloped(Axis.Z))) {
+        if (BlockRegistry.blockCarpentersCollapsibleBlock != null && BlockRegistry.blockCarpentersCollapsibleBlock.equals(block) && (isSloped(Axis.X) || isSloped(Axis.Y) || isSloped(Axis.Z))) {
         	// Find rotated facing and render using it
         	this._facing = (EnumFacing) RenderPkg.getThreadedProperty(Property.FACING);
         	this._isOblique = false;
         	isFloatingOverlay = false;
         }
         
+        // Vanilla's flat and AO renderers switch on the quad face, so a null face crashes them
+        Vec3d normal = _normal != null ? _normal : new Vec3d(_facing != null ? _facing.getDirectionVec() : EnumFacing.UP.getDirectionVec());
+        builder.setQuadOrientation(EnumFacing.getFacingFromVector((float) normal.x, (float) normal.y, (float) normal.z));
+
         UV[] uv = QuadUtil.getUV(this, isFloatingOverlay, location);
         for (int i = 0; i < 4; ++i) {
         	//_rgb = i == 0 ? 0xff0000 : i == 1 ? 0x00ff00 : i == 2 ? 0x0000ff : 0xffff00; // Debug
@@ -237,9 +241,9 @@ public class Quad {
 	                case NORMAL:
 	                	builder.put(
 	                		idx,
-	                		(float) _normal.x,
-	                		(float) _normal.y,
-	                		(float) _normal.z,
+	                		(float) normal.x,
+	                		(float) normal.y,
+	                		(float) normal.z,
 	                		0f);
 	                    break;
 	                default:

@@ -61,23 +61,23 @@ public class ConfigRegistry {
     	config.load();
     	
     	// Blocks
-    	//enableBarrier          = config.get("blocks",           "Enable Barrier",          enableBarrier).getBoolean(enableBarrier);
-        //enableBed              = config.get("blocks",               "Enable Bed",              enableBed).getBoolean(enableBed);
-        //enableButton           = config.get("blocks",            "Enable Button",           enableButton).getBoolean(enableButton);
+    	enableBarrier          = config.get("blocks",           "Enable Barrier",          enableBarrier).getBoolean(enableBarrier);
+        enableBed              = config.get("blocks",               "Enable Bed",              enableBed).getBoolean(enableBed);
+        enableButton           = config.get("blocks",            "Enable Button",           enableButton).getBoolean(enableButton);
         enableCollapsibleBlock = config.get("blocks", "Enable Collapsible Block", enableCollapsibleBlock).getBoolean(enableCollapsibleBlock);
-        //enableDaylightSensor   = config.get("blocks",   "Enable Daylight Sensor",   enableDaylightSensor).getBoolean(enableDaylightSensor);
-        //enableDoor             = config.get("blocks",              "Enable Door",             enableDoor).getBoolean(enableDoor);
-        //enableFlowerPot        = config.get("blocks",        "Enable Flower Pot",        enableFlowerPot).getBoolean(enableFlowerPot);
-        //enableGarageDoor       = config.get("blocks",       "Enable Garage Door",       enableGarageDoor).getBoolean(enableGarageDoor);
-        //enableGate             = config.get("blocks",              "Enable Gate",             enableGate).getBoolean(enableGate);
-        //enableHatch            = config.get("blocks",             "Enable Hatch",            enableHatch).getBoolean(enableHatch);
-        //enableLadder           = config.get("blocks",            "Enable Ladder",           enableLadder).getBoolean(enableLadder);
-        //enableLever            = config.get("blocks",             "Enable Lever",            enableLever).getBoolean(enableLever);
+        enableDaylightSensor   = config.get("blocks",   "Enable Daylight Sensor",   enableDaylightSensor).getBoolean(enableDaylightSensor);
+        enableDoor             = config.get("blocks",              "Enable Door",             enableDoor).getBoolean(enableDoor);
+        enableFlowerPot        = config.get("blocks",        "Enable Flower Pot",        enableFlowerPot).getBoolean(enableFlowerPot);
+        enableGarageDoor       = config.get("blocks",       "Enable Garage Door",       enableGarageDoor).getBoolean(enableGarageDoor);
+        enableGate             = config.get("blocks",              "Enable Gate",             enableGate).getBoolean(enableGate);
+        enableHatch            = config.get("blocks",             "Enable Hatch",            enableHatch).getBoolean(enableHatch);
+        enableLadder           = config.get("blocks",            "Enable Ladder",           enableLadder).getBoolean(enableLadder);
+        enableLever            = config.get("blocks",             "Enable Lever",            enableLever).getBoolean(enableLever);
         enablePressurePlate    = config.get("blocks",    "Enable Pressure Plate",    enablePressurePlate).getBoolean(enablePressurePlate);
-        //enableSafe             = config.get("blocks",              "Enable Safe",             enableSafe).getBoolean(enableSafe);
+        enableSafe             = config.get("blocks",              "Enable Safe",             enableSafe).getBoolean(enableSafe);
         enableSlope            = config.get("blocks",             "Enable Slope",            enableSlope).getBoolean(enableSlope);
-        //enableStairs           = config.get("blocks",            "Enable Stairs",           enableStairs).getBoolean(enableStairs);
-        //enableTorch            = config.get("blocks",             "Enable Torch",            enableTorch).getBoolean(enableTorch);
+        enableStairs           = config.get("blocks",            "Enable Stairs",           enableStairs).getBoolean(enableStairs);
+        enableTorch            = config.get("blocks",             "Enable Torch",            enableTorch).getBoolean(enableTorch);
         
     	// Items
     	enableHammer = config.get("items", "Enable Hammer", enableHammer).getBoolean(enableHammer);

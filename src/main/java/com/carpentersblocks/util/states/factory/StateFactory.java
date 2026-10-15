@@ -6,7 +6,7 @@ import com.carpentersblocks.util.registry.BlockRegistry;
 public class StateFactory {
 	
 	public static AbstractState getState(CbTileEntity cbTileEntity) {
-		if (BlockRegistry.blockCarpentersPressurePlate.equals(cbTileEntity.getBlockType())) {
+		if (BlockRegistry.blockCarpentersPressurePlate != null && BlockRegistry.blockCarpentersPressurePlate.equals(cbTileEntity.getBlockType())) {
 			return new PressurePlateState(cbTileEntity);
 		}
 		return null;

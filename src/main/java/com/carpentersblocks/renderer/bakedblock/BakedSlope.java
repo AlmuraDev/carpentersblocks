@@ -35,7 +35,7 @@ public class BakedSlope extends AbstractBakedModel {
 
 	private String _type;
 	
-	private static Map<String, List<BakedQuad>> _inventoryBakedQuads = new HashMap<String, List<BakedQuad>>();
+	private Map<String, List<BakedQuad>> _inventoryBakedQuads = new HashMap<String, List<BakedQuad>>();
 	
 	public BakedSlope(IModelState modelState, VertexFormat vertexFormat, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter, String type) {
 		super(modelState, vertexFormat, bakedTextureGetter);

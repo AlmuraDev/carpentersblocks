@@ -84,7 +84,7 @@ public class EventHandler {
     public void onEntityJoinWorldEvent(EntityJoinWorldEvent event) {
     	if (event.getEntity() instanceof EntityItem
     		&& BlockRegistry.blockCarpentersSlope != null
-    		&& BlockRegistry.blockCarpentersSlope.getRegistryName().equals(((EntityItem)event.getEntity()).getItem().getItem().getRegistryName())) {
+    		&& BlockRegistry.blockCarpentersSlope != null && BlockRegistry.blockCarpentersSlope.getRegistryName().equals(((EntityItem)event.getEntity()).getItem().getItem().getRegistryName())) {
     		// Carpenter's Slope should always drop as wedge
     		((EntityItem)event.getEntity()).getItem().setItemDamage(0);
     	}

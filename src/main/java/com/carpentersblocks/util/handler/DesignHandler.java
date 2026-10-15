@@ -176,7 +176,10 @@ public class DesignHandler {
         ArrayList<BufferedImage> imageList = new ArrayList<BufferedImage>();
         try {
             ResourceLocation resourceLocation = new ResourceLocation(CarpentersBlocks.MOD_ID + ":textures/blocks/designs/bed/" + atlas + ".png");
-            BufferedImage image = ImageIO.read(resourceManager.getResource(resourceLocation).getInputStream());
+            BufferedImage image;
+            try (net.minecraft.client.resources.IResource resource = resourceManager.getResource(resourceLocation)) {
+                image = ImageIO.read(resource.getInputStream());
+            }
 
             int size = image.getWidth() / 3;
             int rows = image.getHeight() / size;

@@ -118,6 +118,11 @@ public class CarpentersBlocksCachedResources extends DummyModContainer {
     private void createResourceZipFile() {
         try {
             if (createDirectory()) {
+                // Rebuilt on every texture stitch: release the previous zip so it can be rewritten
+                if (resourcePackZipFile != null) {
+                    resourcePackZipFile.close();
+                    resourcePackZipFile = null;
+                }
                 createZip(resourceDir, MODID + ".zip");
                 resourcePackZipFile = new ZipFile(getSource());
             }

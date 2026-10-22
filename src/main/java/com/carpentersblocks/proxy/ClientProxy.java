@@ -26,6 +26,8 @@ public class ClientProxy extends CommonProxy {
     public void preInit(FMLPreInitializationEvent event) {
     	super.preInit(event);
     	MinecraftForge.EVENT_BUS.register(new SpriteRegistry());
+        // Before the first block texture stitch, which Forge runs between preInit and init: the bed designs load from this pack
+        CarpentersBlocksCachedResources.INSTANCE.init();
         ModelLoaderRegistry.registerLoader(new ModelLoader());
         RenderingRegistry.registerEntityRenderingHandler(EntityCarpentersTile.class, RenderCarpentersTile::new);
     }
@@ -33,7 +35,6 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
-        CarpentersBlocksCachedResources.INSTANCE.init();
         //BlockRegistry.registerRenderers();
             // Biome tints of covers and potted plants, applied by the renderer
         CoverColorHandler coverColorHandler = new CoverColorHandler();

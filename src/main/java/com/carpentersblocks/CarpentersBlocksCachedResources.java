@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -75,14 +77,16 @@ public class CarpentersBlocksCachedResources extends DummyModContainer {
 
         @Override
         protected InputStream getInputStreamByName(String resourceName) throws IOException {
+            if ("pack.mcmeta".equals(resourceName)) {
+                return new ByteArrayInputStream(("{\n"+" \"pack\": {\n"+"   \"description\": \"dummy FML pack for "+getPackName()+"\",\n"+"   \"pack_format\": 1\n"+"}\n" + "}").getBytes(Charsets.UTF_8));
+            }
             ZipFile zipfile = getResourcePackZipFile();
-            ZipEntry zipentry = zipfile.getEntry(resourceName);
+            ZipEntry zipentry = zipfile == null ? null : zipfile.getEntry(resourceName);
+            if (zipentry == null) {
+                throw new ResourcePackFileNotFoundException(resourcePackFile, resourceName);
+            }
             try {
-                if ("pack.mcmeta".equals(resourceName)) {
-                    return new ByteArrayInputStream(("{\n"+" \"pack\": {\n"+"   \"description\": \"dummy FML pack for "+getPackName()+"\",\n"+"   \"pack_format\": 1\n"+"}\n" + "}").getBytes(Charsets.UTF_8));
-                } else {
-                    return zipfile.getInputStream(zipentry);
-                }
+                return zipfile.getInputStream(zipentry);
             } catch (IOException e) {
                 throw new ResourcePackFileNotFoundException(resourcePackFile, resourceName);
             }
@@ -90,7 +94,18 @@ public class CarpentersBlocksCachedResources extends DummyModContainer {
 
         @Override
         public boolean hasResourceName(String resourceName) {
-            return getResourcePackZipFile().getEntry(resourceName) != null;
+            ZipFile zipfile = getResourcePackZipFile();
+            return zipfile != null && zipfile.getEntry(resourceName) != null;
+        }
+
+        /**
+         * The pack's domain, said outright: Minecraft asks once, when the pack is added, and the zip it would otherwise read
+         * it from is only built at the first texture stitch (and isn't there at all on a fresh install, or when a launcher
+         * cleans the mods folder). Without it every cached texture would be missing.
+         */
+        @Override
+        public Set<String> getResourceDomains() {
+            return Collections.singleton(INSTANCE.MODID.toLowerCase());
         }
 
     }

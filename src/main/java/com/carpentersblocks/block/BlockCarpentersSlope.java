@@ -13,6 +13,7 @@ import com.carpentersblocks.item.ItemBlockCarpentersSlope;
 import com.carpentersblocks.util.RotationUtil.Rotation;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 import com.carpentersblocks.util.block.SlopeShape;
+import com.carpentersblocks.util.block.SlopeTransform;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -149,6 +150,10 @@ public class BlockCarpentersSlope extends BlockCoverable {
         Direction look = placer != null ? placer.getDirection() : Direction.NORTH;
         Rotation rotation = getPlacementRotation(facing, (float) hit.x, (float) hit.y, (float) hit.z, look);
         blockEntity.setCbMetadata(SlopeData.withType(rotation.asInt(), ItemBlockCarpentersSlope.getSlopeType(itemStack)));
+        // Join the slopes beside it, like 1.7.10; sneaking places it as it is
+        if (placer != null && !placer.isShiftKeyDown()) {
+            SlopeTransform.onPlaced(level, pos, blockEntity);
+        }
     }
 
     /**

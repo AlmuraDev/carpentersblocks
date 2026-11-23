@@ -15,7 +15,7 @@ public final class CbCreativeTabs {
     public static final DeferredRegister<CreativeModeTab> REGISTER = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CarpentersBlocks.MOD_ID);
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN = REGISTER.register(CarpentersBlocks.MOD_ID, () -> CreativeModeTab.builder()
-        .icon(() -> new ItemStack(CbBlocks.CARPENTERS_BLOCK.get()))
+        .icon(() -> new ItemStack(CbItems.CARPENTERS_HAMMER != null ? CbItems.CARPENTERS_HAMMER.get() : CbBlocks.CARPENTERS_BLOCK.get().asItem()))
         .title(Component.translatable("itemGroup." + CarpentersBlocks.MOD_ID))
         .displayItems((parameters, output) -> CbItems.REGISTER.getEntries().forEach(holder -> {
             if (holder.get() instanceof ItemBlockCarpentersSlope slope) {

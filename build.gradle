@@ -14,6 +14,16 @@ java {
 
 repositories {
     mavenCentral()
+    maven {
+        name = 'JEI'
+        url = 'https://maven.blamejared.com'
+        content { includeGroup 'mezz.jei' }
+    }
+}
+
+dependencies {
+    // Only the API: the plugin is skipped when JEI isn't installed
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
 }
 
 neoForge {

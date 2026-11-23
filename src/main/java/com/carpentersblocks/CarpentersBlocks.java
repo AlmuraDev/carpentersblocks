@@ -64,7 +64,7 @@ public final class CarpentersBlocks {
     }
 
     private static void registerPayloads(RegisterPayloadHandlersEvent event) {
-        event.registrar("1").playToServer(SlopeSelectPayload.TYPE, SlopeSelectPayload.STREAM_CODEC, SlopeSelectPayload::handle);
+        event.registrar("1").optional().playToServer(SlopeSelectPayload.TYPE, SlopeSelectPayload.STREAM_CODEC, SlopeSelectPayload::handle);
     }
 
     public static Identifier id(String path) {

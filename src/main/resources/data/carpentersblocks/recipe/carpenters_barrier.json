@@ -13,7 +13,7 @@
     "Y": "carpentersblocks:carpenters_block"
   },
   "pattern": [
-    "Y",
+    " Y ",
     "XYX"
   ],
   "result": {

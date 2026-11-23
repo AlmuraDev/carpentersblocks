@@ -34,12 +34,25 @@ public class QuadContainer {
         _location = location;
     }
 
+    // Finished quads drawn as they are, without covers (plants in flower pots)
+    private final List<BakedQuad> _bakedQuads = new ArrayList<>();
+
+    public void addBaked(BakedQuad quad) {
+        _bakedQuads.add(quad);
+    }
+
+    public List<BakedQuad> getBakedQuads() {
+        return _bakedQuads;
+    }
+
     public EnumAttributeLocation getLocation() {
         return _location;
     }
 
     public List<BakedQuad> bakeQuads() {
-        return bakeQuads(_quads);
+        List<BakedQuad> quads = bakeQuads(_quads);
+        quads.addAll(_bakedQuads);
+        return quads;
     }
 
     /**

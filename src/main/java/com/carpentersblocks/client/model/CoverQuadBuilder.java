@@ -63,7 +63,7 @@ public final class CoverQuadBuilder {
     }
 
     private List<BakedQuad> getQuads(QuadContainer shape) {
-        List<BakedQuad> quads = new ArrayList<>();
+        List<BakedQuad> quads = new ArrayList<>(shape.getBakedQuads());
         BlockState hostBlockState = _cbAttrHelper.getBlockState(EnumAttributeLocation.HOST, EnumAttributeType.COVER);
 
         for (EnumAttributeLocation location : EnumAttributeLocation.values()) {

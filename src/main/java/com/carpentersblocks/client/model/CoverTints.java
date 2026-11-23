@@ -5,7 +5,10 @@ import java.util.List;
 
 import com.carpentersblocks.blockentity.CbRenderData;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
+import com.carpentersblocks.util.attribute.AttributeHelper;
 import com.carpentersblocks.util.attribute.EnumAttributeType;
+import com.carpentersblocks.util.block.FlowerPotUtil;
+import net.minecraft.world.item.ItemStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockTintSource;
@@ -33,6 +36,22 @@ public final class CoverTints {
     /** Tint indices kept per cover; vanilla blocks use at most two. */
     private static final int COVER_TINTS = 4;
 
+    /** Flower pot plant tints, after the cover tints: base + 4 for the upper half + the plant quad's own tint index. */
+    private static final int TINT_PLANT = TINT_COVER + EnumAttributeLocation.values().length * COVER_TINTS;
+
+    /** Plant tint when fertilized (1.7.10: 0.45, 0.80, 0.30). */
+    private static final int FERTILIZED_COLOR = 0xFF73CC4D;
+
+    /**
+     * Gets the tint index for a flower pot plant quad, or -1 if the plant's tint index is out of range.
+     */
+    public static int getPlantTint(boolean upperHalf, int plantTintIndex) {
+        if (plantTintIndex < 0 || plantTintIndex >= COVER_TINTS) {
+            return -1;
+        }
+        return TINT_PLANT + (upperHalf ? COVER_TINTS : 0) + plantTintIndex;
+    }
+
     private CoverTints() {}
 
     /**
@@ -54,6 +73,11 @@ public final class CoverTints {
         for (EnumAttributeLocation location : EnumAttributeLocation.values()) {
             for (int tint = 0; tint < COVER_TINTS; ++tint) {
                 sources.add(new CoverTint(location, tint));
+            }
+        }
+        for (boolean upper : new boolean[] { false, true }) {
+            for (int tint = 0; tint < COVER_TINTS; ++tint) {
+                sources.add(new PlantTint(upper, tint));
             }
         }
         return sources;
@@ -90,6 +114,38 @@ public final class CoverTints {
             CbRenderData data = CoverableModel.getAttributeData(level, pos, blockState);
             BlockState cover = data == null ? null : data.getAttributeHelper().getBlockState(location, EnumAttributeType.COVER);
             return cover == null ? -1 : colorOf(cover, coverTintIndex, level, pos);
+        }
+
+    }
+
+
+    private record PlantTint(boolean upper, int plantTintIndex) implements BlockTintSource {
+
+        @Override
+        public int color(BlockState blockState) {
+            return -1;
+        }
+
+        @Override
+        public int colorInWorld(BlockState blockState, BlockAndTintGetter level, BlockPos pos) {
+            CbRenderData data = level.getModelData(pos).get(CbRenderData.PROPERTY);
+            if (data == null) {
+                return -1;
+            }
+            AttributeHelper attributes = data.getAttributeHelper();
+            ItemStack plant = attributes.getItemStack(EnumAttributeLocation.HOST, EnumAttributeType.PLANT);
+            BlockState plantState = plant.isEmpty() ? null : FlowerPotUtil.getPlantState(plant);
+            if (plantState != null && upper) {
+                plantState = FlowerPotUtil.getUpperHalf(plantState);
+            }
+            if (plantState == null) {
+                return -1;
+            }
+            int color = colorOf(plantState, plantTintIndex, level, pos);
+            if (attributes.hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.FERTILIZER) && (color & 0xFFFFFF) != 0xFFFFFF) {
+                color = FERTILIZED_COLOR;
+            }
+            return color;
         }
 
     }

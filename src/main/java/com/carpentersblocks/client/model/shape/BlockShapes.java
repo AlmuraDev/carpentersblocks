@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import com.carpentersblocks.CbConfig;
+import com.carpentersblocks.blockentity.CbRenderData;
 import com.carpentersblocks.block.BlockCarpentersCollapsibleBlock;
 import com.carpentersblocks.util.block.CollapsibleUtil;
 import com.carpentersblocks.block.IShapedBlock;
@@ -39,8 +42,9 @@ public final class BlockShapes {
         /**
          * @param blockState the block
          * @param renderData the block's render data (BlockCoverable.getRenderData), or its inventory render data
+         * @param data what the block is drawn from, or null for an item
          */
-        QuadContainer create(BlockState blockState, int renderData);
+        QuadContainer create(BlockState blockState, int renderData, @Nullable CbRenderData data);
 
     }
 
@@ -48,7 +52,7 @@ public final class BlockShapes {
 
     static {
         // The Carpenter's Block: a full block (1.12.2's BakedBlock)
-        SHAPES.put("block", (blockState, renderData) -> {
+        SHAPES.put("block", (blockState, renderData, data) -> {
             QuadContainer container = new QuadContainer(EnumAttributeLocation.HOST);
             TextureAtlasSprite sprite = CbSprites.get(CbSprites.UNCOVERED_QUARTERED);
             for (Direction facing : Direction.values()) {
@@ -57,11 +61,13 @@ public final class BlockShapes {
             return container;
         });
         // Blocks made of boxes: barriers, gates, ladders, buttons, levers, torches... (1.12.2's BakedShapedBlock)
-        SHAPES.put("shaped", BlockShapes::createShaped);
+        SHAPES.put("shaped", (blockState, renderData, data) -> createShaped(blockState, renderData));
+        // The Carpenter's Flower Pot, with its soil and plant (1.12.2's BakedFlowerPot)
+        SHAPES.put("flower_pot", FlowerPotShape::create);
         // The Carpenter's Slope (1.12.2's BakedSlope)
-        SHAPES.put("slope", (blockState, renderData) -> SlopeShapes.create(renderData));
+        SHAPES.put("slope", (blockState, renderData, data) -> SlopeShapes.create(renderData));
         // The Carpenter's Collapsible Block (1.12.2's BakedCollapsibleBlock)
-        SHAPES.put("collapsible", (blockState, renderData) -> createCollapsible(renderData));
+        SHAPES.put("collapsible", (blockState, renderData, data) -> createCollapsible(renderData));
     }
 
     private static QuadContainer createCollapsible(int renderData) {
@@ -103,7 +109,7 @@ public final class BlockShapes {
         return Optional.ofNullable(SHAPES.get(name));
     }
 
-    private static QuadContainer createShaped(BlockState blockState, int renderData) {
+    static QuadContainer createShaped(BlockState blockState, int renderData) {
         QuadContainer container = new QuadContainer(EnumAttributeLocation.HOST);
         if (!(blockState.getBlock() instanceof IShapedBlock shapedBlock)) {
             return container;

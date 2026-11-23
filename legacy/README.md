@@ -29,11 +29,13 @@ compiled. Each block is rewritten for 26.3 under `src/main` and checked against 
 | `renderer/bakedblock/BakedSlope`, `helper/RenderHelperSlope` | `client/model/shape/SlopeShapes`, `RenderHelperSlope` ("slope") |
 | `network/PacketSlopeSelect`, `util/handler/PacketHandler` | `network/SlopeSelectPayload` (a NeoForge payload) |
 | `block/BlockCarpentersCollapsibleBlock`, `util/block/CollapsibleUtil`, `renderer/bakedblock/BakedCollapsibleBlock`, `helper/RenderHelperCollapsible` | same names; the renderer is the "collapsible" shape (`BlockFacing` folded into the block) |
+| `block/BlockCarpentersPressurePlate`, `util/block/PressurePlateUtil`, `util/states/*`, `renderer/bakedblock/BakedPressurePlate` | `block/BlockCarpentersPressurePlate` (an IShapedBlock: the state file only held its two boxes) |
+| `block/BlockCarpentersFlowerPot`, `util/block/FlowerPotUtil`, `renderer/bakedblock/BakedFlowerPot` | same names; the renderer is the "flower_pot" shape (`client/model/shape/FlowerPotShape`) |
 | `block/BlockCarpentersSafe`, `tileentity/TECarpentersSafe` | `block/BlockCarpentersSafe`, `blockentity/SafeBlockEntity` (block entity `carpentersblocks:safe`; a vanilla chest menu; pipes through NeoForge's WorldlyContainerWrapper) |
 
 ## Still to port
 
-Blocks: bed, flower pot, pressure plate. Items: bed, tile (and the tile entity). Also: routable fluids, rail slope fill, bed design textures (`CarpentersBlocksCachedResources`),
+Blocks: bed. Items: bed, tile (and the tile entity). Also: routable fluids, rail slope fill, bed design textures (`CarpentersBlocksCachedResources`),
 `canSustainPlant` for covers, and converting 3.5 (1.12.2) Carpenter's blocks in the Almura world converter.
 
 Each new block needs its blockstate and item definition (`{"type": "carpentersblocks:coverable", "shape": ...}`; boxed

@@ -60,6 +60,14 @@
     {
       "id": "carpentersblocks:carpenters_collapsible_block",
       "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_pressure_plate",
+      "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_flower_pot",
+      "required": false
     }
   ]
 }

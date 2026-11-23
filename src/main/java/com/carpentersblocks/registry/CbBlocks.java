@@ -8,6 +8,8 @@ import com.carpentersblocks.CbConfig;
 import com.carpentersblocks.block.BlockCarpentersBarrier;
 import com.carpentersblocks.block.BlockCarpentersBlock;
 import com.carpentersblocks.block.BlockCarpentersButton;
+import com.carpentersblocks.block.BlockCarpentersFlowerPot;
+import com.carpentersblocks.block.BlockCarpentersPressurePlate;
 import com.carpentersblocks.block.BlockCarpentersCollapsibleBlock;
 import com.carpentersblocks.block.BlockCarpentersSlope;
 import com.carpentersblocks.item.ItemBlockCarpentersSlope;
@@ -74,6 +76,10 @@ public final class CbBlocks {
         ? register("carpenters_collapsible_block", BlockCarpentersCollapsibleBlock::new, 0.2F, CbBlocks::shaped) : null;
     // One item for the five slopes, which it keeps in a data component
     public static final DeferredBlock<BlockCarpentersSlope> CARPENTERS_SLOPE = CbConfig.ENABLE_SLOPE.get() ? registerSlope() : null;
+    public static final DeferredBlock<BlockCarpentersPressurePlate> CARPENTERS_PRESSURE_PLATE = CbConfig.ENABLE_PRESSURE_PLATE.get()
+        ? register("carpenters_pressure_plate", BlockCarpentersPressurePlate::new, 0.2F, CbBlocks::attached) : null;
+    public static final DeferredBlock<BlockCarpentersFlowerPot> CARPENTERS_FLOWER_POT = CbConfig.ENABLE_FLOWER_POT.get()
+        ? register("carpenters_flower_pot", BlockCarpentersFlowerPot::new, 0.5F, CbBlocks::attached) : null;
     // Placed with the door item (CbItems.CARPENTERS_DOOR), so it has no block item
     public static final DeferredBlock<BlockCarpentersDoor> CARPENTERS_DOOR = CbConfig.ENABLE_DOOR.get()
         ? REGISTER.registerBlock("carpenters_door", BlockCarpentersDoor::new, () -> shaped(woodProperties(0.2F))) : null;

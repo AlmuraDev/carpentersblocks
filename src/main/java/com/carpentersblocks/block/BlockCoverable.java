@@ -151,6 +151,19 @@ public abstract class BlockCoverable extends Block implements EntityBlock {
     }
 
     /**
+     * Gets the attributes of the Carpenter's block at a position: from the snapshot taken for chunk meshing if there
+     * is one, else from the block entity.
+     */
+    public static AttributeHelper getAttributeHelperAt(BlockGetter level, BlockPos pos) {
+        CbRenderData data = level.getModelData(pos).get(CbRenderData.PROPERTY);
+        if (data != null) {
+            return data.getAttributeHelper();
+        }
+        CbBlockEntity blockEntity = getSimpleBlockEntity(level, pos);
+        return blockEntity != null ? blockEntity.getAttributeHelper() : new AttributeHelper(Map.of());
+    }
+
+    /**
      * Gets the position of the block whose cover, dye and overlays this block is drawn with. Blocks drawn with
      * another piece's look (an open garage door) override this. Also called while chunks are meshed.
      *

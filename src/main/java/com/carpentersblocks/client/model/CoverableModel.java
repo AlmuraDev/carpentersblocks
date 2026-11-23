@@ -78,7 +78,7 @@ public final class CoverableModel implements DynamicBlockStateModel {
         CbRenderData data = getAttributeData(level, pos, state);
         // Neighbors are read from the chunk snapshot being meshed
         int renderData = state.getBlock() instanceof BlockCoverable block ? block.getRenderData(level, pos, data.cbMetadata()) : data.cbMetadata();
-        List<BakedQuad> quads = CoverQuadBuilder.build(_shape.create(state, renderData), data, level, pos);
+        List<BakedQuad> quads = CoverQuadBuilder.build(_shape.create(state, renderData, data), data, level, pos);
         parts.add(new Part(quads, getParticle(data)));
     }
 

@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "registry": "minecraft:block",
+      "value": "carpentersblocks:carpenters_flower_pot"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "decorations",
+  "key": {
+    "X": "carpentersblocks:carpenters_block"
+  },
+  "pattern": [
+    "X X",
+    " X "
+  ],
+  "result": {
+    "id": "carpentersblocks:carpenters_flower_pot"
+  }
+}

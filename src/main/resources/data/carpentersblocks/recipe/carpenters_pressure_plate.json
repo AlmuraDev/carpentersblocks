@@ -1,0 +1,20 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "registry": "minecraft:block",
+      "value": "carpentersblocks:carpenters_pressure_plate"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "#": "carpentersblocks:carpenters_block"
+  },
+  "pattern": [
+    "##"
+  ],
+  "result": {
+    "id": "carpentersblocks:carpenters_pressure_plate"
+  }
+}

@@ -84,7 +84,7 @@ public final class CoverableItemModel implements ItemModel {
     }
 
     private Geometry bake(BlockState blockState, int renderData) {
-        List<BakedQuad> quads = List.copyOf(_shape.create(blockState, renderData).bakeQuads());
+        List<BakedQuad> quads = List.copyOf(_shape.create(blockState, renderData, null).bakeQuads());
         Material.Baked particle = new Material.Baked(CbSprites.get(CbSprites.UNCOVERED_FULL), false);
         return new Geometry(ItemQuads.split(quads), Suppliers.memoize(() -> CuboidItemModelWrapper.computeExtents(quads)), particle);
     }

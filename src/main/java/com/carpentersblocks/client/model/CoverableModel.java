@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.carpentersblocks.CarpentersBlocks;
+import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.blockentity.CbRenderData;
 import com.carpentersblocks.client.model.shape.BlockShapes;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
@@ -58,7 +59,9 @@ public final class CoverableModel implements DynamicBlockStateModel {
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
         CbRenderData data = getRenderData(level, pos);
-        List<BakedQuad> quads = CoverQuadBuilder.build(_shape.create(data), data, level, pos);
+        // Neighbors are read from the chunk snapshot being meshed
+        int renderData = state.getBlock() instanceof BlockCoverable block ? block.getRenderData(level, pos, data.cbMetadata()) : data.cbMetadata();
+        List<BakedQuad> quads = CoverQuadBuilder.build(_shape.create(state, renderData), data, level, pos);
         parts.add(new Part(quads, getParticle(data)));
     }
 

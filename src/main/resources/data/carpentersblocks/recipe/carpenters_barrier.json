@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "registry": "minecraft:block",
+      "value": "carpentersblocks:carpenters_barrier"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "X": "#c:rods/wooden",
+    "Y": "carpentersblocks:carpenters_block"
+  },
+  "pattern": [
+    "Y",
+    "XYX"
+  ],
+  "result": {
+    "count": 4,
+    "id": "carpentersblocks:carpenters_barrier"
+  }
+}

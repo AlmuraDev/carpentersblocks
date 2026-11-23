@@ -46,6 +46,9 @@ public final class CbConfig {
     public static final ModConfigSpec.BooleanValue ENABLE_CHISEL_DESIGNS;
     public static final ModConfigSpec.BooleanValue ENABLE_OWNERSHIP;
     public static final ModConfigSpec.BooleanValue ENABLE_ILLUMINATION;
+    public static final ModConfigSpec.BooleanValue ENABLE_TORCH_WEATHER_EFFECTS;
+    public static final ModConfigSpec.BooleanValue ENABLE_ALPHA_PANES;
+    public static final ModConfigSpec.BooleanValue ENABLE_FREESTANDING_LADDERS;
     public static final ModConfigSpec.ConfigValue<List<? extends String>> OVERLAY_ITEMS;
     public static final ModConfigSpec.ConfigValue<List<? extends String>> COVER_EXCEPTIONS;
 
@@ -92,6 +95,12 @@ public final class CbConfig {
             .define("enableOwnership", true);
         ENABLE_ILLUMINATION = builder.comment("Lets players cover blocks with glowstone dust to make them give light")
             .define("enableIllumination", true);
+        ENABLE_TORCH_WEATHER_EFFECTS = builder.comment("Whether torches go out in rain and snow")
+            .define("enableTorchWeatherEffects", true);
+        ENABLE_ALPHA_PANES = builder.comment("Whether panes (in doors, hatches, lanterns...) are drawn see-through, for translucent glass")
+            .define("enableAlphaPanes", true);
+        ENABLE_FREESTANDING_LADDERS = builder.comment("Whether wall ladders stay up when the block behind them is removed")
+            .define("enableFreestandingLadders", false);
         OVERLAY_ITEMS = builder.comment(
                 "Maps items to overlays, as item=overlay.",
                 "Overlays are grass, snow, web, vine, hay and mycelium.")

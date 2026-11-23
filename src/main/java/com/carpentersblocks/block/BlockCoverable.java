@@ -39,6 +39,16 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import com.carpentersblocks.blockentity.CbRenderData;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
 
 /**
@@ -93,10 +103,90 @@ public abstract class BlockCoverable extends Block implements EntityBlock {
     }
 
     /**
-     * Gets the data passed to the renderer. Blocks whose shape depends on their neighbors (fences) add that here.
+     * Gets the data the block is drawn and shaped from. Blocks whose shape depends on their neighbors (fences) add
+     * that here.
+     * <p>
+     * Also called while chunks are meshed, off the main thread: read neighbors only through the level, and their
+     * block data through {@link #getCbMetadataAt}.
+     *
+     * @param cbMetadata the block's own data
      */
-    public int getRenderData(BlockGetter level, BlockPos pos, CbBlockEntity blockEntity) {
-        return blockEntity.getCbMetadata();
+    public int getRenderData(BlockGetter level, BlockPos pos, int cbMetadata) {
+        return cbMetadata;
+    }
+
+    /**
+     * Gets the block data of the Carpenter's block at a position, or 0: from the snapshot taken for chunk meshing if
+     * there is one, else from the block entity.
+     */
+    public static int getCbMetadataAt(BlockGetter level, BlockPos pos) {
+        CbRenderData data = level.getModelData(pos).get(CbRenderData.PROPERTY);
+        if (data != null) {
+            return data.cbMetadata();
+        }
+        CbBlockEntity blockEntity = getSimpleBlockEntity(level, pos);
+        return blockEntity != null ? blockEntity.getCbMetadata() : 0;
+    }
+
+    /**
+     * Gets the render data at a position (main thread: from the block entity).
+     */
+    protected int getRenderDataAt(BlockGetter level, BlockPos pos) {
+        CbBlockEntity blockEntity = getBlockEntity(level, pos);
+        return getRenderData(level, pos, blockEntity != null ? blockEntity.getCbMetadata() : 0);
+    }
+
+    ////////////
+    // Shapes of IShapedBlock blocks
+    ////////////
+
+    // Shapes by render data, made from the block's boxes; render data covers everything a shape depends on
+    private final Map<Integer, VoxelShape> _outlineShapes = new ConcurrentHashMap<>();
+    private final Map<Integer, VoxelShape> _collisionShapes = new ConcurrentHashMap<>();
+
+    private static VoxelShape toShape(List<AABB> boxes) {
+        VoxelShape shape = Shapes.empty();
+        for (AABB box : boxes) {
+            shape = Shapes.or(shape, Shapes.create(box));
+        }
+        return shape.optimize();
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState blockState, BlockGetter level, BlockPos pos, CollisionContext context) {
+        if (!(this instanceof IShapedBlock shapedBlock)) {
+            return super.getShape(blockState, level, pos, context);
+        }
+        return _outlineShapes.computeIfAbsent(getRenderDataAt(level, pos), data -> toShape(shapedBlock.getSelectionBoxes(data)));
+    }
+
+    @Override
+    protected VoxelShape getCollisionShape(BlockState blockState, BlockGetter level, BlockPos pos, CollisionContext context) {
+        if (!(this instanceof IShapedBlock shapedBlock)) {
+            return super.getCollisionShape(blockState, level, pos, context);
+        }
+        return _collisionShapes.computeIfAbsent(getRenderDataAt(level, pos), data -> toShape(shapedBlock.getCollisionBoxes(data)));
+    }
+
+    /**
+     * Breaks the block as if mined, dropping it and its attributes (1.12.2's destroyBlock).
+     */
+    protected static void breakBlock(Level level, BlockPos pos) {
+        level.destroyBlock(pos, true);
+    }
+
+    /**
+     * Sends a message from the language files (1.12.2's ChatHandler).
+     */
+    protected static void sendMessage(Player player, String key) {
+        player.sendSystemMessage(Component.translatable(key).withStyle(ChatFormatting.GOLD));
+    }
+
+    /**
+     * Gets the block's light: by default the light of its attributes (glowstone, glowing covers).
+     */
+    public int getLightValue(CbBlockEntity blockEntity, int attributeLight) {
+        return attributeLight;
     }
 
     /**
@@ -247,7 +337,7 @@ public abstract class BlockCoverable extends Block implements EntityBlock {
         Direction facing = hitResult.getDirection();
         if (level.isClientSide()) {
             // The server decides; this only keeps the item from being placed when the click changes the block
-            return wouldActivate(blockEntity, itemStack, level, player, hand, facing) || wouldActivateBlock(blockEntity, player, hitResult)
+            return wouldActivate(blockEntity, itemStack, level, player, hand, facing) || wouldPreActivate(blockEntity, itemStack, player)
                 ? InteractionResult.SUCCESS : InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
@@ -292,9 +382,8 @@ public abstract class BlockCoverable extends Block implements EntityBlock {
             }
         }
 
-        if (!actionResult.altered) {
-            postOnBlockActivated(blockEntity, player, hitResult, actionResult);
-        } else {
+        // Clicks that change nothing go on to useWithoutItem (pressing a button, opening a gate)
+        if (actionResult.altered) {
             damageItemWithChance(level, player, hand);
         }
 
@@ -313,11 +402,40 @@ public abstract class BlockCoverable extends Block implements EntityBlock {
     }
 
     /**
-     * Whether a click without one of the Carpenter's attributes changes the block (a door opening, for instance), for
-     * the client side of {@link #useItemOn}.
+     * Whether {@link #preOnBlockActivated} would change the block with this item (relighting a torch), for the client
+     * side of {@link #useItemOn}.
+     */
+    protected boolean wouldPreActivate(CbBlockEntity blockEntity, ItemStack itemStack, Player player) {
+        return false;
+    }
+
+    /**
+     * Whether {@link #postOnBlockActivated} changes the block (pressing a button, opening a gate), for the client side
+     * of {@link #useWithoutItem}.
      */
     protected boolean wouldActivateBlock(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult) {
         return false;
+    }
+
+    /**
+     * Clicks that add no attribute (with an empty hand, or an item that does nothing here) use the block.
+     */
+    @Override
+    protected InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        CbBlockEntity blockEntity = getBlockEntity(level, pos);
+        if (blockEntity == null || !canPlayerActivate(blockEntity, player)) {
+            return InteractionResult.PASS;
+        }
+        if (level.isClientSide()) {
+            return wouldActivateBlock(blockEntity, player, hitResult) ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        }
+        ActionResult actionResult = new ActionResult();
+        postOnBlockActivated(blockEntity, player, hitResult, actionResult);
+        if (!actionResult.altered) {
+            return InteractionResult.PASS;
+        }
+        blockEntity.update(true);
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     /**
@@ -626,7 +744,7 @@ public abstract class BlockCoverable extends Block implements EntityBlock {
     /**
      * Whether the block takes side covers.
      */
-    protected boolean supportsSideCovers() {
+    public boolean supportsSideCovers() {
         return false;
     }
 

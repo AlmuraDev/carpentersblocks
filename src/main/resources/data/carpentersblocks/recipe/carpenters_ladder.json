@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "registry": "minecraft:block",
+      "value": "carpentersblocks:carpenters_ladder"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "X": "carpentersblocks:carpenters_block"
+  },
+  "pattern": [
+    "X X",
+    "XXX",
+    "X X"
+  ],
+  "result": {
+    "count": 4,
+    "id": "carpentersblocks:carpenters_ladder"
+  }
+}

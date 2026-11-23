@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "registry": "minecraft:block",
+      "value": "carpentersblocks:carpenters_torch"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "minecraft:coal",
+    "Y": "carpentersblocks:carpenters_block"
+  },
+  "pattern": [
+    "X",
+    "Y"
+  ],
+  "result": {
+    "count": 8,
+    "id": "carpentersblocks:carpenters_torch"
+  }
+}

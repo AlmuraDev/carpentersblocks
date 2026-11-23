@@ -149,10 +149,7 @@ public class CbBlockEntity extends BlockEntity implements IProtected {
      * Gets what the block is drawn from. Main thread only.
      */
     public CbRenderData createRenderData() {
-        BlockState blockState = getBlockState();
-        int data = blockState.getBlock() instanceof BlockCoverable coverable && level != null
-            ? coverable.getRenderData(level, worldPosition, this) : _cbMetadata;
-        return new CbRenderData(_cbAttrHelper.copyMap(), data);
+        return new CbRenderData(_cbAttrHelper.copyMap(), _cbMetadata);
     }
 
     /**
@@ -321,11 +318,12 @@ public class CbBlockEntity extends BlockEntity implements IProtected {
         if (CbConfig.ENABLE_ILLUMINATION.get() && _cbAttrHelper.hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.ILLUMINATOR)) {
             return 15;
         }
+        // The block adds its own light (torches)
         int value = 0;
         for (BlockState blockState : _cbAttrHelper.getAttributeBlockStates()) {
             value = Math.max(value, blockState.getLightEmission());
         }
-        return value;
+        return getBlockState().getBlock() instanceof BlockCoverable block ? block.getLightValue(this, value) : value;
     }
 
     /**

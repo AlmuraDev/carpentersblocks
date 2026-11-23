@@ -1,6 +1,33 @@
 {
   "replace": false,
   "values": [
-    "carpentersblocks:carpenters_block"
+    {
+      "id": "carpentersblocks:carpenters_block",
+      "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_barrier",
+      "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_gate",
+      "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_ladder",
+      "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_button",
+      "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_lever",
+      "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_torch",
+      "required": false
+    }
   ]
 }

@@ -20,13 +20,20 @@ compiled. Each block is rewritten for 26.3 under `src/main` and checked against 
 | `renderer/AbstractBakedModel`, `bakedblock/BakedBlock`, `ModelLoader` | `client/model/CoverableModel` + `client/model/shape/BlockShapes` ("block") |
 | `renderer/CoverColorHandler` | `client/model/CoverTints` |
 | `util/registry/SpriteRegistry` | `client/model/CbSprites` |
+| `block/IShapedBlock`, `ShapePart`, `ShapeTextures`, `BlockSidedShaped`, `block/data/SidedUtil`, `RedstoneData` | same names (shapes become cached VoxelShapes in `BlockCoverable`) |
+| `renderer/bakedblock/BakedShapedBlock`, `model/ModelShapedBlock`, `helper/RenderHelper` | `client/model/shape/BlockShapes` ("shaped") + `client/model/CoverableItemModel` |
+| `block/BlockCarpentersBarrier`, `Gate`, `Ladder`, `Button`, `Lever`, `Torch` and their `block/data/*Data` | same names |
 
 ## Still to port
 
-Blocks: barrier, bed, button, collapsible block, daylight sensor, door, flower pot, garage door, gate, hatch, ladder,
-lever, pressure plate, safe, slope, stairs, torch. Items: door, bed, tile (and the tile entity). Also: the slope
+Blocks: bed, collapsible block, daylight sensor, door, flower pot, garage door, hatch, pressure plate, safe, slope,
+stairs. Items: door, bed, tile (and the tile entity). Also: the slope
 selection packet, routable fluids, rail slope fill, bed design textures (`CarpentersBlocksCachedResources`),
 `canSustainPlant` for covers, and converting 3.5 (1.12.2) Carpenter's blocks in the Almura world converter.
 
-Each new block needs its blockstate (`{"type": "carpentersblocks:coverable", "shape": ...}`), a shape in
-`BlockShapes`, an item model, a loot table and its recipe, and the 1.12.2 hardness in `CbBlocks`.
+Each new block needs its blockstate and item definition (`{"type": "carpentersblocks:coverable", "shape": ...}`; boxed
+blocks use "shaped"), a loot table and its recipe (with a `neoforge:registered` condition), and its 1.12.2 hardness in
+`CbBlocks`. Block data that depends on neighbors goes in `getRenderData(level, pos, cbMetadata)`, which also runs while
+chunks mesh: read neighbor data only through `BlockCoverable.getCbMetadataAt`.
+
+Not ported with their blocks: Forge's `rotateBlock` (wrench rotation), and pathfinding through open gates.

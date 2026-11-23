@@ -3,6 +3,7 @@ package com.carpentersblocks.client;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.client.model.CoverTints;
+import com.carpentersblocks.client.model.CoverableItemModel;
 import com.carpentersblocks.client.model.CoverableModel;
 import com.carpentersblocks.registry.CbBlocks;
 
@@ -12,6 +13,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 /**
@@ -24,6 +26,11 @@ public final class CarpentersBlocksClient {
     public CarpentersBlocksClient(IEventBus modBus) {
         modBus.addListener(CarpentersBlocksClient::registerBlockStateModels);
         modBus.addListener(CarpentersBlocksClient::registerTints);
+        modBus.addListener(CarpentersBlocksClient::registerItemModels);
+    }
+
+    private static void registerItemModels(RegisterItemModelsEvent event) {
+        event.register(CoverableItemModel.TYPE, CoverableItemModel.Unbaked.CODEC);
     }
 
     private static void registerBlockStateModels(RegisterBlockStateModels event) {

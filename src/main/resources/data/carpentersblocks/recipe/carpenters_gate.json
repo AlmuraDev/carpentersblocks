@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "registry": "minecraft:block",
+      "value": "carpentersblocks:carpenters_gate"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "X": "#c:rods/wooden",
+    "Y": "carpentersblocks:carpenters_block"
+  },
+  "pattern": [
+    "XYX",
+    "XYX"
+  ],
+  "result": {
+    "id": "carpentersblocks:carpenters_gate"
+  }
+}

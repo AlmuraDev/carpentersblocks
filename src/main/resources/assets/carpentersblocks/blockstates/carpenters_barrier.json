@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "": {
+      "type": "carpentersblocks:coverable",
+      "shape": "shaped"
+    }
+  }
+}

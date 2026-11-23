@@ -23,7 +23,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
     }
 
     @Override
-    protected boolean supportsSideCovers() {
+    public boolean supportsSideCovers() {
         return true;
     }
 

@@ -13,9 +13,10 @@ import net.neoforged.neoforge.model.data.ModelProperty;
  * (1.12.2 passed these to the renderer in the extended block state).
  *
  * @param attributes the attributes, unmodifiable
- * @param data the block data ({@link CbBlockEntity#getCbMetadata()} or block specific render data)
+ * @param cbMetadata the block data ({@link CbBlockEntity#getCbMetadata()}); the model adds what depends on the
+ *        neighbors (see BlockCoverable.getRenderData)
  */
-public record CbRenderData(Map<Key, AbstractAttribute<?>> attributes, int data) {
+public record CbRenderData(Map<Key, AbstractAttribute<?>> attributes, int cbMetadata) {
 
     public static final ModelProperty<CbRenderData> PROPERTY = new ModelProperty<>();
 

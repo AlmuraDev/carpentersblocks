@@ -2,6 +2,7 @@ package com.carpentersblocks.registry;
 
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.CbConfig;
+import com.carpentersblocks.item.ItemCarpentersBed;
 import com.carpentersblocks.item.ItemCarpentersChisel;
 import com.carpentersblocks.item.ItemCarpentersDoor;
 import com.carpentersblocks.item.ItemCarpentersHammer;
@@ -24,6 +25,9 @@ public final class CbItems {
 
     public static final DeferredItem<ItemCarpentersDoor> CARPENTERS_DOOR = CbConfig.ENABLE_DOOR.get()
         ? REGISTER.registerItem("carpenters_door_item", ItemCarpentersDoor::new, Item.Properties::new) : null;
+
+    public static final DeferredItem<ItemCarpentersBed> CARPENTERS_BED = CbConfig.ENABLE_BED.get()
+        ? REGISTER.registerItem("carpenters_bed_item", ItemCarpentersBed::new, Item.Properties::new) : null;
 
     private CbItems() {}
 

@@ -18,7 +18,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
      * Covers on every side, like 1.7.10.
      */
     @Override
-    protected boolean canSupportCover(CbBlockEntity blockEntity, EnumAttributeLocation location) {
+    public boolean canSupportCover(CbBlockEntity blockEntity, EnumAttributeLocation location) {
         return true;
     }
 
@@ -31,7 +31,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
      * Alters block direction (not yet: 1.12.2 did nothing either).
      */
     @Override
-    protected boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
         return true;
     }
 
@@ -39,7 +39,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
      * Alters block type (not yet: 1.12.2 did nothing either).
      */
     @Override
-    protected boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
         return true;
     }
 

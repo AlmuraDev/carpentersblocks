@@ -209,7 +209,7 @@ public class BlockCarpentersDaylightSensor extends BlockSidedShaped {
      * Hammer left click: inverts the redstone output.
      */
     @Override
-    protected boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
         int data = blockEntity.getCbMetadata() ^ POLARITY_BIT;
         blockEntity.setCbMetadata(data);
         notifyPowerChange(blockEntity.getLevel(), blockEntity.getBlockPos(), data);
@@ -221,7 +221,7 @@ public class BlockCarpentersDaylightSensor extends BlockSidedShaped {
      * Hammer right click: next sensitivity.
      */
     @Override
-    protected boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
         int data = blockEntity.getCbMetadata();
         int sensitivity = (getSensitivity(data) + 1) % (SENSITIVITY_DYNAMIC + 1);
         data = (data & ~SENSITIVITY_MASK) | (sensitivity << SENSITIVITY_SHIFT);

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "carpentersblocks:carpenters_bed",
+            "state": {
+              "part": "head"
+            }
+          },
+          "name": "carpentersblocks:carpenters_bed_item"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "carpentersblocks:blocks/carpenters_bed"
+}

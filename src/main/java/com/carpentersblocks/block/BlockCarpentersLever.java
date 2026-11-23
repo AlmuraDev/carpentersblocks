@@ -126,7 +126,7 @@ public class BlockCarpentersLever extends BlockSidedShaped {
     }
 
     @Override
-    protected boolean wouldActivateBlock(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult) {
+    public boolean wouldActivateBlock(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult) {
         return true;
     }
 
@@ -134,7 +134,7 @@ public class BlockCarpentersLever extends BlockSidedShaped {
      * Toggles the lever.
      */
     @Override
-    protected void postOnBlockActivated(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult, ActionResult actionResult) {
+    public void postOnBlockActivated(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult, ActionResult actionResult) {
         Level level = blockEntity.getLevel();
         BlockPos pos = blockEntity.getBlockPos();
         int data = blockEntity.getCbMetadata();
@@ -150,7 +150,7 @@ public class BlockCarpentersLever extends BlockSidedShaped {
      * Hammer left click: inverts the redstone output.
      */
     @Override
-    protected boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
         int data = RedstoneData.togglePolarity(blockEntity.getCbMetadata());
         blockEntity.setCbMetadata(data);
         notifyPowerChange(blockEntity.getLevel(), blockEntity.getBlockPos(), data);

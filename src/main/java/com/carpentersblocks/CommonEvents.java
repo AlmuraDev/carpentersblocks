@@ -1,6 +1,6 @@
 package com.carpentersblocks;
 
-import com.carpentersblocks.block.BlockCoverable;
+import com.carpentersblocks.block.ICoverableBlock;
 import com.carpentersblocks.blockentity.CbBlockEntity;
 import com.carpentersblocks.util.block.BlockUtil;
 
@@ -30,7 +30,7 @@ public final class CommonEvents {
             return;
         }
         BlockState blockState = level.getBlockState(event.getPos());
-        if (blockState.getBlock() instanceof BlockCoverable block && level.getBlockEntity(event.getPos()) instanceof CbBlockEntity) {
+        if (blockState.getBlock() instanceof ICoverableBlock block && level.getBlockEntity(event.getPos()) instanceof CbBlockEntity) {
             block.onBlockClicked(level, event.getPos(), event.getEntity(), event.getFace());
         }
     }

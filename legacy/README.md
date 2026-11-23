@@ -9,7 +9,7 @@ compiled. Each block is rewritten for 26.3 under `src/main` and checked against 
 |---|---|
 | `tileentity/CbTileEntity` | `blockentity/CbBlockEntity` (same `cbAttrList` / `cbMetadata` / `cbOwner` tags; items in the 26.3 item format, covers also keep their block state) |
 | `util/attribute/*` | `util/attribute/*` |
-| `block/BlockCoverable` | `block/BlockCoverable` (left clicks arrive through `CommonEvents`, which knows the face) |
+| `block/BlockCoverable` | `block/ICoverableBlock` (the behavior, as default methods), `CoverableSupport` (helpers) and `BlockCoverable` (a Block forwarding to them); left clicks arrive through `CommonEvents`, which knows the face |
 | `block/BlockCarpentersBlock` | `block/BlockCarpentersBlock` |
 | `item/ItemCarpentersHammer`, `ItemCarpentersChisel` | `item/*` (`canDestroyBlock` keeps them from breaking Carpenter's blocks) |
 | `util/registry/ConfigRegistry` | `CbConfig` (startup config; overlays and cover exceptions by item id) |
@@ -31,11 +31,12 @@ compiled. Each block is rewritten for 26.3 under `src/main` and checked against 
 | `block/BlockCarpentersCollapsibleBlock`, `util/block/CollapsibleUtil`, `renderer/bakedblock/BakedCollapsibleBlock`, `helper/RenderHelperCollapsible` | same names; the renderer is the "collapsible" shape (`BlockFacing` folded into the block) |
 | `block/BlockCarpentersPressurePlate`, `util/block/PressurePlateUtil`, `util/states/*`, `renderer/bakedblock/BakedPressurePlate` | `block/BlockCarpentersPressurePlate` (an IShapedBlock: the state file only held its two boxes) |
 | `block/BlockCarpentersFlowerPot`, `util/block/FlowerPotUtil`, `renderer/bakedblock/BakedFlowerPot` | same names; the renderer is the "flower_pot" shape (`client/model/shape/FlowerPotShape`) |
+| `block/BlockCarpentersBed`, `item/ItemCarpentersBed` | same names; the bed is a vanilla `AbstractBedBlock` (players only sleep in those) with `ICoverableBlock`, its facing/part/occupied in the blockstate. Bed designs are drawn piece by piece from the whole design texture (`client/model/shape/BedDesignPieces`), not cut into a generated resource pack (`CarpentersBlocksCachedResources`) |
 | `block/BlockCarpentersSafe`, `tileentity/TECarpentersSafe` | `block/BlockCarpentersSafe`, `blockentity/SafeBlockEntity` (block entity `carpentersblocks:safe`; a vanilla chest menu; pipes through NeoForge's WorldlyContainerWrapper) |
 
 ## Still to port
 
-Blocks: bed. Items: bed, tile (and the tile entity). Also: routable fluids, rail slope fill, bed design textures (`CarpentersBlocksCachedResources`),
+Items: tile (and the tile entity). Also: routable fluids, rail slope fill,
 `canSustainPlant` for covers, and converting 3.5 (1.12.2) Carpenter's blocks in the Almura world converter.
 
 Each new block needs its blockstate and item definition (`{"type": "carpentersblocks:coverable", "shape": ...}`; boxed

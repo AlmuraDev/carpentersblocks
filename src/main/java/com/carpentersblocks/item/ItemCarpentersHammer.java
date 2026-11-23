@@ -1,7 +1,7 @@
 package com.carpentersblocks.item;
 
 import com.carpentersblocks.api.ICarpentersHammer;
-import com.carpentersblocks.block.BlockCoverable;
+import com.carpentersblocks.block.ICoverableBlock;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -33,7 +33,7 @@ public class ItemCarpentersHammer extends Item implements ICarpentersHammer {
      */
     @Override
     public boolean canDestroyBlock(ItemStack itemStack, BlockState blockState, Level level, BlockPos pos, LivingEntity user) {
-        return !(blockState.getBlock() instanceof BlockCoverable);
+        return !(blockState.getBlock() instanceof ICoverableBlock);
     }
 
 }

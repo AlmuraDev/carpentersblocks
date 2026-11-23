@@ -129,7 +129,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable implements IShapedB
      * Hammer left click: previous design.
      */
     @Override
-    protected boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
         return setDesign(blockEntity, DesignHandler.getPrev(DesignType.FLOWERPOT, getDesign(blockEntity)));
     }
 
@@ -137,7 +137,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable implements IShapedB
      * Hammer right click: next design, or none when sneaking.
      */
     @Override
-    protected boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
         return setDesign(blockEntity, player.isShiftKeyDown() ? null : DesignHandler.getNext(DesignType.FLOWERPOT, getDesign(blockEntity)));
     }
 
@@ -145,7 +145,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable implements IShapedB
      * A pot with a design takes no cover.
      */
     @Override
-    protected boolean canSupportCover(CbBlockEntity blockEntity, EnumAttributeLocation location) {
+    public boolean canSupportCover(CbBlockEntity blockEntity, EnumAttributeLocation location) {
         return EnumAttributeLocation.HOST.equals(location) && getDesign(blockEntity) == null;
     }
 
@@ -191,7 +191,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable implements IShapedB
     }
 
     @Override
-    protected boolean wouldPreActivate(CbBlockEntity blockEntity, ItemStack itemStack, Player player) {
+    public boolean wouldPreActivate(CbBlockEntity blockEntity, ItemStack itemStack, Player player) {
         AttributeHelper helper = blockEntity.getAttributeHelper();
         boolean hasSoil = helper.hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.SOIL);
         boolean hasPlant = helper.hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.PLANT);
@@ -208,7 +208,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable implements IShapedB
      * Adds soil, then a plant; bone meal tints the plant.
      */
     @Override
-    protected void preOnBlockActivated(CbBlockEntity blockEntity, Player player, net.minecraft.world.phys.BlockHitResult hitResult, ActionResult actionResult) {
+    public void preOnBlockActivated(CbBlockEntity blockEntity, Player player, net.minecraft.world.phys.BlockHitResult hitResult, ActionResult actionResult) {
         ItemStack itemStack = player.getMainHandItem();
         if (itemStack.isEmpty() || !wouldPreActivate(blockEntity, itemStack, player)) {
             return;
@@ -234,7 +234,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable implements IShapedB
      * Sneak left click with a hammer takes out the fertilizer or plant (clicked high), or the soil.
      */
     @Override
-    protected void preOnBlockClicked(CbBlockEntity blockEntity, Player player, ActionResult actionResult) {
+    public void preOnBlockClicked(CbBlockEntity blockEntity, Player player, ActionResult actionResult) {
         if (!player.isShiftKeyDown() || !(player.getMainHandItem().getItem() instanceof ICarpentersHammer)) {
             return;
         }

@@ -171,7 +171,7 @@ public class BlockCarpentersBarrier extends BlockCoverable implements IShapedBlo
      * Hammer left click: toggles the post.
      */
     @Override
-    protected boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
         return blockEntity.setCbMetadata(BarrierData.togglePost(blockEntity.getCbMetadata()));
     }
 
@@ -179,7 +179,7 @@ public class BlockCarpentersBarrier extends BlockCoverable implements IShapedBlo
      * Hammer right click: next type, or next vanilla variant when sneaking.
      */
     @Override
-    protected boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
         int data = blockEntity.getCbMetadata();
         int next = player.isShiftKeyDown() ? BarrierData.getNextVanillaType(data) : BarrierData.getNextType(data);
         return blockEntity.setCbMetadata(next);

@@ -123,6 +123,10 @@ public final class BlockShapes {
                     quad.setSprite(CbSprites.get(faceTexture));
                 }
                 quad.setUVRotation(part.getUVRotation());
+                int designPiece = part.getDesignPiece(quad.getFacing());
+                if (designPiece >= 0) {
+                    BedDesignPieces.apply(quad, designPiece);
+                }
                 // Panes blend on the translucent layer, or are cut out when "enableAlphaPanes" is off
                 if (part.isTranslucent() && CbConfig.ENABLE_ALPHA_PANES.get()) {
                     quad.setRenderLayer(ChunkSectionLayer.TRANSLUCENT);

@@ -151,7 +151,7 @@ public class BlockCarpentersLadder extends BlockCoverable implements IShapedBloc
      * Hammer left click: next ladder type.
      */
     @Override
-    protected boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
         return blockEntity.setCbMetadata(LadderData.getNextType(blockEntity.getCbMetadata(), true));
     }
 
@@ -159,7 +159,7 @@ public class BlockCarpentersLadder extends BlockCoverable implements IShapedBloc
      * Hammer right click: previous ladder type.
      */
     @Override
-    protected boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
         return blockEntity.setCbMetadata(LadderData.getNextType(blockEntity.getCbMetadata(), false));
     }
 

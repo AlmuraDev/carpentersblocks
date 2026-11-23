@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.carpentersblocks.CarpentersBlocks;
-import com.carpentersblocks.block.BlockCoverable;
+import com.carpentersblocks.block.ICoverableBlock;
 import com.carpentersblocks.blockentity.CbRenderData;
 import com.carpentersblocks.client.model.shape.BlockShapes;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
@@ -61,7 +61,7 @@ public final class CoverableModel implements DynamicBlockStateModel {
      */
     public static CbRenderData getAttributeData(BlockAndTintGetter level, BlockPos pos, BlockState state) {
         CbRenderData data = getRenderData(level, pos);
-        if (state.getBlock() instanceof BlockCoverable block) {
+        if (state.getBlock() instanceof ICoverableBlock block) {
             BlockPos source = block.getRenderAttributeSource(level, pos, data.cbMetadata());
             if (!source.equals(pos)) {
                 CbRenderData sourceData = level.getModelData(source).get(CbRenderData.PROPERTY);
@@ -77,7 +77,7 @@ public final class CoverableModel implements DynamicBlockStateModel {
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
         CbRenderData data = getAttributeData(level, pos, state);
         // Neighbors are read from the chunk snapshot being meshed
-        int renderData = state.getBlock() instanceof BlockCoverable block ? block.getRenderData(level, pos, data.cbMetadata()) : data.cbMetadata();
+        int renderData = state.getBlock() instanceof ICoverableBlock block ? block.getRenderData(level, pos, data.cbMetadata()) : data.cbMetadata();
         List<BakedQuad> quads = CoverQuadBuilder.build(_shape.create(state, renderData, data), data, level, pos);
         parts.add(new Part(quads, getParticle(data)));
     }

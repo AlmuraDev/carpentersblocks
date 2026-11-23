@@ -3,7 +3,7 @@ package com.carpentersblocks.util.block;
 import javax.annotation.Nullable;
 
 import com.carpentersblocks.CbConfig;
-import com.carpentersblocks.block.BlockCoverable;
+import com.carpentersblocks.block.ICoverableBlock;
 import com.carpentersblocks.blockentity.CbBlockEntity;
 import com.carpentersblocks.util.attribute.AttributeItemStack;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
@@ -70,7 +70,7 @@ public final class BlockUtil {
             return false;
         }
         Block block = blockItem.getBlock();
-        if (block instanceof BlockCoverable) {
+        if (block instanceof ICoverableBlock) {
             return false;
         }
         BlockState blockState = block.defaultBlockState();

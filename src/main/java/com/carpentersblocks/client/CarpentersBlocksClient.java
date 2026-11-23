@@ -1,7 +1,7 @@
 package com.carpentersblocks.client;
 
 import com.carpentersblocks.CarpentersBlocks;
-import com.carpentersblocks.block.BlockCoverable;
+import com.carpentersblocks.block.ICoverableBlock;
 import com.carpentersblocks.client.model.CoverTints;
 import com.carpentersblocks.client.model.CoverableItemModel;
 import com.carpentersblocks.client.model.CoverableModel;
@@ -62,7 +62,7 @@ public final class CarpentersBlocksClient {
     private static void registerTints(RegisterColorHandlersEvent.BlockTintSources event) {
         Block[] blocks = CbBlocks.REGISTER.getEntries().stream()
             .map(DeferredHolder::get)
-            .filter(block -> block instanceof BlockCoverable)
+            .filter(block -> block instanceof ICoverableBlock)
             .toArray(Block[]::new);
         event.register(CoverTints.createTintSources(), blocks);
     }

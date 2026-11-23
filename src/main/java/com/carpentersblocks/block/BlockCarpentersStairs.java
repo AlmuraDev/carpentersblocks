@@ -107,7 +107,7 @@ public class BlockCarpentersStairs extends BlockCoverable implements IShapedBloc
      * Hammer left click: rotates the stairs.
      */
     @Override
-    protected boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
         int id = StairsData.getId(blockEntity.getCbMetadata());
         return blockEntity.setCbMetadata(StairsData.getNextDirection(id));
     }
@@ -116,7 +116,7 @@ public class BlockCarpentersStairs extends BlockCoverable implements IShapedBloc
      * Hammer right click: changes the stairs type.
      */
     @Override
-    protected boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
         int id = StairsData.getId(blockEntity.getCbMetadata());
         return blockEntity.setCbMetadata(StairsData.getNextType(id));
     }
@@ -125,7 +125,7 @@ public class BlockCarpentersStairs extends BlockCoverable implements IShapedBloc
      * Damages the hammer with a chance to not damage.
      */
     @Override
-    protected void damageItemWithChance(Level level, Player player, InteractionHand hand) {
+    public void damageItemWithChance(Level level, Player player, InteractionHand hand) {
         if (level.getRandom().nextFloat() <= CbConfig.HAMMER_DAMAGE_CHANCE_STAIRS.get()) {
             super.damageItemWithChance(level, player, hand);
         }

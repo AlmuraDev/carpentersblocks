@@ -197,12 +197,12 @@ public class BlockCarpentersSafe extends BlockCoverable implements IShapedBlock 
     }
 
     @Override
-    protected boolean wouldActivateBlock(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult) {
+    public boolean wouldActivateBlock(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult) {
         return true;
     }
 
     @Override
-    protected void postOnBlockActivated(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult, ActionResult actionResult) {
+    public void postOnBlockActivated(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult, ActionResult actionResult) {
         actionResult.setAltered().setNoSound();
         if (!(blockEntity instanceof SafeBlockEntity safe)) {
             return;
@@ -238,7 +238,7 @@ public class BlockCarpentersSafe extends BlockCoverable implements IShapedBlock 
      * Hammer left click: turns the front toward the player.
      */
     @Override
-    protected boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
         return blockEntity.setCbMetadata(setFacing(blockEntity.getCbMetadata(), player.getDirection().getOpposite()));
     }
 
@@ -246,7 +246,7 @@ public class BlockCarpentersSafe extends BlockCoverable implements IShapedBlock 
      * Hammer right click: next automation mode, or toggles the lock when sneaking.
      */
     @Override
-    protected boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
         if (!PlayerPermissions.hasElevatedPermission(blockEntity, player, true)) {
             return false;
         }

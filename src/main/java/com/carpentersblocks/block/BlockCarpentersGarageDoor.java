@@ -426,12 +426,12 @@ public class BlockCarpentersGarageDoor extends BlockCoverable implements IShaped
     ////////////
 
     @Override
-    protected boolean wouldActivateBlock(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult) {
+    public boolean wouldActivateBlock(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult) {
         return !isRigid(blockEntity.getCbMetadata());
     }
 
     @Override
-    protected void postOnBlockActivated(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult, ActionResult actionResult) {
+    public void postOnBlockActivated(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult, ActionResult actionResult) {
         int data = blockEntity.getCbMetadata();
         if (!isRigid(data)) {
             setOpen(blockEntity, !isOpen(data));
@@ -449,7 +449,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable implements IShaped
      * Hammer left click: next type.
      */
     @Override
-    protected boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
         setTypeAll(blockEntity, (getType(blockEntity.getCbMetadata()) + 1) % NUM_TYPES);
         return true;
     }
@@ -458,7 +458,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable implements IShaped
      * Hammer right click: previous type, or toggles redstone only when sneaking.
      */
     @Override
-    protected boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
         if (player.isShiftKeyDown()) {
             boolean rigid = !isRigid(blockEntity.getCbMetadata());
             for (CbBlockEntity piece : getLinkedPieces(blockEntity)) {

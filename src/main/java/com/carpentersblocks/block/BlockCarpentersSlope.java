@@ -52,7 +52,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
      * Alters block direction: turns about the axis of the clicked face.
      */
     @Override
-    protected boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
         Direction face = getClickFace();
         if (face == null) {
             return false;
@@ -65,7 +65,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
      * Alters block type.
      */
     @Override
-    protected boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
         SlopeData.setNextType(blockEntity);
         return true;
     }
@@ -74,7 +74,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
      * Damages hammer with a chance to not damage.
      */
     @Override
-    protected void damageItemWithChance(Level level, Player player, InteractionHand hand) {
+    public void damageItemWithChance(Level level, Player player, InteractionHand hand) {
         if (level.getRandom().nextFloat() <= CbConfig.HAMMER_DAMAGE_CHANCE_SLOPES.get()) {
             super.damageItemWithChance(level, player, hand);
         }
@@ -89,7 +89,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
      * Side covers only go on the slope's full, flat faces, like 1.7.10.
      */
     @Override
-    protected boolean canSupportCover(CbBlockEntity blockEntity, EnumAttributeLocation location) {
+    public boolean canSupportCover(CbBlockEntity blockEntity, EnumAttributeLocation location) {
         if (EnumAttributeLocation.HOST.equals(location)) {
             return true;
         }

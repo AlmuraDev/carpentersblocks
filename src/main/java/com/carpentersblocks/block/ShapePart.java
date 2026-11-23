@@ -25,6 +25,9 @@ public class ShapePart {
     private java.util.Map<net.minecraft.core.Direction, Identifier> _faceTextures;
     // Side the part was rotated to with SidedUtil, so top and bottom textures turn with it (null: world aligned)
     private net.minecraft.core.Direction _uvRotation;
+    // Piece (0-7) of a bed design texture each face shows, or none (1.12.2 cut the designs into 8 textures)
+    private int _designPiece = -1;
+    private java.util.Map<net.minecraft.core.Direction, Integer> _faceDesignPieces;
 
     private ShapePart(AABB box, @Nullable Vec3[] corners, @Nullable Identifier texture, boolean translucent, boolean fullBright) {
         _box = box;
@@ -141,6 +144,25 @@ public class ShapePart {
     /**
      * Turns top and bottom textures with a part rotated by {@link com.carpentersblocks.block.data.SidedUtil#rotate} to a side.
      */
+    /**
+     * Shows one piece of a bed design texture (the part texture), on every face or per face (world facing).
+     */
+    public ShapePart withDesignPieces(int piece, @Nullable java.util.Map<net.minecraft.core.Direction, Integer> facePieces) {
+        _designPiece = piece;
+        _faceDesignPieces = facePieces == null ? null : new java.util.EnumMap<net.minecraft.core.Direction, Integer>(facePieces);
+        return this;
+    }
+
+    /**
+     * Gets the bed design piece a face shows, or -1 for the whole texture.
+     */
+    public int getDesignPiece(net.minecraft.core.Direction face) {
+        if (_faceDesignPieces != null && _faceDesignPieces.containsKey(face)) {
+            return _faceDesignPieces.get(face);
+        }
+        return _designPiece;
+    }
+
     public ShapePart withUVRotation(net.minecraft.core.Direction side) {
         _uvRotation = side;
         return this;

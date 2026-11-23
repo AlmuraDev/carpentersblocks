@@ -68,6 +68,10 @@
     {
       "id": "carpentersblocks:carpenters_flower_pot",
       "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_bed",
+      "required": false
     }
   ]
 }

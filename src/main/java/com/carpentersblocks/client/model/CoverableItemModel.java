@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import com.carpentersblocks.CarpentersBlocks;
-import com.carpentersblocks.block.BlockCoverable;
+import com.carpentersblocks.block.ICoverableBlock;
 import com.carpentersblocks.client.model.shape.BlockShapes;
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
@@ -67,7 +67,7 @@ public final class CoverableItemModel implements ItemModel {
             return;
         }
         BlockState blockState = blockItem.getBlock().defaultBlockState();
-        int renderData = blockState.getBlock() instanceof BlockCoverable block ? block.getInventoryRenderData(item) : 0;
+        int renderData = blockState.getBlock() instanceof ICoverableBlock block ? block.getInventoryRenderData(item) : 0;
         Geometry geometry = _geometry.computeIfAbsent(renderData, data -> bake(blockState, data));
         output.appendModelIdentityElement(this);
         output.appendModelIdentityElement(renderData);

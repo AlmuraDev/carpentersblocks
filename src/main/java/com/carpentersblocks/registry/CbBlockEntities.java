@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.block.BlockCarpentersSafe;
-import com.carpentersblocks.block.BlockCoverable;
+import com.carpentersblocks.block.ICoverableBlock;
 import com.carpentersblocks.blockentity.CbBlockEntity;
 import com.carpentersblocks.blockentity.SafeBlockEntity;
 
@@ -37,7 +37,7 @@ public final class CbBlockEntities {
     private static Set<Block> coverableBlocks() {
         return CbBlocks.REGISTER.getEntries().stream()
             .map(DeferredHolder::get)
-            .filter(block -> block instanceof BlockCoverable && !(block instanceof BlockCarpentersSafe))
+            .filter(block -> block instanceof ICoverableBlock && !(block instanceof BlockCarpentersSafe))
             .collect(Collectors.toUnmodifiableSet());
     }
 

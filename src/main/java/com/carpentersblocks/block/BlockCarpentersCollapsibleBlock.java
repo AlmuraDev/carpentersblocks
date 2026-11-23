@@ -57,7 +57,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
      * Decrease corner depth.
      */
     @Override
-    protected boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
         int quad = CollapsibleUtil.getHitQuad(getClickHit());
         CollapsibleUtil.setQuadDepth(blockEntity, quad, util(blockEntity).getQuadDepth(quad) - 1);
         smoothAdjacentCollapsibles(blockEntity, quad);
@@ -68,7 +68,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
      * Increase corner depth.
      */
     @Override
-    protected boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
         int quad = CollapsibleUtil.getHitQuad(getClickHit());
         CollapsibleUtil.setQuadDepth(blockEntity, quad, util(blockEntity).getQuadDepth(quad) + 1);
         smoothAdjacentCollapsibles(blockEntity, quad);
@@ -79,7 +79,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
      * Damages hammer with a chance to not damage.
      */
     @Override
-    protected void damageItemWithChance(Level level, Player player, InteractionHand hand) {
+    public void damageItemWithChance(Level level, Player player, InteractionHand hand) {
         if (level.getRandom().nextFloat() <= CbConfig.HAMMER_DAMAGE_CHANCE_COLLAPSIBLE.get()) {
             super.damageItemWithChance(level, player, hand);
         }

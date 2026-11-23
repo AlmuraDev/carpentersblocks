@@ -107,7 +107,7 @@ public class BlockCarpentersGate extends BlockCoverable implements IShapedBlock 
     }
 
     @Override
-    protected boolean wouldActivateBlock(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult) {
+    public boolean wouldActivateBlock(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult) {
         return true;
     }
 
@@ -115,7 +115,7 @@ public class BlockCarpentersGate extends BlockCoverable implements IShapedBlock 
      * Opens away from the player, or closes.
      */
     @Override
-    protected void postOnBlockActivated(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult, ActionResult actionResult) {
+    public void postOnBlockActivated(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult, ActionResult actionResult) {
         int data = blockEntity.getCbMetadata();
         if (GateData.isOpen(data)) {
             data = GateData.setOpen(data, false);
@@ -173,7 +173,7 @@ public class BlockCarpentersGate extends BlockCoverable implements IShapedBlock 
      * Hammer right click: next style, or the next vanilla variant when sneaking.
      */
     @Override
-    protected boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
         int data = blockEntity.getCbMetadata();
         int type = GateData.getType(data);
         if (player.isShiftKeyDown()) {

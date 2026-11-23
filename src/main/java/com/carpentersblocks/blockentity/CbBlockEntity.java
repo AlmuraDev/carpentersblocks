@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.CbConfig;
-import com.carpentersblocks.block.BlockCoverable;
+import com.carpentersblocks.block.ICoverableBlock;
 import com.carpentersblocks.registry.CbBlockEntities;
 import com.carpentersblocks.util.attribute.AbstractAttribute;
 import com.carpentersblocks.util.attribute.AbstractAttribute.Key;
@@ -323,7 +323,7 @@ public class CbBlockEntity extends BlockEntity implements IProtected {
         for (BlockState blockState : _cbAttrHelper.getAttributeBlockStates()) {
             value = Math.max(value, blockState.getLightEmission());
         }
-        return getBlockState().getBlock() instanceof BlockCoverable block ? block.getLightValue(this, value) : value;
+        return getBlockState().getBlock() instanceof ICoverableBlock block ? block.getLightValue(this, value) : value;
     }
 
     /**

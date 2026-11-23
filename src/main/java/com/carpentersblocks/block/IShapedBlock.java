@@ -67,12 +67,5 @@ public interface IShapedBlock {
         return 0;
     }
 
-    /**
-     * Whether covers can be added to each side as well as the whole block. Only the stairs allow this,
-     * like 1.7.10; the others only take one cover.
-     */
-    default boolean supportsSideCovers() {
-        return false;
-    }
 
 }

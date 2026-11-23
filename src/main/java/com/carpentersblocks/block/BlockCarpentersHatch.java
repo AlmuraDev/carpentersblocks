@@ -291,12 +291,12 @@ public class BlockCarpentersHatch extends BlockCoverable implements IShapedBlock
     }
 
     @Override
-    protected boolean wouldActivateBlock(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult) {
+    public boolean wouldActivateBlock(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult) {
         return !isRigid(blockEntity.getCbMetadata());
     }
 
     @Override
-    protected void postOnBlockActivated(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult, ActionResult actionResult) {
+    public void postOnBlockActivated(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult, ActionResult actionResult) {
         int data = blockEntity.getCbMetadata();
         if (!isRigid(data)) {
             setHatchOpen(blockEntity, !isOpen(data));
@@ -321,7 +321,7 @@ public class BlockCarpentersHatch extends BlockCoverable implements IShapedBlock
      * Hammer left click: turns to the next supported side.
      */
     @Override
-    protected boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
         return findNextSupport(blockEntity);
     }
 
@@ -329,7 +329,7 @@ public class BlockCarpentersHatch extends BlockCoverable implements IShapedBlock
      * Hammer right click: next type, or toggles redstone only when sneaking.
      */
     @Override
-    protected boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
         int data = blockEntity.getCbMetadata();
         if (player.isShiftKeyDown()) {
             data ^= RIGID_BIT;

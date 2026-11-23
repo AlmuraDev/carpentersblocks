@@ -235,7 +235,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable implements ISha
      * Hammer left click: inverts the output.
      */
     @Override
-    protected boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
         int data = blockEntity.getCbMetadata() ^ POLARITY_BIT;
         blockEntity.setCbMetadata(data);
         notifyPowerChange(blockEntity.getLevel(), blockEntity.getBlockPos());
@@ -248,7 +248,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable implements ISha
      * Hammer right click: next trigger.
      */
     @Override
-    protected boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
         int data = blockEntity.getCbMetadata();
         int trigger = (getTrigger(data) + 1) % 4;
         data = (data & ~TRIGGER_MASK) | (trigger << TRIGGER_SHIFT);

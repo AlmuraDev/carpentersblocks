@@ -234,7 +234,7 @@ public class BlockCarpentersTorch extends BlockSidedShaped {
     }
 
     @Override
-    protected boolean wouldPreActivate(CbBlockEntity blockEntity, ItemStack itemStack, Player player) {
+    public boolean wouldPreActivate(CbBlockEntity blockEntity, ItemStack itemStack, Player player) {
         return isRelightItem(itemStack) && getState(blockEntity.getCbMetadata()) != STATE_LIT;
     }
 
@@ -242,7 +242,7 @@ public class BlockCarpentersTorch extends BlockSidedShaped {
      * Relights the torch when right clicked with a torch.
      */
     @Override
-    protected void preOnBlockActivated(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult, ActionResult actionResult) {
+    public void preOnBlockActivated(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult, ActionResult actionResult) {
         if (isRelightItem(player.getMainHandItem()) && getState(blockEntity.getCbMetadata()) != STATE_LIT) {
             setTorchState(blockEntity, STATE_LIT);
             actionResult.setAltered().setNoSound();
@@ -253,13 +253,13 @@ public class BlockCarpentersTorch extends BlockSidedShaped {
      * Hammer clicks switch between torch and lantern.
      */
     @Override
-    protected boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
         int data = blockEntity.getCbMetadata();
         return blockEntity.setCbMetadata(setType(data, (getType(data) + 1) % NUM_TYPES));
     }
 
     @Override
-    protected boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
         return onHammerLeftClick(blockEntity, player);
     }
 

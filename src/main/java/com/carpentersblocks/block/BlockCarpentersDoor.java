@@ -125,12 +125,12 @@ public class BlockCarpentersDoor extends BlockCoverable implements IShapedBlock 
     ////////////
 
     @Override
-    protected boolean wouldActivateBlock(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult) {
+    public boolean wouldActivateBlock(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult) {
         return !DoorData.isRigid(blockEntity.getCbMetadata());
     }
 
     @Override
-    protected void postOnBlockActivated(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult, ActionResult actionResult) {
+    public void postOnBlockActivated(CbBlockEntity blockEntity, Player player, BlockHitResult hitResult, ActionResult actionResult) {
         int data = blockEntity.getCbMetadata();
         if (!DoorData.isRigid(data)) {
             setOpen(blockEntity, !DoorData.isOpen(data));
@@ -184,7 +184,7 @@ public class BlockCarpentersDoor extends BlockCoverable implements IShapedBlock 
      * Hammer left click: moves the hinge to the other side.
      */
     @Override
-    protected boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
         int data = blockEntity.getCbMetadata();
         blockEntity.setCbMetadata(DoorData.setHingeRight(data, !DoorData.isHingeRight(data)));
         updateOtherHalf(blockEntity);
@@ -195,7 +195,7 @@ public class BlockCarpentersDoor extends BlockCoverable implements IShapedBlock 
      * Hammer right click: next type, or toggles redstone only when sneaking.
      */
     @Override
-    protected boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
+    public boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
         int data = blockEntity.getCbMetadata();
         if (player.isShiftKeyDown()) {
             boolean rigid = !DoorData.isRigid(data);

@@ -48,6 +48,9 @@ public class Quad {
     private boolean _canCover;
     // Side a sloped face is lit and mapped as (collapsible blocks: their facing), or null
     private Direction _slopedBakeFacing;
+    // Part of the sprite the quad shows (u0, v0, u1, v1, 0 to 1) and its clockwise quarter turns, or null for all of it
+    private float[] _spriteRegion;
+    private int _spriteRegionTurns;
 
     private Quad() { }
 
@@ -71,6 +74,16 @@ public class Quad {
         _tintIndex = src.getTintIndex();
         _uvRotation = src._uvRotation;
         _slopedBakeFacing = src._slopedBakeFacing;
+        _spriteRegion = src._spriteRegion;
+        _spriteRegionTurns = src._spriteRegionTurns;
+    }
+
+    /**
+     * Shows only part of the sprite, turned clockwise by quarter turns (bed design pieces).
+     */
+    public void setSpriteRegion(float u0, float v0, float u1, float v1, int quarterTurns) {
+        _spriteRegion = new float[] { u0, v0, u1, v1 };
+        _spriteRegionTurns = quarterTurns & 3;
     }
 
     /**
@@ -222,7 +235,21 @@ public class Quad {
         long[] uvs = new long[4];
         for (int i = 0; i < 4; ++i) {
             positions[i] = new Vector3f((float) _vecs[i].x, (float) _vecs[i].y, (float) _vecs[i].z);
-            uvs[i] = UVPair.pack(_sprite.getU((float) uv[i].getU() / 16.0F), _sprite.getV((float) uv[i].getV() / 16.0F));
+            float u = (float) uv[i].getU() / 16.0F;
+            float v = (float) uv[i].getV() / 16.0F;
+            if (_spriteRegion != null) {
+                // The piece is shown turned clockwise: look up where each point comes from in the unturned piece
+                float su = u, sv = v;
+                switch (_spriteRegionTurns) {
+                    case 1 -> { su = v; sv = 1.0F - u; }
+                    case 2 -> { su = 1.0F - u; sv = 1.0F - v; }
+                    case 3 -> { su = 1.0F - v; sv = u; }
+                    default -> { }
+                }
+                u = _spriteRegion[0] + su * (_spriteRegion[2] - _spriteRegion[0]);
+                v = _spriteRegion[1] + sv * (_spriteRegion[3] - _spriteRegion[1]);
+            }
+            uvs[i] = UVPair.pack(_sprite.getU(u), _sprite.getV(v));
         }
         int argb = 0xFF000000 | (_rgb & 0xFFFFFF);
         int packedNormal = BakedNormals.pack((float) normal.x, (float) normal.y, (float) normal.z);

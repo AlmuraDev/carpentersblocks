@@ -7,6 +7,7 @@ import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.CbConfig;
 import com.carpentersblocks.block.BlockCarpentersBarrier;
 import com.carpentersblocks.block.BlockCarpentersBlock;
+import com.carpentersblocks.block.BlockCarpentersBed;
 import com.carpentersblocks.block.BlockCarpentersButton;
 import com.carpentersblocks.block.BlockCarpentersFlowerPot;
 import com.carpentersblocks.block.BlockCarpentersPressurePlate;
@@ -80,6 +81,9 @@ public final class CbBlocks {
         ? register("carpenters_pressure_plate", BlockCarpentersPressurePlate::new, 0.2F, CbBlocks::attached) : null;
     public static final DeferredBlock<BlockCarpentersFlowerPot> CARPENTERS_FLOWER_POT = CbConfig.ENABLE_FLOWER_POT.get()
         ? register("carpenters_flower_pot", BlockCarpentersFlowerPot::new, 0.5F, CbBlocks::attached) : null;
+    // Placed with the bed item (CbItems.CARPENTERS_BED), so it has no block item
+    public static final DeferredBlock<BlockCarpentersBed> CARPENTERS_BED = CbConfig.ENABLE_BED.get()
+        ? REGISTER.registerBlock("carpenters_bed", BlockCarpentersBed::new, () -> shaped(woodProperties(0.4F))) : null;
     // Placed with the door item (CbItems.CARPENTERS_DOOR), so it has no block item
     public static final DeferredBlock<BlockCarpentersDoor> CARPENTERS_DOOR = CbConfig.ENABLE_DOOR.get()
         ? REGISTER.registerBlock("carpenters_door", BlockCarpentersDoor::new, () -> shaped(woodProperties(0.2F))) : null;

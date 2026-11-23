@@ -82,6 +82,13 @@ public final class DesignHandler {
     }
 
     /**
+     * Gets a bed design texture: a grid three pieces wide, drawn piece by piece (see BedDesignPieces).
+     */
+    public static Identifier getBedTexture(String design) {
+        return getTexture(DesignType.BED, design);
+    }
+
+    /**
      * Gets a design as a number for render data: its place in the list plus one, or 0 for none.
      */
     public static int getDesignNumber(DesignType type, String design) {

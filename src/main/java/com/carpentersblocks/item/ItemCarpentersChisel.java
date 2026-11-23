@@ -3,29 +3,37 @@ package com.carpentersblocks.item;
 import com.carpentersblocks.api.ICarpentersChisel;
 import com.carpentersblocks.block.BlockCoverable;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.util.EnumHand;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class ItemCarpentersChisel extends Item implements ICarpentersChisel {
 
-    public ItemCarpentersChisel() {}
-
-    @Override
-    public void onChiselUse(World world, EntityPlayer entityPlayer, EnumHand hand) {
-        entityPlayer.getHeldItem(hand).damageItem(1, entityPlayer);
+    public ItemCarpentersChisel(Properties properties) {
+        super(properties);
     }
 
     @Override
-    public boolean canUseChisel(World world, EntityPlayer entityPlayer, EnumHand hand) {
+    public void onChiselUse(Level level, Player player, InteractionHand hand) {
+        player.getItemInHand(hand).hurtAndBreak(1, player, hand);
+    }
+
+    @Override
+    public boolean canUseChisel(Level level, Player player, InteractionHand hand) {
         return true;
     }
 
+    /**
+     * Left clicks with the chisel change designs instead of breaking Carpenter's blocks.
+     */
     @Override
-    public boolean canHarvestBlock(IBlockState blockState) {
-    	return blockState.getBlock() instanceof BlockCoverable;
+    public boolean canDestroyBlock(ItemStack itemStack, BlockState blockState, Level level, BlockPos pos, LivingEntity user) {
+        return !(blockState.getBlock() instanceof BlockCoverable);
     }
 
 }

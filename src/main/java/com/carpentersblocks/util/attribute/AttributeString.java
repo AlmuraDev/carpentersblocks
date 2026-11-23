@@ -1,37 +1,41 @@
 package com.carpentersblocks.util.attribute;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
+/**
+ * A named attribute, like a chisel design.
+ */
 public class AttributeString extends AbstractAttribute<String> {
 
-	private static final String TAG_ATTR_STRING = "cbAttrString";
-	
-	public AttributeString() {
-		super(null, null, null);
-	}
-	
-	public AttributeString(EnumAttributeLocation location, EnumAttributeType type, String model) {
-		super(location, type, model);
-	}
+    private static final String TAG_ATTR_STRING = "cbAttrString";
 
-	@Override
-	public void writeModelToNBT(NBTTagCompound nbt) {
-		nbt.setString(TAG_ATTR_STRING, getModel());
-	}
+    public AttributeString() {
+        super(null, null, "");
+    }
 
-	@Override
-	public void readModelFromNBT(NBTTagCompound nbt) {
-		setModel(nbt.getString(TAG_ATTR_STRING));
-	}
+    public AttributeString(EnumAttributeLocation location, EnumAttributeType type, String model) {
+        super(location, type, model);
+    }
 
-	@Override
-	public String getModelIdentifier() {
-		return IDENT_ATTR_STRING;
-	}
+    @Override
+    protected void writeModel(ValueOutput output) {
+        output.putString(TAG_ATTR_STRING, getModel());
+    }
 
-	@Override
-	public AbstractAttribute copy() {
-		return new AttributeString(_location, _type, new String(_model));
-	}
-	
+    @Override
+    protected void readModel(ValueInput input) {
+        setModel(input.getStringOr(TAG_ATTR_STRING, ""));
+    }
+
+    @Override
+    public String getModelIdentifier() {
+        return IDENT_ATTR_STRING;
+    }
+
+    @Override
+    public AttributeString copy() {
+        return new AttributeString(_location, _type, _model);
+    }
+
 }

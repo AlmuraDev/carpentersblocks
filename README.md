@@ -3,7 +3,7 @@ Carpenter's Blocks
 
 Carpenter's Blocks is a Minecraft Forge mod that adds slopes and a range of vanilla-inspired blocks that take on the look of any block you cover them with. Cover a slope in stone bricks, a door in birch planks or a ladder in iron, then add side covers, overlays, dyes and chiseled patterns to build shapes vanilla Minecraft can't.
 
-This branch is built against **Forge 14.23.5.2838** for **Minecraft 1.12.2** and is a work-in-progress. Some features may still behave differently from the 1.7.10 version, and worlds from 1.7.10 cannot be converted.
+This branch is the port to **NeoForge 26.3.0.83** for **Minecraft 26.3** and is a work-in-progress: so far it has the Carpenter's Block, the Carpenter's Hammer and the Carpenter's Chisel, with covers, side covers, overlays, dyes, chiseled patterns and illumination. The other blocks are still being brought over from the 1.12.2 branch (see `legacy/README.md`).
 
 This build was created and provided by **Almura Development Studios**.
 
@@ -54,7 +54,7 @@ Decorating
 Configuration
 ================
 
-Settings are in `config/carpentersblocks.cfg`. Every block, the hammer, the chisel and the tile can be turned off, along with each feature above. You can also set the hammer's durability, how smooth slope steps are, how many garage door pieces can link together, and which items act as overlays.
+Settings are in `config/carpentersblocks-startup.toml`. Every block, the hammer, the chisel and the tile can be turned off, along with each feature above. You can also set the hammer's durability and which items act as overlays (by item id, for example `minecraft:wheat_seeds=grass`).
 
 Reporting issues
 ================

@@ -1,154 +1,102 @@
 package com.carpentersblocks.util.handler;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
-import com.carpentersblocks.util.block.BlockUtil;
-import com.carpentersblocks.util.registry.ConfigRegistry;
-import com.carpentersblocks.util.registry.SpriteRegistry;
+import com.carpentersblocks.CarpentersBlocks;
+import com.carpentersblocks.CbConfig;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
-public class OverlayHandler {
+/**
+ * Overlays: grass, snow and the like laid over a cover, set by items listed in the config.
+ */
+public final class OverlayHandler {
 
     public enum Overlay {
-        NONE(new ItemStack(Blocks.AIR)),
-        GRASS(new ItemStack(Blocks.GRASS)),
-        SNOW(new ItemStack(Blocks.SNOW)),
-        WEB(new ItemStack(Blocks.WEB)),
-        VINE(new ItemStack(Blocks.VINE)),
-        HAY(new ItemStack(Blocks.HAY_BLOCK)),
-        MYCELIUM(new ItemStack(Blocks.MYCELIUM));
+        NONE(Blocks.AIR),
+        GRASS(Blocks.GRASS_BLOCK),
+        SNOW(Blocks.SNOW_BLOCK),
+        WEB(Blocks.COBWEB),
+        VINE(Blocks.VINE),
+        HAY(Blocks.HAY_BLOCK),
+        MYCELIUM(Blocks.MYCELIUM);
 
-        private ItemStack itemStack;
+        private final Block block;
 
-        private Overlay(ItemStack itemStack) {
-            this.itemStack = itemStack;
+        Overlay(Block block) {
+            this.block = block;
+        }
+
+        /**
+         * Gets the block the overlay looks like.
+         */
+        public Block getBlock() {
+            return block;
         }
 
         public ItemStack getItemStack() {
-            return itemStack;
+            return new ItemStack(block);
         }
     }
 
-    public static Map overlayMap = new HashMap();
+    private static final Map<Item, Overlay> overlayMap = new HashMap<>();
+
+    private OverlayHandler() {}
 
     /**
-     * Initializes overlay definitions from configuration file.
+     * Reads the overlay items from the config. Called once items are registered.
      */
     public static void init() {
-        for (String name : ConfigRegistry.overlayItems) {
-            String itemName = name.substring(0, name.indexOf(":"));
-            if (!overlayMap.containsKey(itemName)) {
-                String overlayType = name.substring(name.indexOf(":") + 1).toLowerCase();
-                if (overlayType.equalsIgnoreCase("grass")) {
-                    overlayMap.put(itemName, Overlay.GRASS);
-                } else if (overlayType.equalsIgnoreCase("snow")) {
-                    overlayMap.put(itemName, Overlay.SNOW);
-                } else if (overlayType.equalsIgnoreCase("web")) {
-                    overlayMap.put(itemName, Overlay.WEB);
-                } else if (overlayType.equalsIgnoreCase("vine")) {
-                    overlayMap.put(itemName, Overlay.VINE);
-                } else if (overlayType.equalsIgnoreCase("hay")) {
-                    overlayMap.put(itemName, Overlay.HAY);
-                } else if (overlayType.equalsIgnoreCase("mycelium")) {
-                    overlayMap.put(itemName, Overlay.MYCELIUM);
-                }
+        overlayMap.clear();
+        for (String entry : CbConfig.OVERLAY_ITEMS.get()) {
+            int split = entry.indexOf('=');
+            Identifier id = Identifier.tryParse(entry.substring(0, split).trim());
+            Overlay overlay = parseOverlay(entry.substring(split + 1).trim());
+            Item item = id == null ? null : BuiltInRegistries.ITEM.getOptional(id).orElse(null);
+            if (item == null || overlay == null) {
+                CarpentersBlocks.LOGGER.warn("Unknown overlay definition '{}'", entry);
+                continue;
             }
+            overlayMap.putIfAbsent(item, overlay);
         }
     }
 
-    /**
-     * Returns true if overlay covers a majority or all of side.
-     * 
-     * @param overlay the overlay
-     * @param facing the facing
-     * @return <code>true</code> if overlay fully covers side
-     */
-    public static boolean coversFullSide(Overlay overlay, EnumFacing facing) {
-        switch (overlay) {
-            case GRASS:
-            case SNOW:
-            case HAY:
-            case MYCELIUM:
-                return EnumFacing.UP.equals(facing);
-            case WEB:
-            case VINE:
-                return true;
-            default: {}
+    private static Overlay parseOverlay(String name) {
+        try {
+            Overlay overlay = Overlay.valueOf(name.toUpperCase(Locale.ROOT));
+            return overlay == Overlay.NONE ? null : overlay;
+        } catch (IllegalArgumentException e) {
+            return null;
         }
-        return true;
+    }
+
+    public static boolean isOverlay(ItemStack itemStack) {
+        return !itemStack.isEmpty() && overlayMap.containsKey(itemStack.getItem());
     }
 
     /**
      * Returns overlay from qualified ItemStack.
      */
-    public static Overlay getOverlayType(ItemStack itemStack)
-    {
-        Object object = overlayMap.get(itemStack.getDisplayName());
-
-        if (object == null) {
-            object = overlayMap.get(ChatHandler.getDefaultTranslation(itemStack));
-        }
-
-        return object == null ? Overlay.NONE : (Overlay) object;
+    public static Overlay getOverlayType(ItemStack itemStack) {
+        return itemStack.isEmpty() ? Overlay.NONE : overlayMap.getOrDefault(itemStack.getItem(), Overlay.NONE);
     }
 
-    @SideOnly(Side.CLIENT)
     /**
-     * Returns icon for overlay side.
-     *
-     * Returns null if there is no icon to return.
+     * Returns true if overlay covers a majority or all of side.
      */
-    public static TextureAtlasSprite getOverlaySprite(Overlay overlay, EnumFacing facing) {
-        ItemStack itemStack = overlay.getItemStack();
-        switch (overlay) {
-            case GRASS:
-            	switch (facing) {
-	            	case DOWN:
-	            		return null;
-	            	case UP:
-	            		return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/grass_top");
-	            	default:
-	            		if (Minecraft.getMinecraft().isFancyGraphicsEnabled()) {
-                    		return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/grass_side_overlay");
-                    	} else {
-                    		return SpriteRegistry.sprite_overlay_fast_grass_side;
-                    	}
-            	}
-            case SNOW:
-            case HAY:
-            case MYCELIUM:
-                switch (facing) {
-                    case DOWN:
-                        return null;
-                    case UP:
-                    	return BlockUtil.getParticleTexture(itemStack);
-                    default:
-                        switch (overlay) {
-                            case SNOW:
-                                return SpriteRegistry.sprite_overlay_snow_side;
-                            case HAY:
-                                return SpriteRegistry.sprite_overlay_hay_side;
-                            case MYCELIUM:
-                                return SpriteRegistry.sprite_overlay_mycelium_side;
-                            default:
-                                return null;
-                        }
-                }
-            case WEB:
-            case VINE:
-                return BlockUtil.getParticleTexture(itemStack);
-            default: {
-                return null;
-            }
-        }
+    public static boolean coversFullSide(Overlay overlay, Direction facing) {
+        return switch (overlay) {
+            case GRASS, SNOW, HAY, MYCELIUM -> Direction.UP.equals(facing);
+            default -> true;
+        };
     }
 
 }

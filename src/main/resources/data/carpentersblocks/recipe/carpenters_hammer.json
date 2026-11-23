@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "carpentersblocks:carpenters_hammer"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": "carpentersblocks:carpenters_block",
+    "X": "#c:ingots/iron"
+  },
+  "pattern": [
+    "XX ",
+    " #X",
+    " # "
+  ],
+  "result": {
+    "id": "carpentersblocks:carpenters_hammer"
+  }
+}

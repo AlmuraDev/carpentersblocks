@@ -1,5 +1,8 @@
 {
-    "variants": {
-        "normal": { "model": "carpentersblocks:carpenters_block"}
+  "variants": {
+    "": {
+      "type": "carpentersblocks:coverable",
+      "shape": "block"
     }
+  }
 }

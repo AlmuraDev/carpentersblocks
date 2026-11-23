@@ -1,16 +1,17 @@
 package com.carpentersblocks.util.protection;
 
+import net.minecraft.world.entity.player.Player;
 
 public interface IProtected {
 
     /**
-     * Returns object owner as string (UUID for online-mode, player name for offline-mode).
+     * Returns object owner as string (UUID, or the player name for objects owned in offline mode in 1.12.2).
      */
-    public String getOwner();
+    String getOwner();
 
     /**
      * Sets owner of object.
      */
-    public void setOwner(ProtectedObject obj);
+    void setOwner(Player player);
 
 }

@@ -1,141 +1,84 @@
 package com.carpentersblocks.util.handler;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.EnumMap;
 import java.util.List;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
-
-import javax.imageio.ImageIO;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.Level;
+import java.util.Locale;
+import java.util.Map;
 
 import com.carpentersblocks.CarpentersBlocks;
-import com.carpentersblocks.CarpentersBlocksCachedResources;
-import com.carpentersblocks.util.ModLogger;
-import com.carpentersblocks.util.registry.ConfigRegistry;
-import com.carpentersblocks.util.registry.SpriteRegistry;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.resources.Identifier;
 
-public class DesignHandler {
+/**
+ * Chisel, bed, flower pot and tile designs: the textures in textures/block/designs.
+ * <p>
+ * 1.12.2 listed them by reading the mod jar. The build writes the list to designs.json instead, since the server has
+ * no client resources to look them up in, and both sides need the same list to cycle designs.
+ */
+public final class DesignHandler {
 
-    public static List<String> listChisel    = new ArrayList<String>();
-    public static List<String> listBed       = new ArrayList<String>();
-    public static List<String> listFlowerPot = new ArrayList<String>();
-    public static List<String> listTile      = new ArrayList<String>();
-
-    private static final String PATH_BASE       = "assets/carpentersblocks/textures/blocks/";
-    private static final String PATH_EXEMPT     = "template/";
-    private static final String PATH_CHISEL     = "blocks/designs/chisel/";
-    private static final String PATH_BED        = "blocks/designs/bed/";
-    private static final String PATH_FLOWER_POT = "blocks/designs/flowerpot/";
-    private static final String PATH_TILE       = "blocks/designs/tile/";
-    
     public enum DesignType {
-    	CHISEL,
-    	BED,
-    	FLOWERPOT,
-    	TILE
+        CHISEL("chisel"),
+        BED("bed"),
+        FLOWERPOT("flowerpot"),
+        TILE("tile");
+
+        private final String folder;
+
+        DesignType(String folder) {
+            this.folder = folder;
+        }
     }
 
-    private static boolean isPathValid(String path) {
-        return path.contains(PATH_BASE) &&
-               path.endsWith(".png") &&
-               !path.contains(PATH_EXEMPT);
+    private static final String LIST_RESOURCE = "/assets/" + CarpentersBlocks.MOD_ID + "/designs.json";
+    private static final Map<DesignType, List<String>> designs = new EnumMap<>(DesignType.class);
+
+    private DesignHandler() {}
+
+    /**
+     * Reads the design list written by the build.
+     */
+    public static void init() {
+        for (DesignType type : DesignType.values()) {
+            designs.put(type, new ArrayList<>());
+        }
+        try (InputStream stream = DesignHandler.class.getResourceAsStream(LIST_RESOURCE)) {
+            if (stream == null) {
+                CarpentersBlocks.LOGGER.error("Design list {} is missing", LIST_RESOURCE);
+                return;
+            }
+            JsonObject json = JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
+            for (DesignType type : DesignType.values()) {
+                JsonArray names = json.has(type.folder) ? json.getAsJsonArray(type.folder) : new JsonArray();
+                for (JsonElement name : names) {
+                    designs.get(type).add(name.getAsString());
+                }
+            }
+        } catch (Exception e) {
+            CarpentersBlocks.LOGGER.error("Could not read design list {}", LIST_RESOURCE, e);
+        }
+        CarpentersBlocks.LOGGER.info("Designs found: Bed({}), Chisel({}), FlowerPot({}), Tile({})",
+            designs.get(DesignType.BED).size(), designs.get(DesignType.CHISEL).size(),
+            designs.get(DesignType.FLOWERPOT).size(), designs.get(DesignType.TILE).size());
+    }
+
+    public static List<String> getListForType(DesignType type) {
+        return designs.getOrDefault(type, List.of());
     }
 
     /**
-     * Processes design files.
+     * Gets a design's texture in the block atlas.
      */
-    public static void preInit(FMLPreInitializationEvent event) {
-        File filePath = new File(event.getSourceFile().getAbsolutePath());
-        if (filePath.isDirectory()) {
-            for (File file : FileUtils.listFiles(filePath, new String[] { "png" }, true)) {
-                processPath(file.getAbsolutePath().replace("\\", "/"));
-            }
-        } else {
-        	JarFile jarFile = null;
-            try {
-                jarFile = new JarFile(event.getSourceFile());
-                Enumeration enumeration = jarFile.entries();
-                while (enumeration.hasMoreElements()) {
-                    processPath(((ZipEntry)enumeration.nextElement()).getName());
-                }
-            } catch (Exception ex) {
-            	ex.printStackTrace();
-            } finally {
-            	if (jarFile != null) {
-            		try {
-            			jarFile.close();
-            		} catch (Exception ex1) {}
-            	}
-            }
-        }
-        ModLogger.log(Level.INFO, String.format("Designs found: Bed(%s), Chisel(%s), FlowerPot(%s), Tile(%s)", listBed.size(), listChisel.size(), listFlowerPot.size(), listTile.size()));
-    }
-
-    private static void processPath(String path) {
-        if (isPathValid(path)) {
-            String name = path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));
-            if (path.contains(PATH_CHISEL)) {
-                listChisel.add(name);
-            } else if (path.contains(PATH_BED)) {
-                listBed.add(name);
-            } else if (path.contains(PATH_FLOWER_POT)) {
-                listFlowerPot.add(name);
-            } else if (path.contains(PATH_TILE)) {
-                listTile.add(name);
-            }
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static void addResources(IResourceManager resourceManager) {
-        for (String iconName : listBed) {
-            List<BufferedImage> tempList = getBedIcons(resourceManager, iconName);
-            for (BufferedImage image : tempList) {
-                CarpentersBlocksCachedResources.INSTANCE.addResource("/textures/blocks/designs/bed/cache/" + iconName + "_" + tempList.indexOf(image), image);
-            }
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static void registerSprites(TextureMap textureMap) {
-        if (ConfigRegistry.enableBed) {
-            for (String spriteName : listBed) {
-                TextureAtlasSprite[] sprites = new TextureAtlasSprite[8];
-                for (int count = 0; count < 8; ++count) {
-                	sprites[count] = textureMap.registerSprite(new ResourceLocation(CarpentersBlocksCachedResources.INSTANCE.getModId(), PATH_BED + "cache/" + spriteName + "_" + count));
-                }
-                SpriteRegistry.sprite_design_bed.add(sprites);
-            }
-        }
-        if (ConfigRegistry.enableChiselDesigns) {
-            for (String spriteName : listChisel) {
-            	SpriteRegistry.sprite_design_chisel.add(textureMap.registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID, PATH_CHISEL + spriteName)));
-            }
-        }
-        if (ConfigRegistry.enableFlowerPot) {
-            for (String spriteName : listFlowerPot) {
-            	SpriteRegistry.sprite_design_flower_pot.add(textureMap.registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID + ":" + PATH_FLOWER_POT + spriteName)));
-            }
-        }
-        if (ConfigRegistry.enableTile) {
-            for (String spriteName : listTile) {
-            	SpriteRegistry.sprite_design_tile.add(textureMap.registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID + ":" + PATH_TILE + spriteName)));
-            }
-        }
+    public static Identifier getTexture(DesignType type, String design) {
+        return Identifier.fromNamespaceAndPath(CarpentersBlocks.MOD_ID, "block/designs/" + type.folder + "/" + design.toLowerCase(Locale.ROOT));
     }
 
     /**
@@ -153,99 +96,28 @@ public class DesignHandler {
         return number > 0 && number <= list.size() ? list.get(number - 1) : null;
     }
 
-    public static net.minecraft.util.ResourceLocation getFlowerPotTexture(String design) {
-        return new net.minecraft.util.ResourceLocation(CarpentersBlocks.MOD_ID, PATH_FLOWER_POT + design);
+    /**
+     * Returns name of next design in list.
+     */
+    public static String getNext(DesignType type, String design) {
+        List<String> list = getListForType(type);
+        if (list.isEmpty()) {
+            return design;
+        }
+        int idx = list.indexOf(design) + 1;
+        return list.get(idx >= list.size() ? 0 : idx);
     }
 
     /**
-     * Gets one of the 8 textures a bed design is cut into (in the cached resource pack, see addResources).
+     * Returns name of previous design in list.
      */
-    public static net.minecraft.util.ResourceLocation getBedTexture(String design, int idx) {
-        return new net.minecraft.util.ResourceLocation("carpentersblockscachedresources", PATH_BED + "cache/" + design + "_" + idx);
-    }
-
-    public static List<String> getListForType(DesignType type) {
-        return type.equals(DesignType.CHISEL) ? new ArrayList<String>(listChisel) :
-               type.equals(DesignType.BED) ? new ArrayList<String>(listBed) :
-               type.equals(DesignType.FLOWERPOT) ? new ArrayList<String>(listFlowerPot) :
-               type.equals(DesignType.TILE) ? new ArrayList<String>(listTile) : null;
-    }
-
-    /**
-     * Returns name of next tile in list.
-     */
-    public static String getNext(DesignType type, String iconName) {
-        List<String> tempList = getListForType(type);
-        if (tempList.isEmpty()) {
-            return iconName;
-        } else {
-            int idx = tempList.indexOf(iconName) + 1;
-            return tempList.get(idx >= tempList.size() ? 0 : idx);
+    public static String getPrev(DesignType type, String design) {
+        List<String> list = getListForType(type);
+        if (list.isEmpty()) {
+            return design;
         }
-    }
-
-    /**
-     * Returns name of previous tile in list.
-     */
-    public static String getPrev(DesignType type, String iconName) {
-        List<String> tempList = getListForType(type);
-        if (tempList.isEmpty()) {
-            return iconName;
-        } else {
-            int idx = iconName == null || iconName.equals("") ? tempList.size() - 1 : tempList.indexOf(iconName) - 1;
-            return tempList.get(idx < 0 ? tempList.size() - 1 : idx);
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static ArrayList<BufferedImage> getBedIcons(IResourceManager resourceManager, String atlas) {
-        ArrayList<BufferedImage> imageList = new ArrayList<BufferedImage>();
-        try {
-            ResourceLocation resourceLocation = new ResourceLocation(CarpentersBlocks.MOD_ID + ":textures/blocks/designs/bed/" + atlas + ".png");
-            BufferedImage image;
-            try (net.minecraft.client.resources.IResource resource = resourceManager.getResource(resourceLocation)) {
-                image = ImageIO.read(resource.getInputStream());
-            }
-
-            int size = image.getWidth() / 3;
-            int rows = image.getHeight() / size;
-            int cols = image.getWidth() / size;
-            int count = -1;
-
-            for (int x = 0; x < rows; x++) {
-                for (int y = 0; y < cols; y++) {
-                    ++count;
-                    switch (count) {
-                        case 0:
-                        case 2:
-                        case 9:
-                        case 11:
-                            continue;
-                        default:
-                            BufferedImage bufferedImage = new BufferedImage(size, size, image.getType());
-                            Graphics2D gr = bufferedImage.createGraphics();
-
-                            switch (count) {
-                                case 3:
-                                case 6:
-                                    gr.rotate(Math.toRadians(270.0D), size/2, size/2);
-                                    break;
-                                case 5:
-                                case 8:
-                                    gr.rotate(Math.toRadians(90.0D), size/2, size/2);
-                                    break;
-                            }
-
-                            gr.drawImage(image, 0, 0, size, size, size * y, size * x, size * y + size, size * x + size, null);
-                            gr.dispose();
-
-                            imageList.add(bufferedImage);
-                    }
-                }
-            }
-        }
-        catch (Exception e) { }
-        return imageList;
+        int idx = design == null || design.isEmpty() ? list.size() - 1 : list.indexOf(design) - 1;
+        return list.get(idx < 0 ? list.size() - 1 : idx);
     }
 
 }

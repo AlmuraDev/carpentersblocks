@@ -1,89 +1,36 @@
 package com.carpentersblocks.util.handler;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.annotation.Nullable;
 
-import net.minecraft.item.ItemDye;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 
-public class DyeHandler {
+/**
+ * Dyes, found by the dye tags (1.12.2 used the ore dictionary).
+ */
+public final class DyeHandler {
 
-    private final static Map<String, Integer> dyeMap;
-    static {
-        dyeMap = new HashMap<String, Integer>();
-        dyeMap.put("dyeBlack", ItemDye.DYE_COLORS[0]);
-        dyeMap.put("dyeRed", ItemDye.DYE_COLORS[1]);
-        dyeMap.put("dyeGreen", ItemDye.DYE_COLORS[2]);
-        dyeMap.put("dyeBrown", ItemDye.DYE_COLORS[3]);
-        dyeMap.put("dyeBlue", ItemDye.DYE_COLORS[4]);
-        dyeMap.put("dyePurple", ItemDye.DYE_COLORS[5]);
-        dyeMap.put("dyeCyan", ItemDye.DYE_COLORS[6]);
-        dyeMap.put("dyeLightGray", ItemDye.DYE_COLORS[7]);
-        dyeMap.put("dyeGray", ItemDye.DYE_COLORS[8]);
-        dyeMap.put("dyePink", ItemDye.DYE_COLORS[9]);
-        dyeMap.put("dyeLime", ItemDye.DYE_COLORS[10]);
-        dyeMap.put("dyeYellow", ItemDye.DYE_COLORS[11]);
-        dyeMap.put("dyeLightBlue", ItemDye.DYE_COLORS[12]);
-        dyeMap.put("dyeMagenta", ItemDye.DYE_COLORS[13]);
-        dyeMap.put("dyeOrange", ItemDye.DYE_COLORS[14]);
-        dyeMap.put("dyeWhite", ItemDye.DYE_COLORS[15]);
-    }
+    private DyeHandler() {}
 
-    /**
-     * Returns vanilla dye metadata value for OreDictionary dye ItemStack.
-     *
-     * @param itemStack
-     * @return
-     */
-    public static int getVanillaDmgValue(ItemStack itemStack) {
-        int color = getColor(itemStack);
-        for (int idx = 0; idx < ItemDye.DYE_COLORS.length; ++idx) {
-            if (color == ItemDye.DYE_COLORS[idx]) {
-                return 15 - idx;
-            }
-        }
-        return 15;
-    }
-
-    /**
-     * Returns definition for ItemStack from OreDictionary.
-     */
-    public static String getOreDictName(ItemStack itemStack) {
-        for (int id : OreDictionary.getOreIDs(itemStack)) {
-            String result = OreDictionary.getOreName(id);
-            if (result.startsWith("dye") && result.length() > 3) {
-                return result;
-            }
-        }
-        return "Unknown";
+    @Nullable
+    public static DyeColor getDyeColor(ItemStack itemStack) {
+        return itemStack.isEmpty() ? null : DyeColor.getColor(itemStack);
     }
 
     /**
      * Returns true if ItemStack is a dye.
      */
     public static boolean isDye(ItemStack itemStack, boolean allowWhite) {
-        String name = getOreDictName(itemStack);
-        return dyeMap.containsKey(name) && (name.equals("dyeWhite") && !allowWhite ? false : true);
+        DyeColor color = getDyeColor(itemStack);
+        return color != null && (allowWhite || color != DyeColor.WHITE);
     }
 
     /**
-     * Returns a integer with hex for 0xrrggbb based on ItemStack.
+     * Gets a dye's color as 0xRRGGBB (1.12.2 dyed with the firework colors), or white.
      */
     public static int getColor(ItemStack itemStack) {
-        return getColor(getOreDictName(itemStack));
-    }
-
-    /**
-     * Returns a integer with hex for 0xrrggbb based on ore dictionary name.
-     */
-    public static int getColor(String dye) {
-        int color = 0xffffff;
-        Object dyeLookup = dyeMap.get(dye);
-        if (dyeLookup != null) {
-            color = (Integer) dyeLookup;
-        }
-        return color;
+        DyeColor color = getDyeColor(itemStack);
+        return color == null ? 0xFFFFFF : color.getFireworkColor() & 0xFFFFFF;
     }
 
 }

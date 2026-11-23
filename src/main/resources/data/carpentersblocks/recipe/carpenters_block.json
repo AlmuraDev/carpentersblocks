@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": "#c:rods/wooden",
+    "X": "#minecraft:planks"
+  },
+  "pattern": [
+    "###",
+    "#X#",
+    "###"
+  ],
+  "result": {
+    "count": 5,
+    "id": "carpentersblocks:carpenters_block"
+  }
+}

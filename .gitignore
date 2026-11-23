@@ -23,6 +23,9 @@ run
 /*
 !.gitignore
 !build.gradle
+!settings.gradle
+!gradle.properties
+!legacy/
 !gradlew
 !gradlew.bat
 !gradle/

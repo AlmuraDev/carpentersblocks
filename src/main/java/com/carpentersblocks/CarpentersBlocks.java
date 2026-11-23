@@ -1,47 +1,50 @@
 package com.carpentersblocks;
 
-import com.carpentersblocks.proxy.CommonProxy;
-import com.carpentersblocks.util.CarpentersBlocksTab;
+import org.slf4j.Logger;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.FMLEventChannel;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
+import com.carpentersblocks.registry.CbBlockEntities;
+import com.carpentersblocks.registry.CbBlocks;
+import com.carpentersblocks.registry.CbCreativeTabs;
+import com.carpentersblocks.registry.CbItems;
+import com.carpentersblocks.util.handler.DesignHandler;
+import com.carpentersblocks.util.handler.OverlayHandler;
+import com.mojang.logging.LogUtils;
 
-@Mod(
-        modid = CarpentersBlocks.MOD_ID,
-        name = "Carpenter's Blocks",
-        version = "@VERSION@",
-        dependencies = "required-after:forge@[14.23.5.2768,)"
-        )
-public class CarpentersBlocks {
-	
+import net.minecraft.resources.Identifier;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
+
+@Mod(CarpentersBlocks.MOD_ID)
+public final class CarpentersBlocks {
+
     public static final String MOD_ID = "carpentersblocks";
-    public static final CreativeTabs CREATIVE_TAB = new CarpentersBlocksTab(MOD_ID);
-    public static FMLEventChannel channel;
-    
-    @SidedProxy(clientSide = "com.carpentersblocks.proxy.ClientProxy", serverSide = "com.carpentersblocks.proxy.CommonProxy")
-    public static CommonProxy proxy;
-        
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
-        channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(MOD_ID);
-        proxy.preInit(event);
+    public static final Logger LOGGER = LogUtils.getLogger();
+
+    public CarpentersBlocks(IEventBus modBus, ModContainer container) {
+        // Startup configs load here, before the registries below read them
+        container.registerConfig(ModConfig.Type.STARTUP, CbConfig.SPEC);
+        DesignHandler.init();
+
+        CbBlocks.REGISTER.register(modBus);
+        CbItems.REGISTER.register(modBus);
+        CbBlockEntities.REGISTER.register(modBus);
+        CbCreativeTabs.REGISTER.register(modBus);
+
+        modBus.addListener(CarpentersBlocks::onCommonSetup);
+        NeoForge.EVENT_BUS.register(CommonEvents.class);
     }
-    
-    @EventHandler
-    public void init(FMLInitializationEvent event) {
-    	proxy.init(event);
+
+    private static void onCommonSetup(FMLCommonSetupEvent event) {
+        // Items are registered by now
+        event.enqueueWork(OverlayHandler::init);
     }
-    
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-    	proxy.postInit(event);
+
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
-    
+
 }

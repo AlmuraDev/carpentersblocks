@@ -2,64 +2,59 @@ package com.carpentersblocks.util.protection;
 
 import java.util.UUID;
 
-import com.carpentersblocks.util.registry.ConfigRegistry;
+import com.carpentersblocks.CbConfig;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
-public class PlayerPermissions {
+/**
+ * Who may change a protected object. Only meaningful on the server: blocks are only changed there.
+ */
+public final class PlayerPermissions {
+
+    private PlayerPermissions() {}
 
     /**
-     * Returns true if player is operator.
-     * Can only return true if called server-side.
+     * Whether the player is a server operator.
      */
-    public static boolean isOp(EntityPlayer entityPlayer)
-    {
-        if (!entityPlayer.getEntityWorld().isRemote) {
-            return ((EntityPlayerMP)entityPlayer).server.getPlayerList().getOppedPlayers().getEntry(entityPlayer.getGameProfile()) != null;
-        } else {
-            return false;
-        }
+    public static boolean isOp(Player player) {
+        return player instanceof ServerPlayer serverPlayer && serverPlayer.level().getServer().getPlayerList().isOp(serverPlayer.nameAndId());
     }
 
     /**
-     * Whether player is an operator, owner or is in a singleplayer server.
+     * Whether player is an operator, owner or is in a singleplayer world.
      *
-     * @param  object the {@link IProtected} block or entity
-     * @param  entityPlayer the {@link EntityPlayer}
-     * @param  enforceOwnership whether ownership is required, bypassing configuration settings
+     * @param object the block or entity
+     * @param player the player
+     * @param enforceOwnership whether ownership is required, bypassing configuration settings
      * @return <code>true</code> if player has elevated permission
      */
-    public static boolean hasElevatedPermission(IProtected object, EntityPlayer entityPlayer, boolean enforceOwnership)
-    {
-        if (entityPlayer.getEntityWorld().isRemote && Minecraft.getMinecraft().isSingleplayer()) { // Check if client is playing singleplayer
+    public static boolean hasElevatedPermission(IProtected object, Player player, boolean enforceOwnership) {
+        MinecraftServer server = player.level().getServer();
+        if (server == null || server.isSingleplayer()) {
             return true;
-        } else if (!entityPlayer.getEntityWorld().isRemote && entityPlayer.getEntityWorld().getMinecraftServer().isSinglePlayer()) { // Check if server is integrated (singleplayer)
+        } else if (isOp(player)) {
             return true;
-        } else if (isOp(entityPlayer)) {
-            return true;
-        } else if (!enforceOwnership && !ConfigRegistry.enableOwnership) {
+        } else if (!enforceOwnership && !CbConfig.ENABLE_OWNERSHIP.get()) {
             return true;
         } else {
-            return isOwner(object, entityPlayer);
+            return isOwner(object, player);
         }
     }
 
     /**
-     * Whether the player is the owner of the object.
-     *
-     * @param object
-     * @param entityPlayer
-     * @return <code>true</code> if player is owner
+     * Whether the player owns the object. Objects owned in offline mode in 1.12.2 are owned by name.
      */
-    private static boolean isOwner(IProtected object, EntityPlayer entityPlayer)
-    {
+    private static boolean isOwner(IProtected object, Player player) {
+        String owner = object.getOwner();
+        if (owner.isEmpty()) {
+            return true;
+        }
         try {
-            UUID.fromString(object.getOwner());
-            return object.getOwner().equals(entityPlayer.getUniqueID().toString());
+            return UUID.fromString(owner).equals(player.getUUID());
         } catch (IllegalArgumentException e) {
-            return object.getOwner().equals(entityPlayer.getDisplayNameString());
+            return owner.equals(player.getGameProfile().name());
         }
     }
 

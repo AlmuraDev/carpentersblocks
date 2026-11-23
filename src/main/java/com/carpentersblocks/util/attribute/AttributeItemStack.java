@@ -1,34 +1,45 @@
 package com.carpentersblocks.util.attribute;
 
-import org.apache.logging.log4j.Level;
+import javax.annotation.Nullable;
 
-import com.carpentersblocks.util.ModLogger;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
- * Stores attribute and unique identifier for validation purposes.
+ * An item attribute (cover, dye, overlay, illuminator...), dropped when removed.
+ * <p>
+ * A cover also keeps the block state it is drawn with (the axis of a log, for instance). Without one, the item's block
+ * is drawn in its default state.
  */
 public class AttributeItemStack extends AbstractAttribute<ItemStack> {
 
-	private static final String TAG_RESOURCE_LOC_ID = "cbResourceLoc";
-    private ResourceLocation _resourceLoc;
+    private static final String TAG_ITEM  = "cbItem";
+    private static final String TAG_STATE = "cbState";
+
+    @Nullable
+    private BlockState _blockState;
 
     public AttributeItemStack() {
-    	super(null, null, null);
+        super(null, null, ItemStack.EMPTY);
     }
 
     public AttributeItemStack(EnumAttributeLocation location, EnumAttributeType type, ItemStack itemStack) {
-    	super(location, type, itemStack);
-        if (itemStack != null && !itemStack.isEmpty()) {
-            _resourceLoc = itemStack.getItem().getRegistryName();
-        }
-	}
+        this(location, type, itemStack, null);
+    }
 
-    public ResourceLocation getResourceLocation() {
-        return _resourceLoc;
+    public AttributeItemStack(EnumAttributeLocation location, EnumAttributeType type, ItemStack itemStack, @Nullable BlockState blockState) {
+        super(location, type, itemStack);
+        _blockState = blockState;
+    }
+
+    /**
+     * Gets the block state the cover is drawn with, or null to use the item's block.
+     */
+    @Nullable
+    public BlockState getBlockState() {
+        return _blockState;
     }
 
     /**
@@ -38,33 +49,31 @@ public class AttributeItemStack extends AbstractAttribute<ItemStack> {
         return getModel() == null || getModel().isEmpty();
     }
 
-	@Override
-	public void writeModelToNBT(NBTTagCompound nbt) {
-		getModel().writeToNBT(nbt);
-		if (_resourceLoc != null) {
-			nbt.setString(TAG_RESOURCE_LOC_ID, _resourceLoc.toString());
-		}
-	}
-
-	@Override
-	public void readModelFromNBT(NBTTagCompound nbt) {
-		// Unknown items load as an empty stack in 1.12
-        ItemStack itemStack = new ItemStack(nbt);
-        setModel(itemStack);
-        _resourceLoc = new ResourceLocation(nbt.getString(TAG_RESOURCE_LOC_ID));
-        if (itemStack.isEmpty()) {
-            ModLogger.log(Level.WARN, "Block attribute '" + _resourceLoc + "' could not be loaded. Was a mod removed?");
+    @Override
+    protected void writeModel(ValueOutput output) {
+        if (!isMissing()) {
+            output.store(TAG_ITEM, ItemStack.CODEC, getModel());
         }
-	}
+        if (_blockState != null) {
+            output.store(TAG_STATE, BlockState.CODEC, _blockState);
+        }
+    }
 
-	@Override
-	public String getModelIdentifier() {
-		return IDENT_ATTR_ITEMSTACK;
-	}
+    @Override
+    protected void readModel(ValueInput input) {
+        // Items that no longer exist read as empty, and the block entity skips them
+        setModel(input.read(TAG_ITEM, ItemStack.CODEC).orElse(ItemStack.EMPTY));
+        _blockState = input.read(TAG_STATE, BlockState.CODEC).orElse(null);
+    }
 
-	@Override
-	public AbstractAttribute copy() {
-		return new AttributeItemStack(_location, _type, _model.copy());
-	}
+    @Override
+    public String getModelIdentifier() {
+        return IDENT_ATTR_ITEMSTACK;
+    }
+
+    @Override
+    public AttributeItemStack copy() {
+        return new AttributeItemStack(_location, _type, _model.copy(), _blockState);
+    }
 
 }

@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "carpentersblocks:carpenters_chisel"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": "carpentersblocks:carpenters_block",
+    "X": "#c:ingots/iron"
+  },
+  "pattern": [
+    "X",
+    "#"
+  ],
+  "result": {
+    "id": "carpentersblocks:carpenters_chisel"
+  }
+}

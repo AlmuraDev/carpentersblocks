@@ -1,54 +1,46 @@
 package com.carpentersblocks.block;
 
-import com.carpentersblocks.tileentity.CbTileEntity;
+import com.carpentersblocks.blockentity.CbBlockEntity;
+import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.world.entity.player.Player;
 
+/**
+ * The Carpenter's Block: a full block that takes a cover and a side cover on every side.
+ */
 public class BlockCarpentersBlock extends BlockCoverable {
 
-    public BlockCarpentersBlock(Material material) {
-        super(material);
+    public BlockCarpentersBlock(Properties properties) {
+        super(properties);
     }
 
     /**
      * Covers on every side, like 1.7.10.
      */
     @Override
-    protected boolean canSupportCover(CbTileEntity cbTileEntity, com.carpentersblocks.util.attribute.EnumAttributeLocation location) {
+    protected boolean canSupportCover(CbBlockEntity blockEntity, EnumAttributeLocation location) {
         return true;
     }
 
     @Override
-    /**
-     * Alters block direction.
-     */
-    protected boolean onHammerLeftClick(CbTileEntity cbTileEntity, EntityPlayer entityPlayer) {
-    	return true;
+    protected boolean supportsSideCovers() {
+        return true;
     }
 
-    @Override
     /**
-     * Alters block type.
+     * Alters block direction (not yet: 1.12.2 did nothing either).
      */
-    protected boolean onHammerRightClick(CbTileEntity cbTileEntity, EntityPlayer entityPlayer) {
-        return true;        
-    }
-    
     @Override
-    public boolean isBlockNormalCube(IBlockState blockState) {
-        return false;
+    protected boolean onHammerLeftClick(CbBlockEntity blockEntity, Player player) {
+        return true;
     }
 
+    /**
+     * Alters block type (not yet: 1.12.2 did nothing either).
+     */
     @Override
-    public boolean isOpaqueCube(IBlockState blockState) {
-        return false;
+    protected boolean onHammerRightClick(CbBlockEntity blockEntity, Player player) {
+        return true;
     }
-    
+
 }

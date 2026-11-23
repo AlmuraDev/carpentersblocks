@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "registry": "minecraft:item",
+      "value": "carpentersblocks:carpenters_door_item"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "X": "carpentersblocks:carpenters_block"
+  },
+  "pattern": [
+    "XX",
+    "XX",
+    "XX"
+  ],
+  "result": {
+    "id": "carpentersblocks:carpenters_door_item"
+  }
+}

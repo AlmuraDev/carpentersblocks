@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "registry": "minecraft:block",
+      "value": "carpentersblocks:carpenters_hatch"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "X": "carpentersblocks:carpenters_block"
+  },
+  "pattern": [
+    "XXX",
+    "XXX"
+  ],
+  "result": {
+    "id": "carpentersblocks:carpenters_hatch"
+  }
+}

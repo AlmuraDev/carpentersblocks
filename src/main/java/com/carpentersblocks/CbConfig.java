@@ -49,6 +49,8 @@ public final class CbConfig {
     public static final ModConfigSpec.BooleanValue ENABLE_TORCH_WEATHER_EFFECTS;
     public static final ModConfigSpec.BooleanValue ENABLE_ALPHA_PANES;
     public static final ModConfigSpec.BooleanValue ENABLE_FREESTANDING_LADDERS;
+    public static final ModConfigSpec.BooleanValue ENABLE_GARAGE_DOOR_VOID_FILL;
+    public static final ModConfigSpec.IntValue MULTIBLOCK_SIZE_LIMIT;
     public static final ModConfigSpec.ConfigValue<List<? extends String>> OVERLAY_ITEMS;
     public static final ModConfigSpec.ConfigValue<List<? extends String>> COVER_EXCEPTIONS;
 
@@ -101,6 +103,10 @@ public final class CbConfig {
             .define("enableAlphaPanes", true);
         ENABLE_FREESTANDING_LADDERS = builder.comment("Whether wall ladders stay up when the block behind them is removed")
             .define("enableFreestandingLadders", false);
+        ENABLE_GARAGE_DOOR_VOID_FILL = builder.comment("Whether garage doors fill gaps left when blocks under them are removed")
+            .define("enableGarageDoorVoidFill", true);
+        MULTIBLOCK_SIZE_LIMIT = builder.comment("How many blocks can work as one (garage doors)")
+            .defineInRange("multiBlockSizeLimit", 500, 1, 10000);
         OVERLAY_ITEMS = builder.comment(
                 "Maps items to overlays, as item=overlay.",
                 "Overlays are grass, snow, web, vine, hay and mycelium.")

@@ -129,6 +129,16 @@ public abstract class BlockCoverable extends Block implements EntityBlock {
     }
 
     /**
+     * Gets the position of the block whose cover, dye and overlays this block is drawn with. Blocks drawn with
+     * another piece's look (an open garage door) override this. Also called while chunks are meshed.
+     *
+     * @param cbMetadata the block's own data
+     */
+    public BlockPos getRenderAttributeSource(BlockGetter level, BlockPos pos, int cbMetadata) {
+        return pos;
+    }
+
+    /**
      * Gets the render data at a position (main thread: from the block entity).
      */
     protected int getRenderDataAt(BlockGetter level, BlockPos pos) {

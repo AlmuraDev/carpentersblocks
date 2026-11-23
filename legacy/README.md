@@ -23,11 +23,12 @@ compiled. Each block is rewritten for 26.3 under `src/main` and checked against 
 | `block/IShapedBlock`, `ShapePart`, `ShapeTextures`, `BlockSidedShaped`, `block/data/SidedUtil`, `RedstoneData` | same names (shapes become cached VoxelShapes in `BlockCoverable`) |
 | `renderer/bakedblock/BakedShapedBlock`, `model/ModelShapedBlock`, `helper/RenderHelper` | `client/model/shape/BlockShapes` ("shaped") + `client/model/CoverableItemModel` |
 | `block/BlockCarpentersBarrier`, `Gate`, `Ladder`, `Button`, `Lever`, `Torch` and their `block/data/*Data` | same names |
+| `block/BlockCarpentersDoor`, `Hatch`, `GarageDoor`, `block/data/DoorData`, `item/ItemCarpentersDoor` | same names (`getRenderAttributeSource` now returns a position) |
 
 ## Still to port
 
-Blocks: bed, collapsible block, daylight sensor, door, flower pot, garage door, hatch, pressure plate, safe, slope,
-stairs. Items: door, bed, tile (and the tile entity). Also: the slope
+Blocks: bed, collapsible block, daylight sensor, flower pot, pressure plate, safe, slope, stairs (then let hatches
+hang from Carpenter's Stairs again). Items: bed, tile (and the tile entity). Also: the slope
 selection packet, routable fluids, rail slope fill, bed design textures (`CarpentersBlocksCachedResources`),
 `canSustainPlant` for covers, and converting 3.5 (1.12.2) Carpenter's blocks in the Almura world converter.
 

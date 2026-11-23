@@ -87,7 +87,7 @@ public final class CoverTints {
 
         @Override
         public int colorInWorld(BlockState blockState, BlockAndTintGetter level, BlockPos pos) {
-            CbRenderData data = level.getModelData(pos).get(CbRenderData.PROPERTY);
+            CbRenderData data = CoverableModel.getAttributeData(level, pos, blockState);
             BlockState cover = data == null ? null : data.getAttributeHelper().getBlockState(location, EnumAttributeType.COVER);
             return cover == null ? -1 : colorOf(cover, coverTintIndex, level, pos);
         }

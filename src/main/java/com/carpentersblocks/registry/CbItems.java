@@ -3,6 +3,7 @@ package com.carpentersblocks.registry;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.CbConfig;
 import com.carpentersblocks.item.ItemCarpentersChisel;
+import com.carpentersblocks.item.ItemCarpentersDoor;
 import com.carpentersblocks.item.ItemCarpentersHammer;
 
 import net.minecraft.world.item.Item;
@@ -20,6 +21,9 @@ public final class CbItems {
         ? REGISTER.registerItem("carpenters_hammer", ItemCarpentersHammer::new, CbItems::toolProperties) : null;
     public static final DeferredItem<ItemCarpentersChisel> CARPENTERS_CHISEL = CbConfig.ENABLE_CHISEL.get()
         ? REGISTER.registerItem("carpenters_chisel", ItemCarpentersChisel::new, CbItems::toolProperties) : null;
+
+    public static final DeferredItem<ItemCarpentersDoor> CARPENTERS_DOOR = CbConfig.ENABLE_DOOR.get()
+        ? REGISTER.registerItem("carpenters_door_item", ItemCarpentersDoor::new, Item.Properties::new) : null;
 
     private CbItems() {}
 

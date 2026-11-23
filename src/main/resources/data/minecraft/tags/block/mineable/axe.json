@@ -28,6 +28,18 @@
     {
       "id": "carpentersblocks:carpenters_torch",
       "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_door",
+      "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_hatch",
+      "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_garage_door",
+      "required": false
     }
   ]
 }

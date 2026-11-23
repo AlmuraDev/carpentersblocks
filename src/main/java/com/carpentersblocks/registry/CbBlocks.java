@@ -8,6 +8,9 @@ import com.carpentersblocks.CbConfig;
 import com.carpentersblocks.block.BlockCarpentersBarrier;
 import com.carpentersblocks.block.BlockCarpentersBlock;
 import com.carpentersblocks.block.BlockCarpentersButton;
+import com.carpentersblocks.block.BlockCarpentersDoor;
+import com.carpentersblocks.block.BlockCarpentersGarageDoor;
+import com.carpentersblocks.block.BlockCarpentersHatch;
 import com.carpentersblocks.block.BlockCarpentersGate;
 import com.carpentersblocks.block.BlockCarpentersLadder;
 import com.carpentersblocks.block.BlockCarpentersLever;
@@ -48,6 +51,14 @@ public final class CbBlocks {
         ? register("carpenters_lever", BlockCarpentersLever::new, 0.2F, CbBlocks::attached) : null;
     public static final DeferredBlock<BlockCarpentersTorch> CARPENTERS_TORCH = CbConfig.ENABLE_TORCH.get()
         ? register("carpenters_torch", BlockCarpentersTorch::new, 0.2F, CbBlocks::attached) : null;
+
+    public static final DeferredBlock<BlockCarpentersHatch> CARPENTERS_HATCH = CbConfig.ENABLE_HATCH.get()
+        ? register("carpenters_hatch", BlockCarpentersHatch::new, 0.2F, CbBlocks::shaped) : null;
+    public static final DeferredBlock<BlockCarpentersGarageDoor> CARPENTERS_GARAGE_DOOR = CbConfig.ENABLE_GARAGE_DOOR.get()
+        ? register("carpenters_garage_door", BlockCarpentersGarageDoor::new, 0.2F, CbBlocks::shaped) : null;
+    // Placed with the door item (CbItems.CARPENTERS_DOOR), so it has no block item
+    public static final DeferredBlock<BlockCarpentersDoor> CARPENTERS_DOOR = CbConfig.ENABLE_DOOR.get()
+        ? REGISTER.registerBlock("carpenters_door", BlockCarpentersDoor::new, () -> shaped(woodProperties(0.2F))) : null;
 
     private CbBlocks() {}
 

@@ -56,9 +56,26 @@ public final class CoverableModel implements DynamicBlockStateModel {
         return data != null ? data : UNCOVERED;
     }
 
+    /**
+     * Gets the data whose attributes a block is drawn with: its own, or another piece's (an open garage door).
+     */
+    public static CbRenderData getAttributeData(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        CbRenderData data = getRenderData(level, pos);
+        if (state.getBlock() instanceof BlockCoverable block) {
+            BlockPos source = block.getRenderAttributeSource(level, pos, data.cbMetadata());
+            if (!source.equals(pos)) {
+                CbRenderData sourceData = level.getModelData(source).get(CbRenderData.PROPERTY);
+                if (sourceData != null) {
+                    return new CbRenderData(sourceData.attributes(), data.cbMetadata());
+                }
+            }
+        }
+        return data;
+    }
+
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
-        CbRenderData data = getRenderData(level, pos);
+        CbRenderData data = getAttributeData(level, pos, state);
         // Neighbors are read from the chunk snapshot being meshed
         int renderData = state.getBlock() instanceof BlockCoverable block ? block.getRenderData(level, pos, data.cbMetadata()) : data.cbMetadata();
         List<BakedQuad> quads = CoverQuadBuilder.build(_shape.create(state, renderData), data, level, pos);
@@ -70,7 +87,7 @@ public final class CoverableModel implements DynamicBlockStateModel {
      */
     @Override
     public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-        return getParticle(getRenderData(level, pos));
+        return getParticle(getAttributeData(level, pos, state));
     }
 
     @Override

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 
 import com.carpentersblocks.network.SlopeSelectPayload;
 import com.carpentersblocks.registry.CbBlockEntities;
+import com.carpentersblocks.registry.CbEntities;
 import com.carpentersblocks.registry.CbBlocks;
 import com.carpentersblocks.registry.CbCreativeTabs;
 import com.carpentersblocks.registry.CbDataComponents;
@@ -40,6 +41,7 @@ public final class CarpentersBlocks {
         CbBlocks.REGISTER.register(modBus);
         CbItems.REGISTER.register(modBus);
         CbBlockEntities.REGISTER.register(modBus);
+        CbEntities.REGISTER.register(modBus);
         CbCreativeTabs.REGISTER.register(modBus);
         CbDataComponents.REGISTER.register(modBus);
 

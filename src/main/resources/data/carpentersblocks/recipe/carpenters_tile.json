@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "carpentersblocks:carpenters_tile"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "X": "minecraft:terracotta",
+    "Y": "carpentersblocks:carpenters_block"
+  },
+  "pattern": [
+    "XXX",
+    "YYY"
+  ],
+  "result": {
+    "count": 12,
+    "id": "carpentersblocks:carpenters_tile"
+  }
+}

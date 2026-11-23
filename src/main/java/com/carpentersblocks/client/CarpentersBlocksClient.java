@@ -5,13 +5,16 @@ import com.carpentersblocks.block.ICoverableBlock;
 import com.carpentersblocks.client.model.CoverTints;
 import com.carpentersblocks.client.model.CoverableItemModel;
 import com.carpentersblocks.client.model.CoverableModel;
+import com.carpentersblocks.client.renderer.CarpentersTileRenderer;
 import com.carpentersblocks.registry.CbBlocks;
+import com.carpentersblocks.registry.CbEntities;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import com.carpentersblocks.item.ItemBlockCarpentersSlope;
 import com.carpentersblocks.network.SlopeSelectPayload;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.common.NeoForge;
@@ -34,6 +37,7 @@ public final class CarpentersBlocksClient {
         modBus.addListener(CarpentersBlocksClient::registerBlockStateModels);
         modBus.addListener(CarpentersBlocksClient::registerTints);
         modBus.addListener(CarpentersBlocksClient::registerItemModels);
+        modBus.addListener(CarpentersBlocksClient::registerEntityRenderers);
         NeoForge.EVENT_BUS.addListener(CarpentersBlocksClient::onMouseScroll);
     }
 
@@ -49,6 +53,12 @@ public final class CarpentersBlocksClient {
             ClientPacketDistributor.sendToServer(new SlopeSelectPayload(player.getInventory().getSelectedSlot(), event.getScrollDeltaY() > 0));
         }
         event.setCanceled(true);
+    }
+
+    private static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        if (CbEntities.CARPENTERS_TILE != null) {
+            event.registerEntityRenderer(CbEntities.CARPENTERS_TILE.get(), CarpentersTileRenderer::new);
+        }
     }
 
     private static void registerItemModels(RegisterItemModelsEvent event) {

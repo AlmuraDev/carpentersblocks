@@ -33,10 +33,11 @@ compiled. Each block is rewritten for 26.3 under `src/main` and checked against 
 | `block/BlockCarpentersFlowerPot`, `util/block/FlowerPotUtil`, `renderer/bakedblock/BakedFlowerPot` | same names; the renderer is the "flower_pot" shape (`client/model/shape/FlowerPotShape`) |
 | `block/BlockCarpentersBed`, `item/ItemCarpentersBed` | same names; the bed is a vanilla `AbstractBedBlock` (players only sleep in those) with `ICoverableBlock`, its facing/part/occupied in the blockstate. Bed designs are drawn piece by piece from the whole design texture (`client/model/shape/BedDesignPieces`), not cut into a generated resource pack (`CarpentersBlocksCachedResources`) |
 | `block/BlockCarpentersSafe`, `tileentity/TECarpentersSafe` | `block/BlockCarpentersSafe`, `blockentity/SafeBlockEntity` (block entity `carpentersblocks:safe`; a vanilla chest menu; pipes through NeoForge's WorldlyContainerWrapper) |
+| `entity/EntityCarpentersTile`, `item/ItemCarpentersTile`, `renderer/entity/RenderCarpentersTile` | `entity/EntityCarpentersTile` (entity `carpentersblocks:carpenters_tile`, same dir/rot/dye/tile/owner tags; old ore dictionary dye names are read), `item/ItemCarpentersTile`, `client/renderer/CarpentersTileRenderer` |
 
 ## Still to port
 
-Items: tile (and the tile entity). Also: routable fluids, rail slope fill,
+Routable fluids, rail slope fill,
 `canSustainPlant` for covers, and converting 3.5 (1.12.2) Carpenter's blocks in the Almura world converter.
 
 Each new block needs its blockstate and item definition (`{"type": "carpentersblocks:coverable", "shape": ...}`; boxed

@@ -6,6 +6,7 @@ import com.carpentersblocks.item.ItemCarpentersBed;
 import com.carpentersblocks.item.ItemCarpentersChisel;
 import com.carpentersblocks.item.ItemCarpentersDoor;
 import com.carpentersblocks.item.ItemCarpentersHammer;
+import com.carpentersblocks.item.ItemCarpentersTile;
 
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -28,6 +29,9 @@ public final class CbItems {
 
     public static final DeferredItem<ItemCarpentersBed> CARPENTERS_BED = CbConfig.ENABLE_BED.get()
         ? REGISTER.registerItem("carpenters_bed_item", ItemCarpentersBed::new, Item.Properties::new) : null;
+
+    public static final DeferredItem<ItemCarpentersTile> CARPENTERS_TILE = CbConfig.ENABLE_TILE.get()
+        ? REGISTER.registerItem("carpenters_tile", ItemCarpentersTile::new, Item.Properties::new) : null;
 
     private CbItems() {}
 

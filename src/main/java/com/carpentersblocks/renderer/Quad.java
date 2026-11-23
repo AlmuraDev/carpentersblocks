@@ -218,6 +218,9 @@ public class Quad {
 
         UV[] uv = QuadUtil.getUV(this, isFloatingOverlay, location);
         uv = rotateUV(uv);
+        if (_isOblique) {
+        	uv = squareObliqueCorner(uv);
+        }
         for (int i = 0; i < 4; ++i) {
         	//_rgb = i == 0 ? 0xff0000 : i == 1 ? 0x00ff00 : i == 2 ? 0x0000ff : 0xffff00; // Debug
 	        for (int idx = 0; idx < vertexFormat.getElementCount(); idx++) {
@@ -275,6 +278,63 @@ public class Quad {
 		return builder.build();
 	}
 	
+	/**
+	 * Maps an oblique exterior corner's triangle (corners on the block's corners) the same in every orientation: its
+	 * point at the middle of the texture's top (or bottom, pointing down) edge, its base across the opposite edge. The
+	 * oblique mapping only did so for two of the four turns; the others pinched the base and smeared the texture.
+	 * Other oblique faces (the interior corner's halves) are left as they are.
+	 */
+	private UV[] squareObliqueCorner(UV[] uv) {
+		if (_vecs.length != 4) {
+			return uv;
+		}
+		for (Vec3d vec : _vecs) {
+			if (!isBlockCorner(vec.x) || !isBlockCorner(vec.y) || !isBlockCorner(vec.z)) {
+				return uv;
+			}
+		}
+		// The point: the corner whose height the other two share
+		int point = -1;
+		for (int i = 0; i < 4 && point < 0; ++i) {
+			boolean unique = true;
+			for (int j = 0; j < 4; ++j) {
+				if (j != i && !sameCorner(_vecs[j], _vecs[i]) && Math.abs(_vecs[j].y - _vecs[i].y) < 1.0E-4D) {
+					unique = false;
+				}
+			}
+			if (unique) {
+				point = i;
+			}
+		}
+		if (point < 0) {
+			return uv;
+		}
+		boolean up = _vecs[point].y > 0.5D;
+		UV[] out = new UV[4];
+		Vec3d first = null;
+		for (int k = 1; k <= 4; ++k) {
+			int i = (point + k) % 4;
+			if (sameCorner(_vecs[i], _vecs[point])) {
+				out[i] = new UV(0.5D, up ? 0.0D : 1.0D);
+			} else {
+				if (first == null) {
+					first = _vecs[i];
+				}
+				// Counter clockwise from the point: left of the base pointing up, right pointing down
+				out[i] = new UV(sameCorner(_vecs[i], first) == up ? 0.0D : 1.0D, up ? 1.0D : 0.0D);
+			}
+		}
+		return out;
+	}
+
+	private static boolean sameCorner(Vec3d a, Vec3d b) {
+		return a.squareDistanceTo(b) < 1.0E-8D;
+	}
+
+	private static boolean isBlockCorner(double value) {
+		return Math.abs(value) < 1.0E-4D || Math.abs(value - 1.0D) < 1.0E-4D;
+	}
+
 	/**
 	 * Turns top and bottom face UVs back into the frame a part was authored in (see SidedUtil.rotate),
 	 * so the texture turns with the part.

@@ -8,6 +8,7 @@ import com.carpentersblocks.block.data.SlopeData;
 import com.carpentersblocks.tileentity.CbTileEntity;
 import com.carpentersblocks.util.RotationUtil.Rotation;
 import com.carpentersblocks.util.block.SlopeShape;
+import com.carpentersblocks.util.block.SlopeTransform;
 import com.carpentersblocks.util.handler.EventHandler;
 
 import net.minecraft.block.material.Material;
@@ -333,6 +334,10 @@ public class BlockCarpentersSlope extends BlockCoverable {
 	        		break;
         	}
         	SlopeData.setRotation(cbTileEntity, rotation);
+        	// Join the slopes beside it, like 1.7.10; sneaking places it as it is
+        	if (!world.isRemote && !entityLivingBase.isSneaking()) {
+        		SlopeTransform.onPlaced(world, blockPos, cbTileEntity);
+        	}
         }
     }
 

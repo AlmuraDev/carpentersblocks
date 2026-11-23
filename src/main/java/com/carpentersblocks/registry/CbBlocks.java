@@ -8,6 +8,9 @@ import com.carpentersblocks.CbConfig;
 import com.carpentersblocks.block.BlockCarpentersBarrier;
 import com.carpentersblocks.block.BlockCarpentersBlock;
 import com.carpentersblocks.block.BlockCarpentersButton;
+import com.carpentersblocks.block.BlockCarpentersDaylightSensor;
+import com.carpentersblocks.block.BlockCarpentersSafe;
+import com.carpentersblocks.block.BlockCarpentersStairs;
 import com.carpentersblocks.block.BlockCarpentersDoor;
 import com.carpentersblocks.block.BlockCarpentersGarageDoor;
 import com.carpentersblocks.block.BlockCarpentersHatch;
@@ -56,6 +59,13 @@ public final class CbBlocks {
         ? register("carpenters_hatch", BlockCarpentersHatch::new, 0.2F, CbBlocks::shaped) : null;
     public static final DeferredBlock<BlockCarpentersGarageDoor> CARPENTERS_GARAGE_DOOR = CbConfig.ENABLE_GARAGE_DOOR.get()
         ? register("carpenters_garage_door", BlockCarpentersGarageDoor::new, 0.2F, CbBlocks::shaped) : null;
+    public static final DeferredBlock<BlockCarpentersStairs> CARPENTERS_STAIRS = CbConfig.ENABLE_STAIRS.get()
+        ? register("carpenters_stairs", BlockCarpentersStairs::new, 0.2F, CbBlocks::shaped) : null;
+    public static final DeferredBlock<BlockCarpentersDaylightSensor> CARPENTERS_DAYLIGHT_SENSOR = CbConfig.ENABLE_DAYLIGHT_SENSOR.get()
+        ? register("carpenters_daylight_sensor", BlockCarpentersDaylightSensor::new, 0.2F, CbBlocks::attached) : null;
+    // Explosion proof, like 1.12.2
+    public static final DeferredBlock<BlockCarpentersSafe> CARPENTERS_SAFE = CbConfig.ENABLE_SAFE.get()
+        ? register("carpenters_safe", BlockCarpentersSafe::new, 2.5F, properties -> shaped(properties).explosionResistance(6000000.0F)) : null;
     // Placed with the door item (CbItems.CARPENTERS_DOOR), so it has no block item
     public static final DeferredBlock<BlockCarpentersDoor> CARPENTERS_DOOR = CbConfig.ENABLE_DOOR.get()
         ? REGISTER.registerBlock("carpenters_door", BlockCarpentersDoor::new, () -> shaped(woodProperties(0.2F))) : null;

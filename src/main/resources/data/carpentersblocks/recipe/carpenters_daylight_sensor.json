@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "registry": "minecraft:block",
+      "value": "carpentersblocks:carpenters_daylight_sensor"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "W": "minecraft:glass",
+    "X": "minecraft:redstone",
+    "Y": "minecraft:lapis_lazuli",
+    "Z": "carpentersblocks:carpenters_block"
+  },
+  "pattern": [
+    "WWW",
+    "XYX",
+    "ZZZ"
+  ],
+  "result": {
+    "id": "carpentersblocks:carpenters_daylight_sensor"
+  }
+}

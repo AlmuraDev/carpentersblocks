@@ -202,7 +202,6 @@ public class BlockCarpentersHatch extends BlockCoverable implements IShapedBlock
 
     /**
      * Hatches hang off the side of a block: solid faces, slabs, stairs, Carpenter's Blocks and glowstone.
-     * TODO: Carpenter's Stairs too, once they are ported.
      */
     private boolean isValidSupport(BlockGetter level, BlockPos hatchPos, int dir) {
         Direction toSupport = getSupportSide(dir);
@@ -210,7 +209,7 @@ public class BlockCarpentersHatch extends BlockCoverable implements IShapedBlock
         BlockState supportState = level.getBlockState(supportPos);
         Block block = supportState.getBlock();
         return block == Blocks.GLOWSTONE || block instanceof SlabBlock || block instanceof StairBlock
-            || block instanceof BlockCarpentersBlock
+            || block instanceof BlockCarpentersStairs || block instanceof BlockCarpentersBlock
             || supportState.isFaceSturdy(level, supportPos, toSupport.getOpposite());
     }
 

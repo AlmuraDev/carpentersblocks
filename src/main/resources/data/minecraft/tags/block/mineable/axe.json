@@ -40,6 +40,18 @@
     {
       "id": "carpentersblocks:carpenters_garage_door",
       "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_stairs",
+      "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_daylight_sensor",
+      "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_safe",
+      "required": false
     }
   ]
 }

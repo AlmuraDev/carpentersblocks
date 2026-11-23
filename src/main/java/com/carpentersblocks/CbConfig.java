@@ -37,6 +37,7 @@ public final class CbConfig {
     public static final ModConfigSpec.BooleanValue ENABLE_TILE;
     public static final ModConfigSpec.IntValue TOOL_USES;
     public static final ModConfigSpec.BooleanValue TOOLS_DAMAGEABLE;
+    public static final ModConfigSpec.DoubleValue HAMMER_DAMAGE_CHANCE_STAIRS;
 
     // Features
     public static final ModConfigSpec.BooleanValue ENABLE_COVERS;
@@ -83,6 +84,7 @@ public final class CbConfig {
         ENABLE_TILE = builder.define("enableTile", true);
         TOOL_USES = builder.comment("Uses of the Carpenter's Hammer and Chisel").defineInRange("toolUses", 400, 1, 100000);
         TOOLS_DAMAGEABLE = builder.comment("Whether the Carpenter's Hammer and Chisel wear out").define("toolsDamageable", true);
+        HAMMER_DAMAGE_CHANCE_STAIRS = builder.comment("Chance the hammer wears when turning stairs").defineInRange("hammerDamageChanceFromStairs", 1.0D, 0.0D, 1.0D);
         builder.pop();
 
         builder.push("features");

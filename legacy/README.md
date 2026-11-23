@@ -24,11 +24,12 @@ compiled. Each block is rewritten for 26.3 under `src/main` and checked against 
 | `renderer/bakedblock/BakedShapedBlock`, `model/ModelShapedBlock`, `helper/RenderHelper` | `client/model/shape/BlockShapes` ("shaped") + `client/model/CoverableItemModel` |
 | `block/BlockCarpentersBarrier`, `Gate`, `Ladder`, `Button`, `Lever`, `Torch` and their `block/data/*Data` | same names |
 | `block/BlockCarpentersDoor`, `Hatch`, `GarageDoor`, `block/data/DoorData`, `item/ItemCarpentersDoor` | same names (`getRenderAttributeSource` now returns a position) |
+| `block/BlockCarpentersStairs`, `block/data/StairsData`, `block/BlockCarpentersDaylightSensor` | same names |
+| `block/BlockCarpentersSafe`, `tileentity/TECarpentersSafe` | `block/BlockCarpentersSafe`, `blockentity/SafeBlockEntity` (block entity `carpentersblocks:safe`; a vanilla chest menu; pipes through NeoForge's WorldlyContainerWrapper) |
 
 ## Still to port
 
-Blocks: bed, collapsible block, daylight sensor, flower pot, pressure plate, safe, slope, stairs (then let hatches
-hang from Carpenter's Stairs again). Items: bed, tile (and the tile entity). Also: the slope
+Blocks: bed, collapsible block, flower pot, pressure plate, slope. Items: bed, tile (and the tile entity). Also: the slope
 selection packet, routable fluids, rail slope fill, bed design textures (`CarpentersBlocksCachedResources`),
 `canSustainPlant` for covers, and converting 3.5 (1.12.2) Carpenter's blocks in the Almura world converter.
 

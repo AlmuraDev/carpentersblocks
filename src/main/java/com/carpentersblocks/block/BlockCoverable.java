@@ -445,6 +445,9 @@ public abstract class BlockCoverable extends Block implements EntityBlock {
             return InteractionResult.PASS;
         }
         blockEntity.update(true);
+        if (actionResult.decInv) {
+            player.getMainHandItem().consume(1, player);
+        }
         return InteractionResult.SUCCESS_SERVER;
     }
 

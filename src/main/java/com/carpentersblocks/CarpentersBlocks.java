@@ -16,7 +16,10 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
 
 @Mod(CarpentersBlocks.MOD_ID)
 public final class CarpentersBlocks {
@@ -35,12 +38,20 @@ public final class CarpentersBlocks {
         CbCreativeTabs.REGISTER.register(modBus);
 
         modBus.addListener(CarpentersBlocks::onCommonSetup);
+        modBus.addListener(CarpentersBlocks::registerCapabilities);
         NeoForge.EVENT_BUS.register(CommonEvents.class);
     }
 
     private static void onCommonSetup(FMLCommonSetupEvent event) {
         // Items are registered by now
         event.enqueueWork(OverlayHandler::init);
+    }
+
+    /**
+     * Pipes and hoppers reach the safe through its sides (1.12.2's ISidedInventory).
+     */
+    private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(Capabilities.Item.BLOCK, CbBlockEntities.SAFE.get(), WorldlyContainerWrapper::new);
     }
 
     public static Identifier id(String path) {

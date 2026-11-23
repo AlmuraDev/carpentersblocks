@@ -18,6 +18,7 @@ import com.carpentersblocks.util.handler.DesignHandler.DesignType;
 import com.carpentersblocks.util.handler.DyeHandler;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.TriState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
@@ -398,6 +399,13 @@ public class BlockCarpentersBed extends AbstractBedBlock implements ICoverableBl
     public void setPlacedBy(Level level, BlockPos pos, BlockState blockState, @Nullable LivingEntity placer, ItemStack itemStack) {
         super.setPlacedBy(level, pos, blockState, placer, itemStack);
         coverableSetPlacedBy(level, pos, placer);
+    }
+
+
+    @Override
+    public TriState canSustainPlant(BlockState blockState, BlockGetter level, BlockPos soilPos, Direction facing, BlockState plant) {
+        TriState decision = coverableCanSustainPlant(blockState, level, soilPos, facing, plant);
+        return decision.isDefault() ? super.canSustainPlant(blockState, level, soilPos, facing, plant) : decision;
     }
 
 }

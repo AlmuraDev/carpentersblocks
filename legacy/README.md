@@ -34,11 +34,12 @@ compiled. Each block is rewritten for 26.3 under `src/main` and checked against 
 | `block/BlockCarpentersBed`, `item/ItemCarpentersBed` | same names; the bed is a vanilla `AbstractBedBlock` (players only sleep in those) with `ICoverableBlock`, its facing/part/occupied in the blockstate. Bed designs are drawn piece by piece from the whole design texture (`client/model/shape/BedDesignPieces`), not cut into a generated resource pack (`CarpentersBlocksCachedResources`) |
 | `block/BlockCarpentersSafe`, `tileentity/TECarpentersSafe` | `block/BlockCarpentersSafe`, `blockentity/SafeBlockEntity` (block entity `carpentersblocks:safe`; a vanilla chest menu; pipes through NeoForge's WorldlyContainerWrapper) |
 | `entity/EntityCarpentersTile`, `item/ItemCarpentersTile`, `renderer/entity/RenderCarpentersTile` | `entity/EntityCarpentersTile` (entity `carpentersblocks:carpenters_tile`, same dir/rot/dye/tile/owner tags; old ore dictionary dye names are read), `item/ItemCarpentersTile`, `client/renderer/CarpentersTileRenderer` |
+| `BlockCoverable.canSustainPlant` | `ICoverableBlock.coverableCanSustainPlant` (a soil cover or grass/mycelium overlay holds the plants that soil holds, by the 26.3 support tags) |
+| Rail slope fill, routable fluids (`BlockCoverable.getRailSlope`, `getRoutedFluidPos`, `RenderPkg`) | `client/model/CoverExtras` (read from the meshing snapshot; config `enableRailSlopeFill`, `enableRoutableFluids`) |
 
 ## Still to port
 
-Routable fluids, rail slope fill,
-`canSustainPlant` for covers, and converting 3.5 (1.12.2) Carpenter's blocks in the Almura world converter.
+Converting 3.5 (1.12.2) Carpenter's blocks in the Almura world converter.
 
 Each new block needs its blockstate and item definition (`{"type": "carpentersblocks:coverable", "shape": ...}`; boxed
 blocks use "shaped"), a loot table and its recipe (with a `neoforge:registered` condition), and its 1.12.2 hardness in

@@ -7,6 +7,9 @@ import com.carpentersblocks.util.attribute.AttributeHelper;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.material.FluidState;
+import com.carpentersblocks.CbConfig;
+import net.minecraft.util.TriState;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -178,6 +181,26 @@ public abstract class BlockCoverable extends Block implements ICoverableBlock {
     public void setPlacedBy(Level level, BlockPos pos, BlockState blockState, @Nullable LivingEntity placer, ItemStack itemStack) {
         super.setPlacedBy(level, pos, blockState, placer, itemStack);
         coverableSetPlacedBy(level, pos, placer);
+    }
+
+
+    @Override
+    public TriState canSustainPlant(BlockState blockState, BlockGetter level, BlockPos soilPos, Direction facing, BlockState plant) {
+        TriState decision = coverableCanSustainPlant(blockState, level, soilPos, facing, plant);
+        return decision.isDefault() ? super.canSustainPlant(blockState, level, soilPos, facing, plant) : decision;
+    }
+
+
+    /**
+     * With routable fluids, a fluid beside the block doesn't draw its side into the block space, where the block
+     * draws the fluid's surface itself.
+     */
+    @Override
+    public boolean shouldHideAdjacentFluidFace(BlockState blockState, Direction selfFace, FluidState adjacentFluid) {
+        if (CbConfig.ENABLE_ROUTABLE_FLUIDS.get() && selfFace.getAxis().isHorizontal()) {
+            return true;
+        }
+        return super.shouldHideAdjacentFluidFace(blockState, selfFace, adjacentFluid);
     }
 
 }

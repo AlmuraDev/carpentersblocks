@@ -78,8 +78,9 @@ public final class CoverableModel implements DynamicBlockStateModel {
         CbRenderData data = getAttributeData(level, pos, state);
         // Neighbors are read from the chunk snapshot being meshed
         int renderData = state.getBlock() instanceof ICoverableBlock block ? block.getRenderData(level, pos, data.cbMetadata()) : data.cbMetadata();
-        List<BakedQuad> quads = CoverQuadBuilder.build(_shape.create(state, renderData, data), data, level, pos);
-        parts.add(new Part(quads, getParticle(data)));
+        List<BakedQuad> quads = new ArrayList<>(CoverQuadBuilder.build(_shape.create(state, renderData, data), data, level, pos));
+        quads.addAll(CoverExtras.getRoutedFluidQuads(level, pos, state));
+        parts.add(new Part(quads, CoverExtras.getRailSlopeQuads(level, pos, data), getParticle(data)));
     }
 
     /**
@@ -127,9 +128,16 @@ public final class CoverableModel implements DynamicBlockStateModel {
         private final Material.Baked _particle;
         private final int _flags;
 
-        Part(List<BakedQuad> quads, Material.Baked particle) {
+        /**
+         * @param unsided quads never culled by a neighbor (those outside the block space)
+         */
+        Part(List<BakedQuad> quads, List<BakedQuad> unsided, Material.Baked particle) {
             _particle = particle;
             int flags = 0;
+            for (BakedQuad quad : unsided) {
+                flags |= quad.materialInfo().flags();
+                _unsided.add(quad);
+            }
             for (BakedQuad quad : quads) {
                 flags |= quad.materialInfo().flags();
                 Direction face = quad.direction();

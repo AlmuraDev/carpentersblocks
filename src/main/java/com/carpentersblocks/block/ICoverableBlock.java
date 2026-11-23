@@ -17,6 +17,19 @@ import com.carpentersblocks.util.handler.DesignHandler;
 import com.carpentersblocks.util.handler.DesignHandler.DesignType;
 import com.carpentersblocks.util.protection.PlayerPermissions;
 
+import com.carpentersblocks.util.handler.OverlayHandler;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.TriState;
+import net.minecraft.world.level.block.BambooSaplingBlock;
+import net.minecraft.world.level.block.BambooStalkBlock;
+import net.minecraft.world.level.block.CactusBlock;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.DryVegetationBlock;
+import net.minecraft.world.level.block.NetherWartBlock;
+import net.minecraft.world.level.block.StemBlock;
+import net.minecraft.world.level.block.SugarCaneBlock;
+import net.minecraft.world.level.block.VegetationBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -714,6 +727,86 @@ public interface ICoverableBlock extends EntityBlock {
                 blockEntity.setOwner(player);
             }
         }
+    }
+
+
+    /**
+     * Block.canSustainPlant: a solid face covered with a soil (or with a grass or mycelium overlay) holds the plants
+     * that soil holds (1.12.2: desert, nether, plains and beach plants). Plants are matched to the 26.3 support tags.
+     */
+    default TriState coverableCanSustainPlant(BlockState blockState, BlockGetter level, BlockPos pos, Direction facing, BlockState plant) {
+        CbBlockEntity blockEntity = getBlockEntity(level, pos);
+        if (blockEntity == null || !blockState.isFaceSturdy(level, pos, facing)) {
+            return TriState.DEFAULT;
+        }
+        AttributeHelper helper = blockEntity.getAttributeHelper();
+        EnumAttributeLocation location = BlockUtil.getAttributeLocationForFacing(blockEntity, facing);
+        Set<BlockState> soils = new HashSet<>();
+        BlockState cover = helper.getBlockState(location, EnumAttributeType.COVER);
+        if (cover != null) {
+            soils.add(cover);
+        }
+        if (helper.hasAttribute(location, EnumAttributeType.OVERLAY)) {
+            OverlayHandler.Overlay overlay = OverlayHandler.getOverlayType(helper.getItemStack(location, EnumAttributeType.OVERLAY));
+            if (overlay != null && overlay != OverlayHandler.Overlay.NONE) {
+                soils.add(overlay.getBlock().defaultBlockState());
+            }
+        }
+        for (BlockState soil : soils) {
+            if (soil.getBlock() instanceof ICoverableBlock) {
+                continue;
+            }
+            TriState decision = soil.canSustainPlant(level, pos, facing, plant);
+            if (!decision.isDefault()) {
+                if (decision.isTrue()) {
+                    return TriState.TRUE;
+                }
+                continue;
+            }
+            if (supportsPlant(soil, level, pos, plant)) {
+                return TriState.TRUE;
+            }
+        }
+        return TriState.DEFAULT;
+    }
+
+    /**
+     * Whether a soil holds a plant, by the support tag the plant checks.
+     */
+    private static boolean supportsPlant(BlockState soil, BlockGetter level, BlockPos pos, BlockState plant) {
+        Block block = plant.getBlock();
+        if (block instanceof SugarCaneBlock) {
+            if (!soil.is(BlockTags.SUPPORTS_SUGAR_CANE)) {
+                return false;
+            }
+            for (Direction direction : Direction.Plane.HORIZONTAL) {
+                BlockPos side = pos.relative(direction);
+                if (level.getFluidState(side).is(FluidTags.SUPPORTS_SUGAR_CANE_ADJACENTLY)
+                        || level.getBlockState(side).is(BlockTags.SUPPORTS_SUGAR_CANE_ADJACENTLY)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (block instanceof CactusBlock) {
+            return soil.is(BlockTags.SUPPORTS_CACTUS);
+        }
+        if (block instanceof NetherWartBlock) {
+            return soil.is(BlockTags.SUPPORTS_NETHER_WART);
+        }
+        if (block instanceof BambooStalkBlock || block instanceof BambooSaplingBlock) {
+            return soil.is(BlockTags.SUPPORTS_BAMBOO);
+        }
+        if (block instanceof CropBlock || block instanceof StemBlock) {
+            return soil.is(BlockTags.SUPPORTS_CROPS);
+        }
+        if (block instanceof DryVegetationBlock) {
+            return soil.is(BlockTags.SUPPORTS_DRY_VEGETATION);
+        }
+        if (block instanceof VegetationBlock) {
+            return soil.is(BlockTags.SUPPORTS_VEGETATION);
+        }
+        return false;
     }
 
 }

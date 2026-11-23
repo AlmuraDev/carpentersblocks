@@ -1,12 +1,14 @@
 package com.carpentersblocks.client.model;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
 import com.carpentersblocks.CarpentersBlocks;
-import com.carpentersblocks.block.IShapedBlock;
+import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.client.model.shape.BlockShapes;
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
@@ -49,8 +51,8 @@ public final class CoverableItemModel implements ItemModel {
     private final BlockShapes.Shape _shape;
     private final ItemTransforms _transforms;
     private final Matrix4fc _transformation;
-    // Baked on first use, once the block atlas is loaded; a resource reload bakes a new model
-    private volatile Geometry _geometry;
+    // Baked on first use by render data, once the block atlas is loaded; a resource reload bakes a new model
+    private final Map<Integer, Geometry> _geometry = new ConcurrentHashMap<>();
 
     private CoverableItemModel(BlockShapes.Shape shape, ItemTransforms transforms, Matrix4fc transformation) {
         _shape = shape;
@@ -64,11 +66,11 @@ public final class CoverableItemModel implements ItemModel {
         if (!(item.getItem() instanceof BlockItem blockItem)) {
             return;
         }
-        Geometry geometry = _geometry;
-        if (geometry == null) {
-            geometry = _geometry = bake(blockItem.getBlock().defaultBlockState());
-        }
+        BlockState blockState = blockItem.getBlock().defaultBlockState();
+        int renderData = blockState.getBlock() instanceof BlockCoverable block ? block.getInventoryRenderData(item) : 0;
+        Geometry geometry = _geometry.computeIfAbsent(renderData, data -> bake(blockState, data));
         output.appendModelIdentityElement(this);
+        output.appendModelIdentityElement(renderData);
         ItemStackRenderState.LayerRenderState layer = output.newLayer();
         if (item.hasFoil()) {
             layer.setFoilType(ItemStackRenderState.FoilType.STANDARD);
@@ -81,8 +83,7 @@ public final class CoverableItemModel implements ItemModel {
         layer.setQuads(geometry.quads());
     }
 
-    private Geometry bake(BlockState blockState) {
-        int renderData = blockState.getBlock() instanceof IShapedBlock shapedBlock ? shapedBlock.getInventoryRenderData(0) : 0;
+    private Geometry bake(BlockState blockState, int renderData) {
         List<BakedQuad> quads = List.copyOf(_shape.create(blockState, renderData).bakeQuads());
         Material.Baked particle = new Material.Baked(CbSprites.get(CbSprites.UNCOVERED_FULL), false);
         return new Geometry(ItemQuads.split(quads), Suppliers.memoize(() -> CuboidItemModelWrapper.computeExtents(quads)), particle);

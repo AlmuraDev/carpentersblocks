@@ -2,10 +2,13 @@ package com.carpentersblocks;
 
 import org.slf4j.Logger;
 
+import com.carpentersblocks.network.SlopeSelectPayload;
 import com.carpentersblocks.registry.CbBlockEntities;
 import com.carpentersblocks.registry.CbBlocks;
 import com.carpentersblocks.registry.CbCreativeTabs;
+import com.carpentersblocks.registry.CbDataComponents;
 import com.carpentersblocks.registry.CbItems;
+import com.carpentersblocks.util.block.SlopeShape;
 import com.carpentersblocks.util.handler.DesignHandler;
 import com.carpentersblocks.util.handler.OverlayHandler;
 import com.mojang.logging.LogUtils;
@@ -19,6 +22,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
 
 @Mod(CarpentersBlocks.MOD_ID)
@@ -31,14 +35,17 @@ public final class CarpentersBlocks {
         // Startup configs load here, before the registries below read them
         container.registerConfig(ModConfig.Type.STARTUP, CbConfig.SPEC);
         DesignHandler.init();
+        SlopeShape.setResolution(CbConfig.SLOPE_SMOOTHNESS.get());
 
         CbBlocks.REGISTER.register(modBus);
         CbItems.REGISTER.register(modBus);
         CbBlockEntities.REGISTER.register(modBus);
         CbCreativeTabs.REGISTER.register(modBus);
+        CbDataComponents.REGISTER.register(modBus);
 
         modBus.addListener(CarpentersBlocks::onCommonSetup);
         modBus.addListener(CarpentersBlocks::registerCapabilities);
+        modBus.addListener(CarpentersBlocks::registerPayloads);
         NeoForge.EVENT_BUS.register(CommonEvents.class);
     }
 
@@ -52,6 +59,10 @@ public final class CarpentersBlocks {
      */
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.Item.BLOCK, CbBlockEntities.SAFE.get(), WorldlyContainerWrapper::new);
+    }
+
+    private static void registerPayloads(RegisterPayloadHandlersEvent event) {
+        event.registrar("1").playToServer(SlopeSelectPayload.TYPE, SlopeSelectPayload.STREAM_CODEC, SlopeSelectPayload::handle);
     }
 
     public static Identifier id(String path) {

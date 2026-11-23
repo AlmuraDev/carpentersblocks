@@ -38,6 +38,9 @@ public final class CbConfig {
     public static final ModConfigSpec.IntValue TOOL_USES;
     public static final ModConfigSpec.BooleanValue TOOLS_DAMAGEABLE;
     public static final ModConfigSpec.DoubleValue HAMMER_DAMAGE_CHANCE_STAIRS;
+    public static final ModConfigSpec.DoubleValue HAMMER_DAMAGE_CHANCE_SLOPES;
+    public static final ModConfigSpec.DoubleValue HAMMER_DAMAGE_CHANCE_COLLAPSIBLE;
+    public static final ModConfigSpec.IntValue SLOPE_SMOOTHNESS;
 
     // Features
     public static final ModConfigSpec.BooleanValue ENABLE_COVERS;
@@ -85,6 +88,8 @@ public final class CbConfig {
         TOOL_USES = builder.comment("Uses of the Carpenter's Hammer and Chisel").defineInRange("toolUses", 400, 1, 100000);
         TOOLS_DAMAGEABLE = builder.comment("Whether the Carpenter's Hammer and Chisel wear out").define("toolsDamageable", true);
         HAMMER_DAMAGE_CHANCE_STAIRS = builder.comment("Chance the hammer wears when turning stairs").defineInRange("hammerDamageChanceFromStairs", 1.0D, 0.0D, 1.0D);
+        HAMMER_DAMAGE_CHANCE_SLOPES = builder.comment("Chance the hammer wears when changing slopes").defineInRange("hammerDamageChanceFromSlopes", 0.75D, 0.0D, 1.0D);
+        HAMMER_DAMAGE_CHANCE_COLLAPSIBLE = builder.comment("Chance the hammer wears when shaping collapsible blocks").defineInRange("hammerDamageChanceFromCollapsible", 0.2D, 0.0D, 1.0D);
         builder.pop();
 
         builder.push("features");
@@ -105,6 +110,10 @@ public final class CbConfig {
             .define("enableAlphaPanes", true);
         ENABLE_FREESTANDING_LADDERS = builder.comment("Whether wall ladders stay up when the block behind them is removed")
             .define("enableFreestandingLadders", false);
+        SLOPE_SMOOTHNESS = builder.comment(
+                "How smooth slope faces are when walked on.",
+                "2 is like stairs, above 25 is generally fluid.")
+            .defineInRange("slopeSmoothness", 8, 2, 32);
         ENABLE_GARAGE_DOOR_VOID_FILL = builder.comment("Whether garage doors fill gaps left when blocks under them are removed")
             .define("enableGarageDoorVoidFill", true);
         MULTIBLOCK_SIZE_LIMIT = builder.comment("How many blocks can work as one (garage doors)")

@@ -52,6 +52,14 @@
     {
       "id": "carpentersblocks:carpenters_safe",
       "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_slope",
+      "required": false
+    },
+    {
+      "id": "carpentersblocks:carpenters_collapsible_block",
+      "required": false
     }
   ]
 }

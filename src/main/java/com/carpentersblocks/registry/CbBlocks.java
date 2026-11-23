@@ -8,6 +8,10 @@ import com.carpentersblocks.CbConfig;
 import com.carpentersblocks.block.BlockCarpentersBarrier;
 import com.carpentersblocks.block.BlockCarpentersBlock;
 import com.carpentersblocks.block.BlockCarpentersButton;
+import com.carpentersblocks.block.BlockCarpentersCollapsibleBlock;
+import com.carpentersblocks.block.BlockCarpentersSlope;
+import com.carpentersblocks.item.ItemBlockCarpentersSlope;
+import net.minecraft.world.item.Item;
 import com.carpentersblocks.block.BlockCarpentersDaylightSensor;
 import com.carpentersblocks.block.BlockCarpentersSafe;
 import com.carpentersblocks.block.BlockCarpentersStairs;
@@ -66,6 +70,10 @@ public final class CbBlocks {
     // Explosion proof, like 1.12.2
     public static final DeferredBlock<BlockCarpentersSafe> CARPENTERS_SAFE = CbConfig.ENABLE_SAFE.get()
         ? register("carpenters_safe", BlockCarpentersSafe::new, 2.5F, properties -> shaped(properties).explosionResistance(6000000.0F)) : null;
+    public static final DeferredBlock<BlockCarpentersCollapsibleBlock> CARPENTERS_COLLAPSIBLE_BLOCK = CbConfig.ENABLE_COLLAPSIBLE_BLOCK.get()
+        ? register("carpenters_collapsible_block", BlockCarpentersCollapsibleBlock::new, 0.2F, CbBlocks::shaped) : null;
+    // One item for the five slopes, which it keeps in a data component
+    public static final DeferredBlock<BlockCarpentersSlope> CARPENTERS_SLOPE = CbConfig.ENABLE_SLOPE.get() ? registerSlope() : null;
     // Placed with the door item (CbItems.CARPENTERS_DOOR), so it has no block item
     public static final DeferredBlock<BlockCarpentersDoor> CARPENTERS_DOOR = CbConfig.ENABLE_DOOR.get()
         ? REGISTER.registerBlock("carpenters_door", BlockCarpentersDoor::new, () -> shaped(woodProperties(0.2F))) : null;
@@ -81,6 +89,13 @@ public final class CbBlocks {
             UnaryOperator<BlockBehaviour.Properties> extra) {
         DeferredBlock<B> block = REGISTER.registerBlock(name, factory, () -> extra.apply(woodProperties(hardness)));
         CbItems.REGISTER.registerSimpleBlockItem(name, block);
+        return block;
+    }
+
+    private static DeferredBlock<BlockCarpentersSlope> registerSlope() {
+        DeferredBlock<BlockCarpentersSlope> block = REGISTER.registerBlock("carpenters_slope", BlockCarpentersSlope::new, () -> shaped(woodProperties(0.2F)));
+        CbItems.REGISTER.registerItem("carpenters_slope", properties -> new ItemBlockCarpentersSlope(block.get(), properties),
+            () -> new Item.Properties().useBlockDescriptionPrefix());
         return block;
     }
 

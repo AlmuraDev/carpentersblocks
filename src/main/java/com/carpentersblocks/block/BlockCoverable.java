@@ -40,6 +40,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -95,6 +96,27 @@ public abstract class BlockCoverable extends Block implements EntityBlock {
 
     public BlockCoverable(Properties properties) {
         super(properties);
+    }
+
+    // The click being handled, for hammer clicks that depend on the face or corner hit (slopes, collapsible blocks)
+    private static final ThreadLocal<BlockHitResult> _clickHit = new ThreadLocal<>();
+
+    /**
+     * Gets the face of the click being handled, or null.
+     */
+    @Nullable
+    protected static Direction getClickFace() {
+        BlockHitResult hit = _clickHit.get();
+        return hit != null ? hit.getDirection() : null;
+    }
+
+    /**
+     * Gets where the click being handled hit, relative to the block (0 to 1), or null.
+     */
+    @Nullable
+    protected static Vec3 getClickHit() {
+        BlockHitResult hit = _clickHit.get();
+        return hit != null ? hit.getLocation().subtract(Vec3.atLowerCornerOf(hit.getBlockPos())) : null;
     }
 
     @Override
@@ -193,6 +215,13 @@ public abstract class BlockCoverable extends Block implements EntityBlock {
     }
 
     /**
+     * Gets the data an item of this block is drawn with.
+     */
+    public int getInventoryRenderData(ItemStack itemStack) {
+        return this instanceof IShapedBlock shapedBlock ? shapedBlock.getInventoryRenderData(0) : 0;
+    }
+
+    /**
      * Gets the block's light: by default the light of its attributes (glowstone, glowing covers).
      */
     public int getLightValue(CbBlockEntity blockEntity, int attributeLight) {
@@ -248,6 +277,18 @@ public abstract class BlockCoverable extends Block implements EntityBlock {
      * @param face the clicked face
      */
     public void onBlockClicked(Level level, BlockPos pos, Player player, Direction face) {
+        // The left click event has no hit position: trace it, for blocks that care where they were hit
+        Vec3 location = player.pick(player.blockInteractionRange(), 1.0F, false) instanceof BlockHitResult trace && trace.getBlockPos().equals(pos)
+            ? trace.getLocation() : Vec3.atCenterOf(pos);
+        _clickHit.set(new BlockHitResult(location, face, pos, false));
+        try {
+            onBlockClickedImpl(level, pos, player, face);
+        } finally {
+            _clickHit.remove();
+        }
+    }
+
+    private void onBlockClickedImpl(Level level, BlockPos pos, Player player, Direction face) {
         if (level.isClientSide()) {
             return;
         }
@@ -340,6 +381,15 @@ public abstract class BlockCoverable extends Block implements EntityBlock {
 
     @Override
     protected InteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        _clickHit.set(hitResult);
+        try {
+            return useItemOnImpl(itemStack, level, pos, player, hand, hitResult);
+        } finally {
+            _clickHit.remove();
+        }
+    }
+
+    private InteractionResult useItemOnImpl(ItemStack itemStack, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         CbBlockEntity blockEntity = getBlockEntity(level, pos);
         if (blockEntity == null || itemStack.isEmpty() || !canPlayerActivate(blockEntity, player)) {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
@@ -432,6 +482,15 @@ public abstract class BlockCoverable extends Block implements EntityBlock {
      */
     @Override
     protected InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        _clickHit.set(hitResult);
+        try {
+            return useWithoutItemImpl(level, pos, player, hitResult);
+        } finally {
+            _clickHit.remove();
+        }
+    }
+
+    private InteractionResult useWithoutItemImpl(Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         CbBlockEntity blockEntity = getBlockEntity(level, pos);
         if (blockEntity == null || !canPlayerActivate(blockEntity, player)) {
             return InteractionResult.PASS;

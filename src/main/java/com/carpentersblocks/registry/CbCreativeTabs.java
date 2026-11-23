@@ -1,6 +1,7 @@
 package com.carpentersblocks.registry;
 
 import com.carpentersblocks.CarpentersBlocks;
+import com.carpentersblocks.item.ItemBlockCarpentersSlope;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -16,7 +17,13 @@ public final class CbCreativeTabs {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN = REGISTER.register(CarpentersBlocks.MOD_ID, () -> CreativeModeTab.builder()
         .icon(() -> new ItemStack(CbBlocks.CARPENTERS_BLOCK.get()))
         .title(Component.translatable("itemGroup." + CarpentersBlocks.MOD_ID))
-        .displayItems((parameters, output) -> CbItems.REGISTER.getEntries().forEach(item -> output.accept(item.get())))
+        .displayItems((parameters, output) -> CbItems.REGISTER.getEntries().forEach(holder -> {
+            if (holder.get() instanceof ItemBlockCarpentersSlope slope) {
+                slope.fillVariants(output::accept);
+            } else {
+                output.accept(holder.get());
+            }
+        }))
         .build());
 
     private CbCreativeTabs() {}

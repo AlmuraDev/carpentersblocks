@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.carpentersblocks.CbConfig;
+import com.carpentersblocks.block.BlockCarpentersCollapsibleBlock;
+import com.carpentersblocks.util.block.CollapsibleUtil;
 import com.carpentersblocks.block.IShapedBlock;
 import com.carpentersblocks.block.ShapePart;
 import com.carpentersblocks.client.model.CbSprites;
@@ -56,6 +58,43 @@ public final class BlockShapes {
         });
         // Blocks made of boxes: barriers, gates, ladders, buttons, levers, torches... (1.12.2's BakedShapedBlock)
         SHAPES.put("shaped", BlockShapes::createShaped);
+        // The Carpenter's Slope (1.12.2's BakedSlope)
+        SHAPES.put("slope", (blockState, renderData) -> SlopeShapes.create(renderData));
+        // The Carpenter's Collapsible Block (1.12.2's BakedCollapsibleBlock)
+        SHAPES.put("collapsible", (blockState, renderData) -> createCollapsible(renderData));
+    }
+
+    private static QuadContainer createCollapsible(int renderData) {
+        QuadContainer container = new QuadContainer(EnumAttributeLocation.HOST);
+        TextureAtlasSprite sprite = CbSprites.get(CbSprites.UNCOVERED_SOLID);
+        if (renderData == BlockCarpentersCollapsibleBlock.INVENTORY) {
+            container.add(getFullFace(Direction.UP, sprite).offset(0.0D, -1.0D, 0.0D));
+            container.add(getFullFace(Direction.DOWN, sprite));
+            return container;
+        }
+        CollapsibleUtil util = new CollapsibleUtil(renderData);
+        util.computeOffsets();
+        List<Quad> quads = new ArrayList<>();
+        if (!util.isFullCube()) {
+            quads.add(RenderHelperCollapsible.getQuadYPosZNeg(util, sprite));
+            quads.add(RenderHelperCollapsible.getQuadYPosZPos(util, sprite));
+            quads.add(RenderHelperCollapsible.getQuadXNegYPos(util, sprite));
+            quads.add(RenderHelperCollapsible.getQuadXPosYPos(util, sprite));
+        } else {
+            quads.add(getFullFace(Direction.UP, sprite));
+        }
+        quads.add(getFullFace(Direction.DOWN, sprite));
+        quads.add(RenderHelperCollapsible.getQuadZNeg(util, sprite));
+        quads.add(RenderHelperCollapsible.getQuadZPos(util, sprite));
+        quads.add(RenderHelperCollapsible.getQuadXNeg(util, sprite));
+        quads.add(RenderHelperCollapsible.getQuadXPos(util, sprite));
+        for (Quad quad : quads) {
+            if (quad != null) {
+                quad.setSlopedBakeFacing(util.getFacing());
+                container.add(quad);
+            }
+        }
+        return container;
     }
 
     private BlockShapes() {}

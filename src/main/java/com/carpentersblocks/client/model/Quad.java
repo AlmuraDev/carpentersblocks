@@ -46,6 +46,8 @@ public class Quad {
     private Direction _uvRotation;
     // Whether the sprite is one of the uncovered frames, which covers replace
     private boolean _canCover;
+    // Side a sloped face is lit and mapped as (collapsible blocks: their facing), or null
+    private Direction _slopedBakeFacing;
 
     private Quad() { }
 
@@ -68,6 +70,14 @@ public class Quad {
         _uvOffset = src.getUVOffset();
         _tintIndex = src.getTintIndex();
         _uvRotation = src._uvRotation;
+        _slopedBakeFacing = src._slopedBakeFacing;
+    }
+
+    /**
+     * Lights and maps the quad as a side if it is sloped (1.12.2 drew collapsible block tops this way).
+     */
+    public void setSlopedBakeFacing(Direction facing) {
+        _slopedBakeFacing = facing;
     }
 
     public static Quad getQuad(Direction facing, Vec3... inVecs) {
@@ -196,6 +206,12 @@ public class Quad {
         String spriteName = _sprite.contents().name().toString();
         boolean isFloatingOverlay = spriteName.equals(GRASS_SIDE_OVERLAY)
             || spriteName.contains("overlay/overlay_") && spriteName.endsWith("_side");
+
+        if (_slopedBakeFacing != null && (isSloped(Axis.X) || isSloped(Axis.Y) || isSloped(Axis.Z))) {
+            _facing = _slopedBakeFacing;
+            _isOblique = false;
+            isFloatingOverlay = false;
+        }
 
         // The chunk renderer's flat and AO lighters switch on the quad side, so it can't be missing
         Vec3 normal = _normal != null ? _normal : Vec3.atLowerCornerOf((_facing != null ? _facing : Direction.UP).getUnitVec3i());

@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "carpentersblocks:coverable",
+    "shape": "collapsible"
+  }
+}

@@ -25,12 +25,15 @@ compiled. Each block is rewritten for 26.3 under `src/main` and checked against 
 | `block/BlockCarpentersBarrier`, `Gate`, `Ladder`, `Button`, `Lever`, `Torch` and their `block/data/*Data` | same names |
 | `block/BlockCarpentersDoor`, `Hatch`, `GarageDoor`, `block/data/DoorData`, `item/ItemCarpentersDoor` | same names (`getRenderAttributeSource` now returns a position) |
 | `block/BlockCarpentersStairs`, `block/data/StairsData`, `block/BlockCarpentersDaylightSensor` | same names |
+| `block/BlockCarpentersSlope`, `block/data/SlopeData`, `RotatableData`, `util/block/SlopeShape`, `item/ItemBlockCarpentersSlope` | same names (the slope type is the `carpentersblocks:slope_type` item component, not the item damage) |
+| `renderer/bakedblock/BakedSlope`, `helper/RenderHelperSlope` | `client/model/shape/SlopeShapes`, `RenderHelperSlope` ("slope") |
+| `network/PacketSlopeSelect`, `util/handler/PacketHandler` | `network/SlopeSelectPayload` (a NeoForge payload) |
+| `block/BlockCarpentersCollapsibleBlock`, `util/block/CollapsibleUtil`, `renderer/bakedblock/BakedCollapsibleBlock`, `helper/RenderHelperCollapsible` | same names; the renderer is the "collapsible" shape (`BlockFacing` folded into the block) |
 | `block/BlockCarpentersSafe`, `tileentity/TECarpentersSafe` | `block/BlockCarpentersSafe`, `blockentity/SafeBlockEntity` (block entity `carpentersblocks:safe`; a vanilla chest menu; pipes through NeoForge's WorldlyContainerWrapper) |
 
 ## Still to port
 
-Blocks: bed, collapsible block, flower pot, pressure plate, slope. Items: bed, tile (and the tile entity). Also: the slope
-selection packet, routable fluids, rail slope fill, bed design textures (`CarpentersBlocksCachedResources`),
+Blocks: bed, flower pot, pressure plate. Items: bed, tile (and the tile entity). Also: routable fluids, rail slope fill, bed design textures (`CarpentersBlocksCachedResources`),
 `canSustainPlant` for covers, and converting 3.5 (1.12.2) Carpenter's blocks in the Almura world converter.
 
 Each new block needs its blockstate and item definition (`{"type": "carpentersblocks:coverable", "shape": ...}`; boxed

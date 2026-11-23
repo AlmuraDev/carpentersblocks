@@ -7,7 +7,14 @@ import com.carpentersblocks.client.model.CoverableItemModel;
 import com.carpentersblocks.client.model.CoverableModel;
 import com.carpentersblocks.registry.CbBlocks;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
+import com.carpentersblocks.item.ItemBlockCarpentersSlope;
+import com.carpentersblocks.network.SlopeSelectPayload;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -27,6 +34,21 @@ public final class CarpentersBlocksClient {
         modBus.addListener(CarpentersBlocksClient::registerBlockStateModels);
         modBus.addListener(CarpentersBlocksClient::registerTints);
         modBus.addListener(CarpentersBlocksClient::registerItemModels);
+        NeoForge.EVENT_BUS.addListener(CarpentersBlocksClient::onMouseScroll);
+    }
+
+    /**
+     * Sneak and scroll with a slope in hand switches the slope it places (1.12.2's EventHandler.onMouseEvent).
+     */
+    private static void onMouseScroll(InputEvent.MouseScrollingEvent event) {
+        Player player = Minecraft.getInstance().player;
+        if (player == null || !player.isShiftKeyDown() || !(player.getMainHandItem().getItem() instanceof ItemBlockCarpentersSlope)) {
+            return;
+        }
+        if (event.getScrollDeltaY() != 0) {
+            ClientPacketDistributor.sendToServer(new SlopeSelectPayload(player.getInventory().getSelectedSlot(), event.getScrollDeltaY() > 0));
+        }
+        event.setCanceled(true);
     }
 
     private static void registerItemModels(RegisterItemModelsEvent event) {

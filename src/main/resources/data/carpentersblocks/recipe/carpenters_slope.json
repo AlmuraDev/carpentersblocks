@@ -1,0 +1,24 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "registry": "minecraft:block",
+      "value": "carpentersblocks:carpenters_slope"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "X": "#c:rods/wooden",
+    "Y": "carpentersblocks:carpenters_block"
+  },
+  "pattern": [
+    "  X",
+    " XY",
+    "XYY"
+  ],
+  "result": {
+    "count": 6,
+    "id": "carpentersblocks:carpenters_slope"
+  }
+}

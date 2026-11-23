@@ -2,6 +2,7 @@ package com.carpentersblocks.item;
 
 import com.carpentersblocks.block.data.DoorData;
 import com.carpentersblocks.blockentity.CbBlockEntity;
+import com.carpentersblocks.block.BlockCarpentersDoor;
 import com.carpentersblocks.registry.CbBlocks;
 
 import net.minecraft.core.BlockPos;
@@ -34,7 +35,7 @@ public class ItemCarpentersDoor extends Item {
         if (context.getClickedFace() != Direction.UP || CbBlocks.CARPENTERS_DOOR == null || player == null) {
             return InteractionResult.FAIL;
         }
-        Block door = CbBlocks.CARPENTERS_DOOR.get();
+        BlockCarpentersDoor door = CbBlocks.CARPENTERS_DOOR.get();
         BlockPos bottomPos = clickedPos.above();
         BlockPos topPos = bottomPos.above();
         ItemStack itemStack = context.getItemInHand();
@@ -65,8 +66,8 @@ public class ItemCarpentersDoor extends Item {
 
         // Place both halves before either checks for the other
         BlockState doorState = door.defaultBlockState();
-        level.setBlock(bottomPos, doorState, Block.UPDATE_CLIENTS);
-        level.setBlock(topPos, doorState, Block.UPDATE_CLIENTS);
+        level.setBlock(bottomPos, door.withWater(doorState, level, bottomPos), Block.UPDATE_CLIENTS);
+        level.setBlock(topPos, door.withWater(doorState, level, topPos), Block.UPDATE_CLIENTS);
         setPiece(level, bottomPos, player, itemStack, DoorData.setTop(data, false));
         setPiece(level, topPos, player, itemStack, DoorData.setTop(data, true));
         level.updateNeighborsAt(bottomPos, door);

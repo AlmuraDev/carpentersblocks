@@ -169,6 +169,10 @@ public final class CoverQuadBuilder {
                         }
                         newQuad.setSprite(info.sprite());
                         newQuad.setRenderLayer(info.layer());
+                        float[] region = getTextureRegion(bakedQuad, facing, info.sprite());
+                        if (region != null) {
+                            newQuad.setSpriteRegion(region[0], region[1], region[2], region[3], 0);
+                        }
                         list.add(newQuad);
                     }
                     continue;
@@ -181,6 +185,75 @@ public final class CoverQuadBuilder {
             }
         }
         return list;
+    }
+
+    /**
+     * Gets the part of its texture a cover's face would draw across the whole side of the block, as fractions of the
+     * sprite (u0, v0, u1, v1): the face's texture mapping carried out to the side's edges. Models that pick their
+     * texture out of a shared sheet (Almura's OBJ blocks) draw only their part of it. Null to draw the whole texture:
+     * vanilla blocks, whose faces map the whole texture across the side (a slab's half-height side comes out whole
+     * too, like 1.12.2).
+     */
+    @Nullable
+    private static float[] getTextureRegion(BakedQuad bakedQuad, Direction facing, TextureAtlasSprite sprite) {
+        float spriteWidth = sprite.getU1() - sprite.getU0();
+        float spriteHeight = sprite.getV1() - sprite.getV0();
+        if (spriteWidth <= 0 || spriteHeight <= 0) {
+            return null;
+        }
+        Direction.Axis axis = facing.getAxis();
+        float[] a = new float[4], b = new float[4], u = new float[4], v = new float[4];
+        for (int vertex = 0; vertex < 4; ++vertex) {
+            org.joml.Vector3fc position = bakedQuad.position(vertex);
+            // The two coordinates across the face
+            a[vertex] = axis == Direction.Axis.X ? position.y() : position.x();
+            b[vertex] = axis == Direction.Axis.Z ? position.y() : position.z();
+            long packed = bakedQuad.packedUV(vertex);
+            u[vertex] = (net.minecraft.client.model.geom.builders.UVPair.unpackU(packed) - sprite.getU0()) / spriteWidth;
+            v[vertex] = (net.minecraft.client.model.geom.builders.UVPair.unpackV(packed) - sprite.getV0()) / spriteHeight;
+        }
+        // The mapping is affine across a flat face: solve it from three corners that are not in a line
+        int[][] triples = { { 0, 1, 2 }, { 0, 1, 3 }, { 0, 2, 3 }, { 1, 2, 3 } };
+        for (int[] t : triples) {
+            int i = t[0], j = t[1], k = t[2];
+            double det = a[i] * (b[j] - b[k]) - b[i] * (a[j] - a[k]) + (a[j] * b[k] - a[k] * b[j]);
+            if (Math.abs(det) < 1.0E-6D) {
+                continue;
+            }
+            double[] uMap = solve(a, b, u, i, j, k, det);
+            double[] vMap = solve(a, b, v, i, j, k, det);
+            double uMin = Double.MAX_VALUE, uMax = -Double.MAX_VALUE, vMin = Double.MAX_VALUE, vMax = -Double.MAX_VALUE;
+            for (int corner = 0; corner < 4; ++corner) {
+                double ca = corner & 1, cb = corner >> 1;
+                double cu = uMap[0] * ca + uMap[1] * cb + uMap[2];
+                double cv = vMap[0] * ca + vMap[1] * cb + vMap[2];
+                uMin = Math.min(uMin, cu);
+                uMax = Math.max(uMax, cu);
+                vMin = Math.min(vMin, cv);
+                vMax = Math.max(vMax, cv);
+            }
+            float[] region = { clamp(uMin), clamp(vMin), clamp(uMax), clamp(vMax) };
+            float epsilon = 1.0E-3F;
+            boolean wholeTexture = region[0] < epsilon && region[1] < epsilon && region[2] > 1 - epsilon && region[3] > 1 - epsilon;
+            boolean empty = region[2] - region[0] < epsilon || region[3] - region[1] < epsilon;
+            return wholeTexture || empty ? null : region;
+        }
+        return null;
+    }
+
+    /**
+     * Solves value = p * a + q * b + r through three corners (Cramer's rule).
+     */
+    private static double[] solve(float[] a, float[] b, float[] value, int i, int j, int k, double det) {
+        double p = (value[i] * (b[j] - b[k]) - b[i] * (value[j] - value[k]) + (value[j] * b[k] - value[k] * b[j])) / det;
+        double q = (a[i] * (value[j] - value[k]) - value[i] * (a[j] - a[k]) + (a[j] * value[k] - a[k] * value[j])) / det;
+        double r = (a[i] * (b[j] * value[k] - b[k] * value[j]) - b[i] * (a[j] * value[k] - a[k] * value[j])
+            + value[i] * (a[j] * b[k] - a[k] * b[j])) / det;
+        return new double[] { p, q, r };
+    }
+
+    private static float clamp(double value) {
+        return (float) Math.max(0.0D, Math.min(1.0D, value));
     }
 
     /**

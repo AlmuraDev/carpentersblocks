@@ -7,6 +7,16 @@ import com.carpentersblocks.util.attribute.AttributeHelper;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.FluidState;
 import com.carpentersblocks.CbConfig;
 import net.minecraft.util.TriState;
@@ -35,10 +45,80 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * The base of most Carpenter's blocks: a plain block with the Carpenter's behavior ({@link ICoverableBlock}). It
  * forwards the vanilla methods to the interface, and keeps the shared helpers at hand for its subclasses.
  */
-public abstract class BlockCoverable extends Block implements ICoverableBlock {
+public abstract class BlockCoverable extends Block implements ICoverableBlock, SimpleWaterloggedBlock {
 
     public BlockCoverable(Properties properties) {
         super(properties);
+        if (isWaterloggable()) {
+            registerDefaultState(stateDefinition.any().setValue(WATERLOGGED, false));
+        }
+    }
+
+    ////////////
+    // Waterlogging (new in 26.3; 1.12.2 had none)
+    ////////////
+
+    protected static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+
+    /**
+     * Whether the block can hold water: all but full blocks. Called while the block is constructed.
+     */
+    protected boolean isWaterloggable() {
+        return true;
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        if (isWaterloggable()) {
+            builder.add(WATERLOGGED);
+        }
+    }
+
+    /**
+     * The block's state at a position: holding water when placed in water.
+     */
+    public BlockState withWater(BlockState blockState, LevelReader level, BlockPos pos) {
+        return blockState.hasProperty(WATERLOGGED)
+            ? blockState.setValue(WATERLOGGED, level.getFluidState(pos).is(Fluids.WATER)) : blockState;
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockState blockState = super.getStateForPlacement(context);
+        return blockState != null ? withWater(blockState, context.getLevel(), context.getClickedPos()) : null;
+    }
+
+    @Override
+    protected FluidState getFluidState(BlockState blockState) {
+        return blockState.hasProperty(WATERLOGGED) && blockState.getValue(WATERLOGGED)
+            ? Fluids.WATER.getSource(false) : super.getFluidState(blockState);
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState blockState, LevelReader level, ScheduledTickAccess ticks, BlockPos pos,
+                                     Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        if (blockState.hasProperty(WATERLOGGED) && blockState.getValue(WATERLOGGED)) {
+            ticks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+        }
+        return super.updateShape(blockState, level, ticks, pos, direction, neighborPos, neighborState, random);
+    }
+
+    // Full blocks hold no water: buckets pass by
+
+    @Override
+    public boolean canPlaceLiquid(@Nullable LivingEntity user, BlockGetter level, BlockPos pos, BlockState blockState, Fluid fluid) {
+        return blockState.hasProperty(WATERLOGGED) && SimpleWaterloggedBlock.super.canPlaceLiquid(user, level, pos, blockState, fluid);
+    }
+
+    @Override
+    public boolean placeLiquid(LevelAccessor level, BlockPos pos, BlockState blockState, FluidState fluidState) {
+        return blockState.hasProperty(WATERLOGGED) && SimpleWaterloggedBlock.super.placeLiquid(level, pos, blockState, fluidState);
+    }
+
+    @Override
+    public ItemStack pickupBlock(@Nullable LivingEntity user, LevelAccessor level, BlockPos pos, BlockState blockState) {
+        return blockState.hasProperty(WATERLOGGED) ? SimpleWaterloggedBlock.super.pickupBlock(user, level, pos, blockState) : ItemStack.EMPTY;
     }
 
     @Override

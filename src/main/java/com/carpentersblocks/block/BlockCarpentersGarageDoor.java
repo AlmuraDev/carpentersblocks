@@ -354,7 +354,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable implements IShaped
         int pieceData = host.getCbMetadata() & ~HOST_BIT;
         BlockPos pos = host.getBlockPos().below();
         for (int count = 0; count < MAX_PIECES && pos.getY() > level.getMinY() && canPlaceAt(level, pos); ++count) {
-            level.setBlock(pos, defaultBlockState(), Block.UPDATE_ALL);
+            level.setBlock(pos, withWater(defaultBlockState(), level, pos), Block.UPDATE_ALL);
             CbBlockEntity piece = getBlockEntity(level, pos);
             if (piece != null) {
                 piece.copyOwner(host);
@@ -529,7 +529,8 @@ public class BlockCarpentersGarageDoor extends BlockCoverable implements IShaped
         }
         // Each piece drops its attributes as it is removed (CbBlockEntity.preRemoveSideEffects)
         for (BlockPos columnPos : column) {
-            level.setBlock(columnPos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            // Water the piece held stays
+            level.setBlock(columnPos, level.getFluidState(columnPos).createLegacyBlock(), Block.UPDATE_ALL);
         }
     }
 

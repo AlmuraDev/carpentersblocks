@@ -43,4 +43,13 @@ public class BlockCarpentersBlock extends BlockCoverable {
         return true;
     }
 
+
+    /**
+     * A full block holds no water.
+     */
+    @Override
+    protected boolean isWaterloggable() {
+        return false;
+    }
+
 }

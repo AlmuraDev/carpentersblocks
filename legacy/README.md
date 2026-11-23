@@ -39,7 +39,9 @@ compiled. Each block is rewritten for 26.3 under `src/main` and checked against 
 
 ## Still to port
 
-Converting 3.5 (1.12.2) Carpenter's blocks in the Almura world converter.
+Nothing. 3.5 (1.12.2) worlds convert through Almura-4.0's `CarpentersBlocksConversion` (test legacy package; needs this jar in
+`runs/convert-mods`): same block names and block data, attribute items upgraded to the 26.3 item format, the bed's facing and
+half into its blockstate, slope items' damage into `carpentersblocks:slope_type`, and Carpenter's Tiles kept as they were.
 
 Each new block needs its blockstate and item definition (`{"type": "carpentersblocks:coverable", "shape": ...}`; boxed
 blocks use "shaped"), a loot table and its recipe (with a `neoforge:registered` condition), and its 1.12.2 hardness in

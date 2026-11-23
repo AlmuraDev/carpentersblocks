@@ -397,7 +397,8 @@ public class BlockCarpentersBed extends AbstractBedBlock implements ICoverableBl
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState blockState, @Nullable LivingEntity placer, ItemStack itemStack) {
-        super.setPlacedBy(level, pos, blockState, placer, itemStack);
+        // Not AbstractBedBlock's, which places a head beyond the block it is given: the bed item places both halves
+        // itself and calls this for each, so the head's call put a third, extra head past it
         coverableSetPlacedBy(level, pos, placer);
     }
 

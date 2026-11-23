@@ -231,6 +231,9 @@ public class Quad {
         Direction direction = Direction.getApproximateNearest(normal.x, normal.y, normal.z);
 
         UV[] uv = rotateUV(QuadUtil.getUV(this, isFloatingOverlay, location));
+        if (_isOblique) {
+            uv = squareObliqueCorner(uv);
+        }
         Vector3f[] positions = new Vector3f[4];
         long[] uvs = new long[4];
         for (int i = 0; i < 4; ++i) {
@@ -277,6 +280,63 @@ public class Quad {
             null,
             lightEmission,
             true);
+    }
+
+    /**
+     * Maps an oblique exterior corner's triangle (corners on the block's corners) the same in every orientation: its
+     * point at the middle of the texture's top (or bottom, pointing down) edge, its base across the opposite edge. The
+     * oblique mapping (1.12.2's too) only did so for two of the four turns; the others pinched the base and smeared
+     * the texture. Other oblique faces (the interior corner's halves) are left as they are.
+     */
+    private UV[] squareObliqueCorner(UV[] uv) {
+        if (_vecs.length != 4) {
+            return uv;
+        }
+        for (Vec3 vec : _vecs) {
+            if (!isBlockCorner(vec.x) || !isBlockCorner(vec.y) || !isBlockCorner(vec.z)) {
+                return uv;
+            }
+        }
+        // The point: the corner whose height the other two share
+        int point = -1;
+        for (int i = 0; i < 4 && point < 0; ++i) {
+            boolean unique = true;
+            for (int j = 0; j < 4; ++j) {
+                if (j != i && !sameCorner(_vecs[j], _vecs[i]) && Math.abs(_vecs[j].y - _vecs[i].y) < 1.0E-4D) {
+                    unique = false;
+                }
+            }
+            if (unique) {
+                point = i;
+            }
+        }
+        if (point < 0) {
+            return uv;
+        }
+        boolean up = _vecs[point].y > 0.5D;
+        UV[] out = new UV[4];
+        Vec3 first = null;
+        for (int k = 1; k <= 4; ++k) {
+            int i = (point + k) % 4;
+            if (sameCorner(_vecs[i], _vecs[point])) {
+                out[i] = new UV(0.5D, up ? 0.0D : 1.0D);
+            } else {
+                if (first == null) {
+                    first = _vecs[i];
+                }
+                // Counter clockwise from the point: left of the base pointing up, right pointing down
+                out[i] = new UV(sameCorner(_vecs[i], first) == up ? 0.0D : 1.0D, up ? 1.0D : 0.0D);
+            }
+        }
+        return out;
+    }
+
+    private static boolean sameCorner(Vec3 a, Vec3 b) {
+        return a.distanceToSqr(b) < 1.0E-8D;
+    }
+
+    private static boolean isBlockCorner(double value) {
+        return Math.abs(value) < 1.0E-4D || Math.abs(value - 1.0D) < 1.0E-4D;
     }
 
     /**
